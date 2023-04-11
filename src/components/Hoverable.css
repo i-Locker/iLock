@@ -1,0 +1,11 @@
+.hoverableDiv {
+  background-color: red;
+  border: black 2px solid;
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
