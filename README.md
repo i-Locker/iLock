@@ -1,6 +1,7 @@
 # iLockers by Interchained
 
 CURRENT PHASE: [testnets] 
+Deploy the contracts in /contracts and fix the strings in /src/constants.js
 
 Introducing the savings plan that the big banks don't want you to learn about.
 No-interest, no puzzles, no games.
