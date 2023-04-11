@@ -1,5 +1,7 @@
 # iLockers by Interchained
 
+CURRENT PHASE: [testnets] 
+
 Introducing the savings plan that the big banks don't want you to learn about.
 No-interest, no puzzles, no games.
 The first fully open source, enterprise feature packed locker to drop.
