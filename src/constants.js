@@ -167,40 +167,40 @@ export const websiteURI = "https://frenchain.app";
 export const dexscreenerUrl = dx_uri;
 export const snowtraceUrl = ex_uri;
 export const lockerAddress = {
-    "Ethereum": "0x8ba74905c9ab0aa185e04498e2f83f8cdec20561",
-    "Goerli": "0x8ba74905c9ab0aa185e04498e2f83f8cdec20561",
-    "Binance Smart Chain": "0x2ac8a31ac8325974a57efc34672f3e348b2e715f",
+    "Ethereum": "",
+    "Goerli": "",
+    "Binance Smart Chain": "",
     "Binance_testnet": "0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc",
-    "Avalanche": "0x8ba74905c9ab0aa185e04498e2f83f8cdec20561",
-    "Avalanche_testnet": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Frenchain": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Frenchain_testnet": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Kekchain": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC",
+    "Avalanche": "",
+    "Avalanche_testnet": "",
+    "Frenchain": "",
+    "Frenchain_testnet": "",
+    "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
 export const DEFAULT_ILOCKER_CONTRACT = lockerAddress["Ethereum"];
 export const swapTokenLockerFactory = {
-    "Ethereum": '0xc4cc543e1f80cac1bddd35999e3300eb50029ba9',
-    "Goerli": '0xc4cc543e1f80cac1bddd35999e3300eb50029ba9',
-    "Binance Smart Chain": "0x8768833012a7f09d9d77368cf69a1a487164e5d7",
+    "Ethereum": '',
+    "Goerli": '',
+    "Binance Smart Chain": "",
     "Binance_testnet": "0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc",
-    "Avalanche": "0xa21121b3dfd558a3a91d508049d1454073c134d4",
-    "Avalanche_testnet": "0x01c211e90F042D87faeDe2158b0D1025dF4734E7",
-    "Frenchain": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Frenchain_testnet": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Kekchain": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC",
+    "Avalanche": "",
+    "Avalanche_testnet": "",
+    "Frenchain": "",
+    "Frenchain_testnet": "",
+    "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
 export const airdropAddress = {
-    "Ethereum": '0x2e4a2c24f87a2c39b41e7c4d17a9da730b2c411d',
-    "Goerli": '0x2e4a2c24f87a2c39b41e7c4d17a9da730b2c411d',
-    "Binance Smart Chain": "0xf205dcb07fabdaf4fa0aab9d6d073f792b257d8d",
+    "Ethereum": '',
+    "Goerli": '',
+    "Binance Smart Chain": "",
     "Binance_testnet": "0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc",
-    "Avalanche": "0xe9cac8190614cdac2e9caf44b2e407700a785603",
-    "Avalanche_testnet": '0x57Ba1d27eb608583F1339aD4FfADAD072b6507Fa',
-    "Frenchain": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Frenchain_testnet": "0x5FCCa8AEf0a280b77E68a695B153a674d9b03408",
-    "Kekchain": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC",
+    "Avalanche": "",
+    "Avalanche_testnet": '',
+    "Frenchain": "",
+    "Frenchain_testnet": "",
+    "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
 export const maxTxLimit = 1000000000000000000000000000000;
