@@ -1,6 +1,16 @@
 # iLockers by Interchained
 
 CURRENT PHASE: [testnets] 
+SEEKING GRANTS, DONORS & SPONSORS
+
+Research and development funded in parts by; FrenChain, KekChain, Electronero Network, Crystaleum, TheRealCross, Electronero Pulse and a special thanks to the communit for participating with the feedback during our genesis case study.
+
+Target networks: FrenChain || Kekchain || Binance Smart Chain || Polygon || Avalanche
+Want to collaborate? Contact Interchained @ https://t.me/interchained
+
+Live on Kekchain (testnet) rpc: https://testnet.kekchain.com chainId: 420666
+Contract: 0xCC8748Cb40575e42649d9652573eb8233CC30dEC
+
 Deploy the contracts in /contracts and fix the strings in /src/constants.js
 
 Introducing the savings plan that the big banks don't want you to learn about.
