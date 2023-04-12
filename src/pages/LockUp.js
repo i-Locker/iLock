@@ -121,17 +121,19 @@ const LockUp = (props) => {
         _toggleOwnershipModal(modalInner, "Ownership Transfer", await getLockId(), await getNetwork());
     };
     useEffect(async () => {
-        if (!account) {
-            toggleDrawer();
-        };
         if (claimed || doneForSure) {
             setDoneForSure(true);
             // eslint-disable-next-line
             alterLoaderText("Claimed");
             return true;
         } else {
-            alterLoaderText("Scanning Blockchain Index ...");
-        }
+            if (!account || account == undefined) {
+                alterLoaderText("Connect Wallet");
+                toggleDrawer();
+            } else {
+                alterLoaderText("Scanning Blockchain Index");
+            };
+        };
         if (chainName) {
             changeNetwork(network_lower_to_proper[chainName]);
             console.log('network: ', network);

@@ -149,6 +149,7 @@ const Dashboard = (props) => {
                 } else {
                     console.log("activeStep: ", activeStep);
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
+                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
                         // 
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 2);
@@ -202,6 +203,7 @@ const Dashboard = (props) => {
                             }
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
+                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
                                 // 
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 2);
