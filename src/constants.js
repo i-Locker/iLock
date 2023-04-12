@@ -127,6 +127,8 @@ export const icons_ = {
     "0x5": "/networks/eth.svg",
     "0x38": "/networks/bsc.png",
     "0x61": "/networks/bsc.png",
+    "0x137": "/networks/matic.svg",
+    "0x13881": "/networks/matic.svg",
     "0xAD9C": "/networks/fren.svg",
     "0X1BC": "/networks/fren.svg",
     "0xa86a": "/networks/avax.png",
@@ -135,10 +137,12 @@ export const icons_ = {
     "0x66B3A": "/networks/kek.png"
 };
 export const networks_data = [
-    { name: "Ethereum", currency: "ETH", subtitle: "Choose if your project is deployed to ETH", url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "ETH", url: "/networks/eth.svg" }], chainData: { chainId: '0x1', chainName: "Ethereum", rpcUrls: ["https://mainnet.infura.io/v3/"], blockExplorerUrls: ['https://etherscan.io'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } } },
+    { name: "Ethereum", currency: "ETH", subtitle: "Choose if your project is deployed to ETH", url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "ETH", url: "/networks/eth.svg" }], chainData: { chainId: '0x1', chainName: "Ethereum", rpcUrls: ["https://mainnet.infura.io/v3/"], blockExplorerUrls: ['https://etherscan.io'], nativeCurrency: { symbol: 'ETH', decimals: 18 } } },
     { name: "Goerli", currency: "gETH", subtitle: "Choose if your project is deployed to gETH", url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" }], chainData: { chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://goerli.infura.io/v3/"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } } },
-    { name: "Binance", currency: "BNB", subtitle: "Choose if your coin is built on BSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: { chainId: '0x38', chainName: "Binance Smart Chain", rpcUrls: ["https://bsc-dataseed1.ninicoin.io"], blockExplorerUrls: ['https://bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } } },
-    { name: "Binance_testnet", currency: "tBNB", subtitle: "Choose if your coin is built on BSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: { chainId: '0x38', chainName: "Binance Smart Chain", rpcUrls: ["https://bsc-dataseed1.ninicoin.io"], blockExplorerUrls: ['https://bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } } },
+    { name: "Binance", currency: "BNB", subtitle: "Choose if your coin is built on BSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: { chainId: '0x38', chainName: "Binance Smart Chain", rpcUrls: ["https://bsc-dataseed1.binance.org"], blockExplorerUrls: ['https://bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } } },
+    { name: "Binance_testnet", currency: "tBNB", subtitle: "Choose if your coin is built on tBSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: { chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } } },
+    { name: "Polygon", currency: "MATIC", subtitle: "Choose if your project is deployed to MATIC", url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "MATIC", url: "/networks/matic.svg" }], chainData: { chainId: '0x89', chainName: "Polygon", rpcUrls: ["https://polygon-rpc.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } } },
+    { name: "Polygon_testnet", currency: "tMATIC", subtitle: "Choose if your project is deployed to tMATIC", url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" }], chainData: { chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } } },
     { name: "Frenchain", currency: "FREN", subtitle: "Choose if your project is deployed to FREN", url: "/networks/fren.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "FREN", url: "/networks/fren.svg" }], chainData: { chainId: '0xAD9C', chainName: "Frenchain", rpcUrls: ["https://rpc-02.frenscan.io"], blockExplorerUrls: ['https://frenscan.io'], nativeCurrency: { symbol: 'FREN', decimals: 18 } } },
     { name: "Frenchain_testnet", currency: "tFREN", subtitle: "Choose if your project is deployed to tFREN", url: "/networks/fren.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tFREN", url: "/networks/fren.svg" }], chainData: { chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { symbol: 'tFREN', decimals: 18 } } },
     { name: "Kekchain", currency: "KEK", subtitle: "Choose if your project is deployed to KEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "KEK", url: "/networks/kek.png" }], chainData: { chainId: '0x66A44', chainName: "Kekchain", rpcUrls: ["https://mainnet.kekchain.com"], blockExplorerUrls: ['https://mainnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'KEK', decimals: 18 } } },
@@ -149,6 +153,7 @@ export const PROJECTGIT = 'fren-chain';
 export const PROJECTTWIT = 'fren_chain';
 export const PROJECTNAME = 'frenchain';
 export const PROJECTMED = 'ethereum';
+export const websiteURI = "https://frenchain.app";
 export const TOKENADDRESS = '0x8e14c88aB0644eF41bd7138ab91C0160D8c1583A';
 export const devUrl = `https://t.me/${DEVNAME}`;
 export const telegramUrl = `https://t.me/${PROJECTNAME}`;
@@ -168,12 +173,12 @@ try {
 } catch (e) {
     console.log("e (no network): ", e);
 };
-export const websiteURI = "https://frenchain.app";
 export const dexscreenerUrl = dx_uri;
 export const snowtraceUrl = ex_uri;
 export const lockerAddress = {
     "Ethereum": "",
     "Goerli": "",
+    "Binance": "",
     "Binance Smart Chain": "",
     "Binance_testnet": "0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc",
     "Avalanche": "",
@@ -187,6 +192,7 @@ export const DEFAULT_ILOCKER_CONTRACT = lockerAddress["Ethereum"];
 export const swapTokenLockerFactory = {
     "Ethereum": '',
     "Goerli": '',
+    "Binance": "",
     "Binance Smart Chain": "",
     "Binance_testnet": "0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc",
     "Avalanche": "",
@@ -199,6 +205,7 @@ export const swapTokenLockerFactory = {
 export const airdropAddress = {
     "Ethereum": '',
     "Goerli": '',
+    "Binance": "",
     "Binance Smart Chain": "",
     "Binance_testnet": "0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc",
     "Avalanche": "",
@@ -218,6 +225,8 @@ export const CHAINDATA = [
     { name: "Avalanche_testnet", chain: '0xa869' },
     { name: "Frenchain_testnet", chain: '0X1BC' },
     { name: "Frenchain", chain: '0xAD9C' },
+    { name: "Polygon", chain: '0x137' },
+    { name: "Polygon_testnet", chain: '0x13881' },
     { name: "Kekchain", chain: '0x66A44' },
     { name: "Kekchain_testnet", chain: '0x66B3A' }
 ];
