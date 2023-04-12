@@ -1,6 +1,6 @@
 for mainnet
 
-src/constants ******change token address********* may be snow burn token address
+src/constants ******change token address********* 
 
 src/web3
 lockerAddress
