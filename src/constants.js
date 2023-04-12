@@ -144,14 +144,19 @@ export const networks_data = [
     { name: "Kekchain", currency: "KEK", subtitle: "Choose if your project is deployed to KEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "KEK", url: "/networks/kek.png" }], chainData: { chainId: '0x66A44', chainName: "Kekchain", rpcUrls: ["https://mainnet.kekchain.com"], blockExplorerUrls: ['https://mainnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'KEK', decimals: 18 } } },
     { name: "Kekchain_testnet", currency: "tKEK", subtitle: "Choose if your project is deployed to tKEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: { chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } } }
 ];
-export const devUrl = 'https://t.me/interchained';
-export const telegramUrl = `https://t.me/frenchain`;
-export const githubUrl = 'https://github.com/fren-chain';
-export const twitterUrl = `https://twitter.com/fren_chain`;
-export const mediumUrl = 'https://medium.com/search?q=ethereum';
+export const DEVNAME = 'interchained';
+export const PROJECTGIT = 'fren-chain';
+export const PROJECTTWIT = 'fren_chain';
+export const PROJECTNAME = 'frenchain';
+export const PROJECTMED = 'ethereum';
 export const TOKENADDRESS = '0x8e14c88aB0644eF41bd7138ab91C0160D8c1583A';
-export const coinGeckoUrl = `https://www.coingecko.com/en/coins/frenchain`;
-export const coinMarketCapUrl = `https://coinmarketcap.com/currencies/frenchain/`;
+export const devUrl = `https://t.me/${DEVNAME}`;
+export const telegramUrl = `https://t.me/${PROJECTNAME}`;
+export const githubUrl = `https://github.com/${PROJECTGIT}`;
+export const twitterUrl = `https://twitter.com/${PROJECTTWIT}`;
+export const mediumUrl = `https://medium.com/search?q=${PROJECTMED}`;
+export const coinGeckoUrl = `https://www.coingecko.com/en/coins/${PROJECTNAME}`;
+export const coinMarketCapUrl = `https://coinmarketcap.com/currencies/${PROJECTNAME}/`;
 export const traderJoeUrl = `https://app.uniswap.org/#/swap?outputCurrency=${TOKENADDRESS}`;
 let dx_uri;
 let ex_uri;
