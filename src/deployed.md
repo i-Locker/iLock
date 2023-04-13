@@ -1,3 +1,5 @@
 Binance Smart Chain [testnet](97): 0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc
 Polygon [Mumbai](80001) : 0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb
 Ethereum [Goerli](5) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+FrenChain [testnet](444) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+
