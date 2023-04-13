@@ -206,7 +206,7 @@ export const lockerAddress = {
     "Polygon": "",
     "Polygon_testnet": "0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb",
     "Frenchain": "",
-    "Frenchain_testnet": "",
+    "Frenchain_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
@@ -222,7 +222,7 @@ export const swapTokenLockerFactory = {
     "Polygon": "",
     "Polygon_testnet": "0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb",
     "Frenchain": "",
-    "Frenchain_testnet": "",
+    "Frenchain_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
@@ -237,7 +237,7 @@ export const airdropAddress = {
     "Polygon": "",
     "Polygon_testnet": "0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb",
     "Frenchain": "",
-    "Frenchain_testnet": "",
+    "Frenchain_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
