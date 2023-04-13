@@ -38,7 +38,7 @@ import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
 import { alterLoaderText } from '../components/Loader';
-import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3 } from "../web3"
+import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum } from "../web3"
 
 const Dashboard = (props) => {
 
@@ -329,8 +329,9 @@ const Dashboard = (props) => {
         setValues({ tokenAddress: event.target.value });
         if (event.target.value.length == 42) {
             const contract_address = event.target.value;
-            let provider = await connector.getProvider();
             try {
+                let provider = await connector.getProvider();
+                console.log("ETHtoChecksum: ",await getETHtoChecksum(provider,contract_address));
                 const contractData = await getERC20Metadata(provider, CHAINDATA.find((item) => item.name == network).chain, contract_address, account);
                 let tokenData = contractData;
                 dispatch({

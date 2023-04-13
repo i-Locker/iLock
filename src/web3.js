@@ -193,6 +193,7 @@ export const isLockClaimed = async (provider, id, account, network) => {
 
 export const approve = async (provider, token, account, lockAmount, network) => {
     let result;
+            console.log("approve: ", lockAmount);
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token); {
@@ -253,6 +254,18 @@ export const getERC20balance = async (provider, token, account, network) => {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token);
         result = await contract.methods["balanceOf"](account).call();
+        return result;
+    } catch (e) {
+        console.log(e);
+    };
+}
+
+export const getETHtoChecksum = async (provider, account) => {
+    let result;
+    try {
+        let web3 = new Web3(provider);
+        result = await web3.utils.toChecksumAddress(account);
+        console.log("toChecksumAddress: ",result);
         return result;
     } catch (e) {
         console.log(e);

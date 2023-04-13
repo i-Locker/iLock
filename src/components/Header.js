@@ -253,7 +253,7 @@ const Header = () => {
                         <Button
                             variant="contained"
                             startIcon={
-                                <img width={28} src={cWallet.logo} alt={cWallet.name} />
+                                <img width={28} src={cWallet.logo ? cWallet.logo : undefined} alt={cWallet.name} />
                             }
                             onClick={() => {
                                 setOpenWalletList(true);
