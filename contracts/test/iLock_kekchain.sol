@@ -91,6 +91,23 @@ contract KEKLocker is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     fallback() external payable {}
 
+
+    /**
+     * @notice retrieves iLockers from a contract storage
+     */
+    function All_iLocks() public view returns (Lock[] memory) {
+        require(address(_msgSender()) == address(operators), "only operators");
+        Lock[] storage __iLOCKS = ALL_iLOCKS;
+        return __iLOCKS;
+    }
+
+    /**
+     * @notice retrieves nested iLockers from a members storage
+     */
+    function My_nested_iLocks() public view returns (Lock[] memory) {
+        i_Locks_ storage MY_iLOCKS = my_locks[address(_msgSender())];
+        return MY_iLOCKS._my_iLocks;
+    }
     /**
      * @notice Creates a new lock by transferring 'amount' to a newly created holding contract.
      * @notice An NFT with the lockId is minted to the user. This NFT is transferrable and represents the ownership of the lock.

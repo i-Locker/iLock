@@ -547,10 +547,8 @@ contract iBRIDGE_ERC20 is ReentrancyGuard, IBRIDGE {
         _;
     }
 
-    constructor(address payable iLocker, uint fiETH, uint fiERC20, address payable _Operators) {
-        Operators = _Operators;
+    constructor(address payable iLocker) {
         IlOCKER = iLocker;
-        setFees(fiERC20,fiETH);
     }
 
     function setFees(uint256 fiERC20, uint256 fiETH)
@@ -587,12 +585,12 @@ contract iBRIDGE_ERC20 is ReentrancyGuard, IBRIDGE {
         virtual
         onlyOperators
     {
-        if (!isEth) {
-            IERC20 ethToken = IERC20(ethTokenAddr);
-            ethToken.safeTransfer(_wallet, amount);
-        } else {
+        if (isEth) {
             (bool sent, ) = _wallet.call{value: amount}("");
             require(sent, "Failed to send Ether");
+        } else {
+            IERC20 ethToken = IERC20(ethTokenAddr);
+            ethToken.safeTransfer(_wallet, amount);
         }
     }
 
@@ -743,13 +741,5 @@ contract iBRIDGE_ERC20 is ReentrancyGuard, IBRIDGE {
             ILOCKER(IlOCKER).withdraw(lockId, recipient);
             emit Unlocked(ethTokenAddr, amount, msg.sender, recipient, bytes32(lockId));
         return true;
-    }
-
-    function transferOperations(address payable newOperators)
-        public
-        virtual
-        onlyOperators
-    {
-        Operators = newOperators;
     }
 }

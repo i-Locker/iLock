@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ERC20 is IERC20, IERC20Metadata {
     using SafeERC20 for IERC20;
-    
+
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
@@ -21,16 +21,16 @@ contract ERC20 is IERC20, IERC20Metadata {
     constructor(
         string memory __name,
         string memory __symbol,
-        uint supply
+        uint256 supply
     ) {
         _name = __name;
         _symbol = __symbol;
-        _mint(msg.sender,supply*10**18);
+        _mint(msg.sender, supply * 10**18);
     }
 
-    receive() external virtual payable {} 
+    receive() external payable virtual {}
 
-    fallback() external virtual payable {}
+    fallback() external payable virtual {}
 
     /**
      * @dev Returns the name of the token.
@@ -74,7 +74,13 @@ contract ERC20 is IERC20, IERC20Metadata {
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(address account)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return _balances[account];
     }
 
@@ -86,7 +92,12 @@ contract ERC20 is IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    function transfer(address recipient, uint256 amount)
+        public
+        virtual
+        override
+        returns (bool)
+    {
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -94,7 +105,13 @@ contract ERC20 is IERC20, IERC20Metadata {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(address owner, address spender)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
         return _allowances[owner][spender];
     }
 
@@ -105,7 +122,12 @@ contract ERC20 is IERC20, IERC20Metadata {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount)
+        public
+        virtual
+        override
+        returns (bool)
+    {
         _approve(msg.sender, spender, amount);
         return true;
     }
@@ -131,7 +153,10 @@ contract ERC20 is IERC20, IERC20Metadata {
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][msg.sender];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        require(
+            currentAllowance >= amount,
+            "ERC20: transfer amount exceeds allowance"
+        );
         unchecked {
             _approve(sender, msg.sender, currentAllowance - amount);
         }
@@ -151,8 +176,16 @@ contract ERC20 is IERC20, IERC20Metadata {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        _approve(msg.sender, spender, _allowances[msg.sender][spender] + addedValue);
+    function increaseAllowance(address spender, uint256 addedValue)
+        public
+        virtual
+        returns (bool)
+    {
+        _approve(
+            msg.sender,
+            spender,
+            _allowances[msg.sender][spender] + addedValue
+        );
         return true;
     }
 
@@ -170,9 +203,16 @@ contract ERC20 is IERC20, IERC20Metadata {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue)
+        public
+        virtual
+        returns (bool)
+    {
         uint256 currentAllowance = _allowances[msg.sender][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(
+            currentAllowance >= subtractedValue,
+            "ERC20: decreased allowance below zero"
+        );
         unchecked {
             _approve(msg.sender, spender, currentAllowance - subtractedValue);
         }
@@ -205,7 +245,10 @@ contract ERC20 is IERC20, IERC20Metadata {
         _beforeTokenTransfer(sender, recipient, amount);
 
         uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(
+            senderBalance >= amount,
+            "ERC20: transfer amount exceeds balance"
+        );
         unchecked {
             _balances[sender] = senderBalance - amount;
         }
@@ -330,5 +373,4 @@ contract ERC20 is IERC20, IERC20Metadata {
         uint256 amount
     ) internal virtual {}
     //end of OpenZeppelin ERC20
-
 }

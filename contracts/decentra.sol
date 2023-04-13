@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./utilities/ILOCKER.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./utilities/Holder.sol";
+
 /**
  *                                         ...........
  *                                 .::--==================--:..
@@ -55,38 +55,33 @@ import "./utilities/Holder.sol";
  *                                          ..........
  */
 
-/**
- * @title Interchained's iLocker contracts for FrenChain
+/**▪  ▄.▄.▄▄▄▄.▪▄▄▄▄.▄▄▄ ▄▄▄· ▄▄.·▄ ▄▄▄▄· ▪  ▄  ▄·▄▄▄▄ .·▄▄▄▄
+ *██ •█▌█▌•██ ·▀▀▄. ▀▄▄█·▐█ ▌▪██▪▐█ █▀▀█ ██ •█▌▐█ ▀▀▄▪ ▐█▪ ██
+ *▐█·▐█▐▐▌ ▐█.▪▐▀▀▪▄▐▀▀▄ ██ ▄▄██▀▐█ █▀▀█·▐█·▐█▐▐▌▐▀▀▪▄·▐█· ██
+ *▐█·██▐█▌ ▐█▌·▐█▄▄▌▐█•█▌▐███▌██ ▐█ █▪ █·▐█ ██▐█▌▐█▄▄▌·▐█. ██
+ * █▪ ▀▪▀ •▀▀▀ .▀▀▀▀·▀ ▀• ▀▀▀· ▀ •▀ ▀• ▀  █▪ ▀ ▀ •▀▀▀▀  ▀▀▀▀▀
+ * @title Interchained's iLocker contracts
  * @notice The iLock contract allows project operators to iLock tokens for a period
- * @author Muse & Interchained
+ * @notice Community FOSS R&D supported by Kekchain, FrenChain, Electronero Network, Crystaleum
+ * @author Interchained && Lucas && Decentral && Muse
  */
-contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
+contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     using SafeERC20 for IERC20;
     using Counters for Counters.Counter;
 
-    Lock[] internal ALL_iLOCKS;
+    iLocker iLOCKER_CORE;
 
-    /**
-     *  @notice The operators can disable the unlockTimestamp (make a iLock withdrawable) if the iLock creator permits this.
-     */
-    address payable internal operators;
-
-    /**
-     *  @notice An incremental counter that stores the latest lockId (zero means no locks yet).
-     */
-    Counters.Counter private lockIdCounter;
     uint256 internal latest_id;
+    uint256 internal donation_in_ETH;
 
-    uint256 public donation_in_ETH;
     bool internal donationsEnabled;
 
     /**
      *  @notice The list of all locks ever created, the key represents the lockId.
      */
     mapping(uint256 => Lock) internal locks;
-    mapping(address => i_Locks_) EOA_iLocks;
     mapping(address => i_Locks_) internal my_locks;
-    mapping(uint256 => bool) public activity;
+    mapping(uint256 => bool) internal activity;
     mapping(address => uint256[]) internal myLocks;
 
     /**
@@ -99,24 +94,18 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      */
     string internal tokenSymbol;
 
-    event ETHLockCreated(
-        uint256 indexed lockId,
-        address indexed creator,
-        uint256 amount
-    );
-
     event LockCreated(
         uint256 indexed lockId,
-        address indexed token,
         address indexed creator,
+        address indexed holder,
+        bool isETH,
         uint256 amount
     );
 
     event Withdraw(
         uint256 indexed lockId,
         address indexed token,
-        address indexed receiver,
-        uint256 amount
+        address indexed receiver
     );
 
     event TokenNameChanged(string oldName, string newName);
@@ -128,27 +117,53 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     );
 
     constructor(
-        address initialOwner,
+        address genesisOps,
         string memory _name,
         string memory _symbol
-    ) ERC721(_name, _symbol) {
+    ) ERC721(_name, _symbol) Ownable() {
         tokenName = _name;
         tokenSymbol = _symbol;
         donationsEnabled = true;
         donation_in_ETH = 0.1 ether;
-        transferOwnership(initialOwner);
-        operators = payable(owner());
+        donation_in_ETH = block.chainid == 1 ? 0.005 ether : block.chainid == 3
+            ? 0.075 ether
+            : block.chainid == 5
+            ? 0.075 ether
+            : block.chainid == 56
+            ? 0.025 ether
+            : block.chainid == 97
+            ? 0.025 ether
+            : block.chainid == 444
+            ? 5000 ether
+            : block.chainid == 43113
+            ? 0.05 ether
+            : block.chainid == 43114
+            ? 0.05 ether
+            : block.chainid == 44444
+            ? 5000 ether
+            : block.chainid == 420420
+            ? 2500 ether
+            : block.chainid == 420666
+            ? 2500 ether
+            : 0.01 ether;
+        transferOwnership(genesisOps);
+        iLOCKER_CORE.operators = payable(owner());
+        emit OwnershipTransferred(address(0), iLOCKER_CORE.operators);
     }
 
     receive() external payable {}
 
     fallback() external payable {}
 
+    function Operators() external view returns (address payable) {
+        return iLOCKER_CORE.operators;
+    }
+
     /**
      * @notice sets donations in native coin
      */
     function set_fee_in_ETH(uint256 fie, bool onOff) public virtual {
-        require(address(_msgSender()) == address(operators), "only operators");
+        require(address(_msgSender()) == address(iLOCKER_CORE.operators));
         donation_in_ETH = fie;
         donationsEnabled = onOff;
     }
@@ -177,6 +192,7 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      */
     function createLock(
         IERC20 token,
+        string memory _symbol,
         bool isEth,
         address holder,
         uint256 amount,
@@ -184,41 +200,36 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     ) external payable override nonReentrant returns (uint256, address) {
         require(
             unlockTimestamp < type(uint256).max &&
-                unlockTimestamp > block.timestamp,
-            "improper timestamp"
+                unlockTimestamp > block.timestamp
         );
-        lockIdCounter.increment();
-        uint256 lockId = lockIdCounter.current();
+        iLOCKER_CORE.lockIdCounter.increment();
+        uint256 lockId = iLOCKER_CORE.lockIdCounter.current();
         latest_id = lockId;
-        require(uint256(amount) >= uint256(0));
+        require(
+            uint256(amount) >= uint256(0) && uint256(msg.value) > uint256(0)
+        );
         address payable holdingContract;
         if (!isEth) {
             holdingContract = payable(
                 address(
                     new HoldingContract{value: 0}(
-                        address(this),
-                        address(holder),
+                        payable(address(this)),
+                        payable(holder),
+                        _symbol,
                         unlockTimestamp,
                         isEth,
                         amount
                     )
                 )
             );
-            if (uint256(msg.value) > uint256(0)) {
-                uint256 balanceBefore = token.balanceOf(holdingContract);
-                token.safeTransferFrom(
-                    payable(_msgSender()),
-                    holdingContract,
-                    amount
-                );
-                uint256 balanceAfter = token.balanceOf(holdingContract);
-                require(
-                    uint256(balanceAfter) >= uint256(balanceBefore),
-                    "Balance irregularity"
-                );
-            } else {
-                revert("Failed deposit");
-            }
+            uint256 balanceBefore = token.balanceOf(holdingContract);
+            token.safeTransferFrom(
+                payable(_msgSender()),
+                holdingContract,
+                amount
+            );
+            uint256 balanceAfter = token.balanceOf(holdingContract);
+            require(uint256(balanceAfter) >= uint256(balanceBefore));
         } else {
             require(
                 uint256(msg.value) >= uint256(amount) + uint256(donation_in_ETH)
@@ -230,27 +241,23 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
                             ? uint256(msg.value) - uint256(amount)
                             : msg.value
                     }(
-                        address(this),
-                        address(holder),
+                        payable(address(this)),
+                        payable(holder),
+                        _symbol,
                         unlockTimestamp,
                         isEth,
                         amount
                     )
                 )
             );
-            if (uint256(msg.value) > uint256(0)) {
-                uint256 remainder = uint256(msg.value) - uint256(amount);
-                uint256 value = uint256(msg.value) - uint256(remainder);
-                (bool sentValue, ) = holdingContract.call{value: value}("");
-                require(sentValue, "failed deposit");
-            } else {
-                revert("Failed deposit");
-            }
+            uint256 remainder = uint256(msg.value) - uint256(amount);
+            uint256 value = uint256(msg.value) - uint256(remainder);
+            (bool sentValue, ) = holdingContract.call{value: value}("");
+            require(sentValue);
         }
         require(
             address(holdingContract) != address(0) &&
-                address(locks[lockId].creator) == address(0),
-            "iLock already exists"
+                address(locks[lockId].creator) == address(0)
         );
         locks[lockId] = Lock({
             lockId: lockId,
@@ -266,29 +273,15 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
             unlockedByGovernance: false,
             lockedByGovernance: false
         });
-        if (address(holder) != address(_msgSender())) {
-            EOA_iLocks[address(_msgSender())]._my_iLocks.push(locks[lockId]);
-            myLocks[address(_msgSender())].push(lockId);
-            my_locks[address(locks[lockId].holder)]._my_iLocks.push(
-                locks[lockId]
-            );
-            myLocks[address(locks[lockId].holder)].push(lockId);
-        } else {
-            my_locks[address(locks[lockId].holder)]._my_iLocks.push(
-                locks[lockId]
-            );
-            myLocks[address(locks[lockId].holder)].push(lockId);
-        }
-        ALL_iLOCKS.push(locks[lockId]);
+        myLocks[address(_msgSender())].push(lockId);
+        my_locks[address(locks[lockId].holder)]._my_iLocks.push(locks[lockId]);
+        myLocks[address(locks[lockId].holder)].push(lockId);
+        iLOCKER_CORE.ALL_iLOCKS.push(locks[lockId]);
         activity[lockId] = true;
         // The ownership shard is minted to the holder.
         // It should be noted that anyone can unlock the iLock if they hold the proper shard.
         _safeMint(holder, lockId);
-        if (!isEth) {
-            emit LockCreated(lockId, address(token), holder, amount);
-        } else {
-            emit ETHLockCreated(lockId, holder, amount);
-        }
+        emit LockCreated(lockId, address(token), holder, isEth, amount);
         return (lockId, holdingContract);
     }
 
@@ -323,24 +316,6 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     }
 
     /**
-     * @notice retrieves iLockers from a contract storage
-     */
-    function All_iLocks() public view returns (Lock[] memory) {
-        require(address(_msgSender()) == address(operators), "only operators");
-        Lock[] storage __iLOCKS = ALL_iLOCKS;
-        return __iLOCKS;
-    }
-
-
-    /**
-     * @notice retrieves nested iLockers from a members storage
-     */
-    function My_nested_iLocks() public view returns (Lock[] memory) {
-        i_Locks_ storage MY_iLOCKS = my_locks[address(_msgSender())];
-        return MY_iLOCKS._my_iLocks;
-    }
-
-    /**
      * @notice Withdraws 'amount' amount of tokens from the locked position. Can only be called by the current owner of the iLock NFT.
      * @notice Once the remaining amount reaches zero, the NFT is burned.
      * @notice The ownership shard is therefore not fractional as it would complicate things for the user.
@@ -351,57 +326,46 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
         address payable recipient,
         bool isEth
     ) external payable override nonReentrant {
-        require(isValidLock(lockId), "invalid iLock id");
+        require(isValidLock(lockId));
         Lock storage iLock = locks[lockId];
         address payable holdingContract = iLock.holdingContract;
         require(
             block.timestamp >= iLock.unlockTimestamp ||
-                iLock.unlockedByGovernance,
-            "still locked"
+                iLock.unlockedByGovernance
         );
         if (uint256(msg.value) >= uint256(0)) {
-            (bool sent, ) = operators.call{value: msg.value}("");
+            (bool sent, ) = iLOCKER_CORE.operators.call{value: msg.value}("");
             require(sent);
         }
-        uint256 amount;
         if (iLock.unlockedByGovernance == false) {
-            require(
-                address(ownerOf(lockId)) == address(_msgSender()),
-                "not owner of iLock"
-            );
+            require(address(ownerOf(lockId)) == address(_msgSender()));
             require(!iLock.lockedByGovernance);
             // burn ownership token
             _burn(lockId);
         } else {
             require(
                 address(ownerOf(lockId)) == address(_msgSender()) ||
-                    address(operators) == address(_msgSender()),
-                "not without a permit"
+                    address(iLOCKER_CORE.operators) == address(_msgSender())
             );
         }
         // Mark iLock as claimed
         activity[lockId] = false;
         if (isEth == false) {
-            amount = iLock.token.balanceOf(holdingContract);
-            try IHOLD(holdingContract).Withdrawal(iLock.token, amount) returns (
-                bool ERC20_success
-            ) {
-                iLock.claimed = ERC20_success;
-            } catch {
-                revert("Failed ERC20 transfer");
-            }
+            bool ERC20_success = IHOLD(holdingContract).transferTo(
+                iLock.token,
+                recipient,
+                iLock.token.balanceOf(holdingContract)
+            );
+            iLock.claimed = ERC20_success;
         } else {
-            amount = address(holdingContract).balance;
-            try
-                IHOLD(holdingContract).ETH_transferTo(recipient, amount)
-            returns (bool ETH_success) {
-                iLock.claimed = ETH_success;
-            } catch {
-                revert("Failed ETH transfer");
-            }
+            bool ETH_success = IHOLD(holdingContract).ETH_transferTo(
+                recipient,
+                address(holdingContract).balance
+            );
+            iLock.claimed = ETH_success;
         }
-        require(iLock.claimed == true, "Distribution Failed");
-        emit Withdraw(lockId, address(iLock.token), recipient, amount);
+        require(iLock.claimed == true);
+        emit Withdraw(lockId, address(iLock.token), recipient);
     }
 
     /**
@@ -413,9 +377,14 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
         uint256 tokenId
     ) internal virtual override nonReentrant {
         Lock storage iLock = locks[tokenId];
-        require(iLock.holder == from);
+        require(address(iLock.holder) == address(from));
         iLock.holder = payable(to);
-        require(IHOLD(iLock.holdingContract).transferHolder(payable(to)));
+        require(
+            IHOLD(iLock.holdingContract).transferHolder(
+                payable(_msgSender()),
+                payable(to)
+            )
+        );
         super._transfer(from, to, tokenId);
     }
 
@@ -423,7 +392,7 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      * @notice returns whether the lockId exists (is created)
      */
     function isValidLock(uint256 lockId) public view override returns (bool) {
-        return lockId != 0 && lockId <= lockIdCounter.current();
+        return lockId != 0 && lockId <= iLOCKER_CORE.lockIdCounter.current();
     }
 
     /**
@@ -433,7 +402,7 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      * @return The iLock related to the lockId.
      */
     function getLock(uint256 lockId) external view returns (Lock memory) {
-        require(isValidLock(lockId), "out of range");
+        require(isValidLock(lockId));
         return locks[lockId];
     }
 
@@ -443,94 +412,52 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      * @return The id of the latest iLock.
      */
     function lastLockId() external view returns (uint256, uint256) {
-        return (lockIdCounter.current(), latest_id);
+        return (iLOCKER_CORE.lockIdCounter.current(), latest_id);
     }
 
     /**
-     * @notice Manage governance ability to unlock timelock.
-     * @dev This can be useful in case the owner makes a mistake during deployment and the actual withdraw can only be done by the consent of both parties.
-     */
-    function changeLockStatusByGovernance(uint256 lockId, bool unlocked)
-        external
-        nonReentrant
-    {
-        require(
-            address(ownerOf(lockId)) == address(_msgSender()) ||
-                address(operators) == address(_msgSender()),
-            "not without a permit"
-        );
-        require(isValidLock(lockId), "invalid iLock");
-        Lock storage iLock = locks[lockId];
-        require(iLock.unlockedByGovernance != unlocked, "already set");
-
-        iLock.unlockedByGovernance = unlocked;
-
-        emit GovernanceUnlockChanged(lockId, unlocked);
-    }
-
-    /** 
      * @notice Deliver stuck tokens to governance
      */
     function emergencyWithdraw(
         IERC20 token,
         uint256 lockId,
-        uint256 amount,
         bool isEth,
         bool isLocker
     ) public payable {
-        require(address(_msgSender()) == address(operators));
+        require(address(_msgSender()) == address(iLOCKER_CORE.operators));
         if (isLocker == true) {
             require(isValidLock(lockId));
             Lock storage iLock = locks[lockId];
-            require(iLock.unlockableByGovernance != false);
+            require(iLock.unlockableByGovernance);
             iLock.unlockedByGovernance = true;
             if (!isEth) {
-                if (uint256(amount) == uint256(0)) {
-                    amount = IERC20(token).balanceOf(iLock.holdingContract);
-                }
-                try
-                    IHOLD(iLock.holdingContract).transferTo(
-                        iLock.token,
-                        operators,
-                        token.balanceOf(address(iLock.holdingContract))
-                    )
-                returns (bool transfer_success) {
-                    require(transfer_success);
-                } catch {
-                    revert();
-                }
+                IHOLD(iLock.holdingContract).transferTo(
+                    iLock.token,
+                    iLOCKER_CORE.operators,
+                    token.balanceOf(address(iLock.holdingContract))
+                );
             } else {
-                if (uint256(amount) == uint256(0)) {
-                    amount = address(iLock.holdingContract).balance;
-                }
-                try
-                    IHOLD(iLock.holdingContract).ETH_transferTo(
-                        operators,
-                        amount
-                    )
-                returns (bool transfer_success) {
-                    require(transfer_success);
-                } catch {
-                    revert();
-                }
+                IHOLD(iLock.holdingContract).ETH_transferTo(
+                    iLOCKER_CORE.operators,
+                    address(iLock.holdingContract).balance
+                );
             }
         } else {
             if (!isEth) {
-                if (uint256(amount) == uint256(0)) {
-                    amount = IERC20(token).balanceOf(address(this));
-                }
-                token.safeTransfer(operators, amount);
+                token.safeTransfer(
+                    iLOCKER_CORE.operators,
+                    IERC20(token).balanceOf(address(this))
+                );
             } else {
-                if (uint256(amount) == uint256(0)) {
-                    amount = address(address(this)).balance;
-                }
-                (bool sent_eth, ) = operators.call{value: amount}("");
+                (bool sent_eth, ) = iLOCKER_CORE.operators.call{
+                    value: address(this).balance
+                }("");
                 require(sent_eth);
             }
         }
     }
 
-    /** 
+    /**
      * @notice Override the token name to allow for rebranding.
      */
     function name() public view override returns (string memory) {
@@ -542,16 +469,5 @@ contract iDecentra is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      */
     function symbol() public view override returns (string memory) {
         return tokenSymbol;
-    }
-
-    /**
-     * @notice compare strings
-     */
-    function stringsEqual(string memory a, string memory b)
-        internal
-        pure
-        returns (bool)
-    {
-        return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 }

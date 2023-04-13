@@ -1,7 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.5;
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 interface ILOCKER {
+    struct iLocker {
+        Lock[] ALL_iLOCKS;
+        /**
+        *  @notice The operators can disable the unlockTimestamp (make a iLock withdrawable) if the iLock creator permits this.
+        */
+        address payable operators;
+        /**
+        *  @notice An incremental counter that stores the latest lockId (zero means no locks yet).
+        */
+        Counters.Counter lockIdCounter;
+    }
     struct Lock {
         /// @notice The unique identifier of the iLock
         uint256 lockId;
@@ -32,23 +47,16 @@ interface ILOCKER {
     struct i_Locks_ {
         Lock[] _my_iLocks;
     }
-
+    function Operators() external view returns (address payable);
     function isValidLock(uint256 lockId) external view returns (bool);
-
     function createLock(
         IERC20 token,
+        string memory symbol,
         bool isEth,
         address holder,
         uint256 amount,
         uint256 unlockTimestamp
-    )
-        external
-        payable
-        returns (
-            uint256,
-            address
-        );
-
+    ) external payable returns (uint256, address);
     function withdraw(
         uint256 lockId,
         address payable recipient,

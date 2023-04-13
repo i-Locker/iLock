@@ -1,31 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.5;
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "./ILOCKER.sol";
 import "./iHold.sol";
-
-interface IHOLD {
-    function transferTo(
-        IERC20 token,
-        address payable recipient,
-        uint256 amount
-    ) external returns (bool success);
-
-    function ETH_transferTo(address payable recipient, uint256 amount)
-        external
-        payable
-        returns (bool success);
-
-    function transferHolder(address payable new_holder)
-        external
-        returns (bool success);
-
-    function Withdrawal(IERC20 token, uint256 amount)
-        external
-        payable
-        returns (bool success);
-}
 
 /**
  * @title Chain's HoldingContract to manage individually locked positions.
@@ -37,46 +13,50 @@ contract HoldingContract is Context, IHOLD, iHold {
 
     /// @notice The locker contract contains the actual information of the iLock and is the only address that can unlock funds.
     address payable public immutable locker;
-    address payable public holder;
+    address payable internal holder;
 
-    uint256 public genesis;
     uint256 internal lock_amount;
     uint256 public unlock_time;
 
     bool public Ether;
+
+    address[] public holders;
 
     event HolderTransferred(
         address indexed prev_holder,
         address indexed new_holder
     );
 
-    modifier onlyLocker() {
-        require(address(_msgSender()) == address(locker), "only locker");
-        _;
-    }
-
-    modifier onlyHolder() {
-        require(address(_msgSender()) == address(holder), "only holder");
-        _;
-    }
-
     constructor(
-        address _deployer,
-        address _holder,
+        address payable _deployer,
+        address payable _holder,
+        string memory symbol,
         uint256 lock_time,
         bool isEth,
         uint256 _amount
-    ) payable iHold("iLocker", "iLocker", _amount, payable(_holder)) {
+    )
+        payable
+        iHold(
+            string.concat("iLocker Stacked (", symbol, ")"),
+            string.concat("Stacked-", symbol),
+            _amount,
+            _holder
+        )
+    {
         Ether = isEth;
+        holder = _holder;
+        locker = _deployer;
+        holders.push(_holder);
         unlock_time = lock_time;
-        holder = payable(_holder);
-        genesis = block.timestamp;
-        locker = payable(_deployer);
     }
 
     receive() external payable override {}
 
     fallback() external payable override {}
+
+    function Operators() external view returns (address payable) {
+        return ILOCKER(locker).Operators();
+    }
 
     /**
      * @notice Allows locker contract to transfer an amount of tokens in the HoldingContract to the recipient
@@ -87,7 +67,8 @@ contract HoldingContract is Context, IHOLD, iHold {
         IERC20 token,
         address payable recipient,
         uint256 amount
-    ) external override onlyLocker returns (bool success) {
+    ) external override returns (bool success) {
+        require(address(_msgSender()) == address(locker), "!locker");
         if (uint256(amount) > uint256(token.balanceOf(address(this)))) {
             amount = token.balanceOf(address(this));
         }
@@ -96,74 +77,67 @@ contract HoldingContract is Context, IHOLD, iHold {
         return success;
     }
 
-    function withdrawNestedETH() public payable {
-        iHold(payable(address(this))).withdraw_ETH();
-    }
-
-    function withdrawNestedERC20(address token, uint256 amount) public payable {
-        iHold(payable(address(this))).withdraw_ERC20(token,amount);
-    }
-
-    function withdrawNestEgg() public payable {
-        withdrawNestedERC20(address(this),IERC20(address(iHold(payable(address(this))))).balanceOf(address(this)));
-    }
-
-    function Withdrawal(IERC20 token, uint256 amount)
-        external
-        payable
-        override
-        onlyLocker
-        returns (bool success)
-    {
-        if (!Ether) {
-            if (uint256(amount) > uint256(token.balanceOf(address(this)))) {
-                amount = token.balanceOf(address(this));
-            }
-            token.safeTransfer(payable(holder), amount);
-            success = true;
-        } else {
-            if (uint256(amount) > uint256(address(this).balance)) {
-                amount = address(this).balance;
-            }
-            (bool sent, ) = payable(holder).call{value: amount}("");
-            success = sent;
-        }
-        require(success, "Transaction Failed");
-        return success;
-    }
-
     function ETH_transferTo(address payable recipient, uint256 amount)
         external
         payable
         override
-        onlyLocker
         returns (bool success)
     {
+        require(address(_msgSender()) == address(locker), "!locker");
         if (uint256(amount) > uint256(address(this).balance)) {
             amount = address(this).balance;
         }
         (bool sent, ) = recipient.call{value: amount}("");
-        require(sent, "Failed to send Ether");
+        require(sent);
         success = true;
     }
 
-    function lockedFor() external view returns (uint256) {
-        return uint256(unlock_time) - uint256(block.timestamp);
+    /**
+     * @notice All though unnecessary, add reentrancy guard to token transfer in defense.
+     */
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual override {
+        super._transfer(from, to, amount);
+    }
+
+    function rebalance(address payable[] memory participants) public virtual returns(bool) {
+        bool x = false;
+        for(uint i = 0;i<holders.length;i++) {
+            if(uint(IERC20(address(this)).balanceOf(holders[i])) >= uint((uint(5100) * uint(IERC20(address(this)).totalSupply())) / uint(10000)) ) {
+                if(address(holders[i]) == address(participants[0])) {
+                    _transfer(participants[0],participants[1],IERC20(address(this)).totalSupply());
+                    x = false;
+                } else { 
+                    transferHolder(participants[0],payable(holders[i]));
+                    x = true;
+                }
+            }
+        }
+        return x;
     }
 
     /**
      *  @notice Transfer the holder address to a new address, only callable by locker.
      */
-    function transferHolder(address payable new_holder)
-        external
+    function transferHolder(address payable _holder, address payable new_holder)
+        public
         virtual
         override
-        onlyLocker
         returns (bool success)
     {
-        require(new_holder != holder, "already set");
+        require(address(_msgSender()) == address(locker), "!locker");
+        address payable[] memory participants = new address payable[](
+            holders.length
+        );
+        (bool owned) = uint(IERC20(address(this)).balanceOf(_holder)) >= uint((uint(5100) * uint(IERC20(address(this)).totalSupply())) / uint(10000)) ? rebalance(participants) : rebalance(participants);
+        require(owned);
         address payable prev_holder = holder;
         holder = new_holder;
+        holders.push(new_holder);
+        transferOwnership(depositors);
         emit HolderTransferred(prev_holder, new_holder);
         return true;
     }
