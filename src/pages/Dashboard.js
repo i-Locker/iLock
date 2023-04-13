@@ -473,7 +473,7 @@ const Dashboard = (props) => {
                     console.log("(w3) block: ", block);
                     console.log("(w3) gasLimit: ", block.gasLimit);
                     gasLimit = block.gasLimit;
-                    deposit(provider, isEth, tokenContract, depositAmount, unlockDate, depositCreator, depositHolder, depositNetwork, gasLimit).then(async (results) => {
+                    deposit(provider, isEth, tokenContract, (depositAmount * 10 ** tokenDecimals).toString(), unlockDate, depositCreator, depositHolder, depositNetwork, gasLimit).then(async (results) => {
                         const newData = await getData(provider, account, network);
                         dispatch({ type: TOKENLISTS, payload: newData });
                         setWithdrawDate(undefined);
@@ -753,7 +753,7 @@ const Dashboard = (props) => {
                                             </FormControl>
                                             
                                             {
-                                                tokenContract &&
+                                                tokenContract && token.symbol ? 
                                                 <div style={{paddingLeft:20, paddingRight:20}}>
                                                     <p style={{margin:"0px"}}>Token Found</p>
                                                     <Grid 
@@ -772,7 +772,7 @@ const Dashboard = (props) => {
                                                             <Button variant="contained" color="error" sm={12} onClick={selectToken}>Select</Button>
                                                         </Grid>
                                                     </Grid>
-                                                </div>
+                                                </div> : <></>
                                             }
                                             
                                         </div> : handleNext && <></> }

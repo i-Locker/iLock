@@ -52,7 +52,7 @@ export const deposit = async (provider, isEth, token, amount, date, account, hol
             feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.15);
             feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
             if (feeInETH) {
-                result = await contract.methods["createLock"](token, isEth, holder, web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp).send({ from: account, value: feeInETH, gasLimit: gasLimit });
+                result = await contract.methods["createLock"](token, isEth, holder, amount, UTCTimestamp).send({ from: account, value: feeInETH, gasLimit: gasLimit });
                 console.log("deposited: ", result);
                 return result;
             } else {
