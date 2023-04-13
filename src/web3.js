@@ -5,7 +5,7 @@ import {
     Multicall
 } from 'ethereum-multicall';
 import liquidityPoolAbi from "./liquidityPool_abi.json";
-import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi } from './constants';
+import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain } from './constants';
 export const serverApi = 'http://localhost:5000/api';
 export const provider = {
     "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
@@ -37,6 +37,18 @@ export const explorer = {
     "Frenchain": "https://frenscan.io",
     "Frenchain_testnet": "https://testnet.frenscan.io"
 };
+
+export const getETHtoChecksum = async (provider, account) => {
+    let result;
+    try {
+        let web3 = new Web3(provider);
+        result = await web3.utils.toChecksumAddress(account);
+        console.log("toChecksumAddress: ",result);
+        return result;
+    } catch (e) {
+        console.log(e);
+    };
+}
 export const deposit = async (provider, isEth, token, amount, date, account, holder, network, gasLimit) => {
     let result;
     try {
@@ -47,12 +59,12 @@ export const deposit = async (provider, isEth, token, amount, date, account, hol
         let feeInETH = await contract.methods.feesInETH().call();
         feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.5);
         feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
-        console.log("depositing: ", isEth, lockerAddress[network], feeInETH, token, web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp, account, holder, network)
+        console.log("depositing: ", isEth, lockerAddress[network], feeInETH, token, web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp, await getETHtoChecksum(provider,account), await getETHtoChecksum(provider,holder), network)
         if (isEth == false) {
             feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.15);
             feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
             if (feeInETH) {
-                result = await contract.methods["createLock"](token, isEth, holder, amount, UTCTimestamp).send({ from: account, value: feeInETH, gasLimit: gasLimit });
+                result = await contract.methods["createLock"](token, isEth, holder, amount, UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: feeInETH, gasLimit: gasLimit });
                 console.log("deposited: ", result);
                 return result;
             } else {
@@ -65,7 +77,7 @@ export const deposit = async (provider, isEth, token, amount, date, account, hol
             sendingEther = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) + parseFloat(amount);
             sendingEther = await web3.utils.toWei(sendingEther.toString(), "ether");
             if (feeInETH) {
-                result = await contract.methods["createLock"](account, isEth, holder, web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp).send({ from: account, value: sendingEther, gasLimit: gasLimit });
+                result = await contract.methods["createLock"](await getETHtoChecksum(provider,account), isEth, await getETHtoChecksum(provider,holder), web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: sendingEther, gasLimit: gasLimit });
                 console.log("deposited: ", result);
                 return result;
             } else {
@@ -179,7 +191,7 @@ export const withdraw = async (provider, id, account, receiver, isETH, network, 
             feeInETH = feeInETH * 1.5103090031291;
             feeInETH = web3.utils.fromWei(feeInETH.toString(), "ether");
             feeInETH = web3.utils.toWei(feeInETH.toString(), "ether");
-            result = await contract.methods["withdraw"](id, receiver, isETH).send({ from: account, value: feeInETH, gasLimit: gasLimit });
+            result = await contract.methods["withdraw"](id, await getETHtoChecksum(provider,receiver), isETH).send({ from: account, value: feeInETH, gasLimit: gasLimit });
             console.log("withdrawn: ", result);
             return result;
         } else {
@@ -188,7 +200,7 @@ export const withdraw = async (provider, id, account, receiver, isETH, network, 
             feeInETH = feeInETH * 1.0103090031291;
             feeInETH = web3.utils.fromWei(feeInETH.toString(), "ether");
             feeInETH = web3.utils.toWei(feeInETH.toString(), "ether");
-            result = await contract.methods["withdraw"](id, receiver, isETH).send({ from: account, value: feeInETH, gasLimit: gasLimit });
+            result = await contract.methods["withdraw"](id, await getETHtoChecksum(provider,receiver), isETH).send({ from: account, value: feeInETH, gasLimit: gasLimit });
             console.log("withdrawn: ", result);
             return result;
         }
@@ -260,7 +272,7 @@ export const getTokenBalance = async (provider, token, account, network) => {
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["balanceOf"](account).call();
+        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call();
         return result;
     } catch (e) {
         console.log(e);
@@ -272,19 +284,7 @@ export const getERC20balance = async (provider, token, account, network) => {
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["balanceOf"](account).call();
-        return result;
-    } catch (e) {
-        console.log(e);
-    };
-}
-
-export const getETHtoChecksum = async (provider, account) => {
-    let result;
-    try {
-        let web3 = new Web3(provider);
-        result = await web3.utils.toChecksumAddress(account);
-        console.log("toChecksumAddress: ",result);
+        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call();
         return result;
     } catch (e) {
         console.log(e);
@@ -296,7 +296,7 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["allowance"](account, spender).call();
+        result = await contract.methods["allowance"](await getETHtoChecksum(provider,account), spender).call();
         return result;
     } catch (e) {
         console.log(e);
@@ -307,13 +307,13 @@ export const getEtherBalance = async (provider, account) => {
     let balance;
     try {
         let web3 = new Web3(provider);
-        console.log("get_ether_balance_account: ", account)
-        await web3.eth.getBalance(account, function(err, result) {
+        console.log("get_ether_balance_account: ", await getETHtoChecksum(provider,account))
+        await web3.eth.getBalance(await getETHtoChecksum(provider,account), function(err, result) {
             if (err) {
                 console.log(err)
             } else {
-                balance = web3.utils.fromWei(result, "ether");
-                console.log("get_ether_balance: ", web3.utils.fromWei(result, "ether"));
+                balance = (result * 10 ** network_decimals[network_to_chain[network]]).toString();
+                console.log("get_ether_balance: ", (result * 10 ** network_decimals[network_to_chain[network]]).toString());
             };
         });
         if (balance) {
