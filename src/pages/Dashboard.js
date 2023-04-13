@@ -128,13 +128,14 @@ const Dashboard = (props) => {
             try {
                 if(NETWORK) {
                     //
+                    console.log("You are already on the proper network:  ", network)
                 } else {
                     await provider.request({
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: currentNetworkData[0].chainData.chainId }],
                     });   
+                    console.log("You have successfully switched to ", network)
                 }
-                console.log("You have successfully switched to ", network)
                 if (activeStep == 0) {
                     if (account === undefined) {
                         setModalTitle("Please connect Wallet");
