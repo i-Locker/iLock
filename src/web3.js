@@ -303,7 +303,7 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
     };
 }
 
-export const getEtherBalance = async (provider, account) => {
+export const getEtherBalance = async (provider, account, network) => {
     let balance;
     try {
         let web3 = new Web3(provider);

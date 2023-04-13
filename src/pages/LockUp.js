@@ -247,7 +247,7 @@ const LockUp = (props) => {
                                         set_Token(newData[0]["lockerAddress"]);
                                     };
                                     if (newData[0]["holdingContract"]) {
-                                        setEtherBalance(await getEtherBalance(provider, newData[0]["holdingContract"]));
+                                        setEtherBalance(await getEtherBalance(provider, newData[0]["holdingContract"], network));
                                         setHoldingContract(newData[0]["holdingContract"]);
                                     };
                                     console.log("Ether: ", newData[0]["Ether"]);
