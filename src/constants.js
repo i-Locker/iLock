@@ -264,6 +264,8 @@ export const maxTxLimit = 1000000000000000000000000000000;
 export const CHAINDATA = [
     { name: "Ethereum", chain: '0x1' },
     { name: "Goerli", chain: '0x5' },
+    { name: "Cronos", chain: '0x19' },
+    { name: "Cronos_testnet", chain: '0x152' },
     { name: "Binance Smart Chain", chain: '0x38' },
     { name: "Binance_testnet", chain: '0x61' },
     { name: "Avalanche", chain: '0xa86a' },
