@@ -49,7 +49,7 @@ import WithdrawModal from '../components/Transfer.js';
 import { _toggleOwnershipModal } from '../components/TransferOwnership.js';
 import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, IconButton } from "@mui/material";
 import { _toggleWithdrawalModal } from '../components/Transfer.js';
-import { transferOwnership_iLock, w3, isLockClaimed, getERC20balance, getEtherBalance, getLocker, getLockers, getData, withdraw, explorer, getTokenBalance, } from '../web3';
+import { transferOwnership_iLock, w3, isLockClaimed, getERC20balance, getEtherBalance, getLocker, getLockers, getData, withdraw, explorer, getTokenBalance } from '../web3';
 import { getERC20Metadata } from "../api";
 export let _wrap;
 export let getLockId;
