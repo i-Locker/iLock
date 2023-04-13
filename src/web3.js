@@ -10,6 +10,8 @@ export const serverApi = 'http://localhost:5000/api';
 export const provider = {
     "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
     "Goerli": "https://rpc.ankr.com/eth_goerli",
+    "Cronos": "https://evm-t3.cronos.org/",
+    "Cronos_testnet": "https://evm.cronos.org/",
     "Polygon_testnet": "https://rpc-mumbai.maticvigil.com",
     "Polygon": "https://polygon-rpc.com",
     "Binance Smart Chain": "https://bsc-dataseed.binance.org",
@@ -25,6 +27,8 @@ export const provider = {
 export const explorer = {
     "Ethereum": "https://etherscan.io",
     "Goerli": "https://goerli.etherscan.io",
+    "Cronos": "https://cronoscan.com/",
+    "Cronos_testnet": "https://testnet.cronoscan.com/",
     "Binance Smart Chain": "https://bscscan.com",
     "Polygon_testnet": "https://mumbai.polygonscan.com",
     "Polygon": "https://polygonscan.com",

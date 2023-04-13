@@ -5,6 +5,8 @@ export const erc20Abi = [ { "anonymous": false, "inputs": [ { "indexed": true, "
 export const network_ = {
     "0x1": "Ethereum",
     "0x5": "Goerli",
+    "0x19": "Cronos",
+    "0x152": "Cronos_testnet",
     "0x38": "Binance",
     "0x61": "Binance_testnet",
     "0xa86a": "Avalanche",
@@ -19,6 +21,8 @@ export const network_ = {
 export const network_lower_to_proper = {
     "ethereum": "Ethereum",
     "goerli": "Goerli",
+    "cronos": "Cronos",
+    "cronos_testnet": "Cronos_testnet",
     "binance": "Binance",
     "binance_testnet": "Binance_testnet",
     "avalanche": "Avalanche",
@@ -32,6 +36,8 @@ export const network_lower_to_proper = {
 };
 export const ui_friendly_networks = {
     "Ethereum": 'Ethereum',
+    "Cronos": 'Cronos',
+    "Cronos_testnet": 'Cronos (testnet)',
     "Goerli": 'Goerli (testnet)',
     "Binance": 'Binance Smart Chain',
     "Binance_testnet": 'Binance Smart Chain (testnet)',
@@ -47,6 +53,8 @@ export const ui_friendly_networks = {
 export const network_decimals = {
     "0x1": 18,
     "0x5": 18,
+    "0x19": 18,
+    "0x152": 18,
     "0x38": 18,
     "0x61": 18,
     "0xa86a": 9,
@@ -61,6 +69,8 @@ export const network_decimals = {
 export const network_symbols = {
     "0x1": "ETH",
     "0x5": "gETH",
+    "0x19": "CRO",
+    "0x152": "tCRO",
     "0x38": "BNB",
     "0x61": "tBNB",
     "0xa86a": "AVAX",
@@ -75,6 +85,8 @@ export const network_symbols = {
 export const network_to_chain = {
     "Ethereum": '0x1',
     "Goerli": '0x5',
+    "Cronos": '0x19',
+    "Cronos_testnet": '0x152',
     "Binance Smart Chain": '0x38',
     "Binance_testnet": '0x61',
     "Avalanche": '0xa86a',
@@ -89,6 +101,8 @@ export const network_to_chain = {
 export const network_hex_to_dec = {
     "0x1": 1,
     "0x5": 5,
+    "0x19": 25,
+    "0x152": 338,
     "0x38": 56,
     "0x61": 97,
     "0X89": 137,
@@ -103,6 +117,8 @@ export const network_hex_to_dec = {
 export const network_dec_to_hex = {
     1: "0x1",
     5: "0x5",
+    25: "0x19",
+    338: "0x152",
     56: "0x38",
     97: "0x61",
     137: "0X89",
@@ -118,6 +134,8 @@ export const explorer_ = {
     "0x1": explorer["Ethereum"],
     "0x5": explorer["Goerli"],
     "0x38": explorer["Binance"],
+    "0x19": explorer["Cronos"],
+    "0x152": explorer["Cronos_testnet"],
     "0x61": explorer["Binance_testnet"],
     "0xa86a": explorer["Avalanche"],
     "0xa869": explorer["Avalanche_testnet"],
@@ -133,6 +151,8 @@ export const rpc_ = {
     "0x5": provider["Goerli"],
     "0x38": provider["Binance"],
     "0x61": provider["Binance_testnet"],
+    "0x19": provider["Cronos"],
+    "0x152": provider["Cronos_testnet"],
     "0xa86a": provider["Avalanche"],
     "0xa869": provider["Avalanche_testnet"],
     "0x13881": provider["Polygon_testnet"],
@@ -145,6 +165,8 @@ export const rpc_ = {
 export const icons_ = {
     "0x1": "/networks/eth.svg",
     "0x5": "/networks/eth.svg",
+    "0x19": "/networks/cronos.svg",
+    "0x152": "/networks/cronos.svg",
     "0x38": "/networks/bsc.png",
     "0x61": "/networks/bsc.png",
     "0x89": "/networks/matic.svg",
@@ -158,6 +180,7 @@ export const icons_ = {
 };
 export const networks_data = [
     { name: "Goerli", currency: "gETH", subtitle: "Choose if your project is deployed to gETH", url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" }], chainData: { chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } } },
+    { name: "Cronos_testnet", currency: "tCRO", subtitle: "Choose if your project is deployed to tCRO", url: "/networks/cronos.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "CRO", url: "/networks/cronos.svg" }], chainData: { chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { symbol: 'tCRO', decimals: 18 } } },
     { name: "Binance_testnet", currency: "tBNB", subtitle: "Choose if your coin is built on tBSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: { chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } } },
     { name: "Polygon_testnet", currency: "tMATIC", subtitle: "Choose if your project is deployed to tMATIC", url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" }], chainData: { chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } } },
     { name: "Avalanche_testnet", currency: "tAVAX", subtitle: "Choose if your project is deployed to tAVAX", url: "/networks/avax.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tAXAX", url: "/networks/avax.svg" }], chainData: { chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { symbol: 'AVAX', decimals: 9 } } },
