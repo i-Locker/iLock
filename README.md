@@ -6,12 +6,12 @@ The first fully open source, enterprise feature packed locker to drop.
 
 ## Implementations
 [PHASE] ---- TESTNET RELEASE V1
-Binance Smart Chain [testnet](97): 0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc
-Polygon [Mumbai](80001) : 0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb
-Ethereum [Goerli](5) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
-FrenChain [testnet](444) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
-KekChain [testnet](420666) : 0xCC8748Cb40575e42649d9652573eb8233CC30dEC
-Avalanche [Fuji](43113) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+Binance Smart Chain [testnet] (97): 0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc
+Polygon [Mumbai] (80001) : 0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb
+Ethereum [Goerli] (5) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+FrenChain [testnet] (444) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+KekChain [testnet] (420666) : 0xCC8748Cb40575e42649d9652573eb8233CC30dEC
+Avalanche [Fuji] (43113) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
 
 iLockers fill the need to store value for periods of time.
 Owners, holders, project leaders could make use of iLockers to lock-up and save token(s) and or fungible coin(s) for a duration of time.
