@@ -40,6 +40,7 @@ import Logo from "../assets/img/logo.png";
 import ConnectWallet from "./ConnectWallet";
 import { ConnectedWallet } from "../assets/constants/wallets";
 import { explorer } from "../web3.js";
+import { network_, websiteURI, network_dec_to_hex } from "../constants.js";
 // exportable async fn()
 const toggleDrawer = (callback,option) => {
     // callback(!option);
@@ -52,15 +53,22 @@ const Header = () => {
     const history = useHistory();
     const classes = useStyles.header();
     const isMobile = useMediaQuery("(max-width:1100px)");
-    const { account } = useWeb3React();
+    const { chainId, account } = useWeb3React();
     const cWallet = ConnectedWallet();
     const [openDrawer, setOpenDrawer] = useState(false);
     const [_Explorer, set_Explorer] = useState(explorer);
     const [openWalletList, setOpenWalletList] = useState(false);
     console.log("account: ",account);
-    function newRoute() {
-        console.log("_Explorer: ",_Explorer);
-        window.location = _Explorer["Frenchain"];
+    function newRoute(chainId) {
+        if(!chainId) return false;
+        set_Explorer(explorer);
+        console.log("_Explorer: ",chainId, network_[network_dec_to_hex[chainId.toString()]], _Explorer, explorer, explorer[network_[network_dec_to_hex[chainId.toString()]]]);
+        window.location = explorer[network_[network_dec_to_hex[chainId.toString()]]];
+    }; 
+    function swapHref(link) {
+        console.log("link: ",link);
+        if(!link) return false;
+        window.location = link;
     }; 
     _toggleDrawer = () => {
         setOpenDrawer(!openDrawer);
@@ -116,7 +124,7 @@ const Header = () => {
                                 </Link>
                                 */}
                                 <Link underline="none" onClick={() => {
-                                            newRoute();
+                                            newRoute(chainId);
                                         }}
                                  >
                                     <span
@@ -211,7 +219,33 @@ const Header = () => {
                             </ListItemIcon>
                         </ListItem>
                     </Link>
-                    {/* <Link underline="none" >
+                    <Link underline="none" onClick={() => {
+                                            newRoute(chainId);
+                                        }}>
+                        <ListItem button>
+                            <ListItemText>Explorer</ListItemText>
+                            <ListItemIcon>
+                                <LockOutlined />
+                            </ListItemIcon>
+                        </ListItem>
+                    </Link>
+                    <Link underline="none" href="${websiteURI}">
+                        <ListItem button>
+                            <ListItemText>Website</ListItemText>
+                            <ListItemIcon>
+                                <LockOutlined />
+                            </ListItemIcon>
+                        </ListItem>
+                    </Link>
+                    {/*<Link underline="none"  href="${explorer[]}">
+                        <ListItem button >
+                            <ListItemText>Claim </ListItemText>
+                            <ListItemIcon>
+                                <WifiProtectedSetupIcon />
+                            </ListItemIcon>
+                        </ListItem>
+                    </Link>
+                     <Link underline="none" >
                         <ListItem button >
                             <ListItemText>Explorer</ListItemText>
                             <ListItemIcon>
@@ -224,7 +258,7 @@ const Header = () => {
                         <ListItemIcon>
                             <LiveHelpIcon/>
                         </ListItemIcon>
-                    </ListItem> */}
+                    </ListItem> 
                     <Link underline="none"  href="/vesting">
                         <ListItem button >
                             <ListItemText>Vesting</ListItemText>
@@ -235,20 +269,21 @@ const Header = () => {
                     </Link>
                     <Link underline="none"  href="/claim">
                         <ListItem button >
-                            <ListItemText>Claim Token</ListItemText>
+                            <ListItemText>Claim </ListItemText>
                             <ListItemIcon>
                                 <WifiProtectedSetupIcon />
                             </ListItemIcon>
                         </ListItem>
                     </Link>
                     <Link underline="none"   href="/airdrop">
-                        <ListItem button>
-                            <ListItemText>Airdrop</ListItemText>
-                            <ListItemIcon>
-                                <AttachMoneyIcon />
-                            </ListItemIcon>
-                        </ListItem>
-                    </Link>
+                                           <ListItem button>
+                                               <ListItemText>Airdrop</ListItemText>
+                                               <ListItemIcon>
+                                                   <AttachMoneyIcon />
+                                               </ListItemIcon>
+                                           </ListItem>
+                                       </Link>
+                                   */}
                     <ListItem>
                         <Button
                             variant="contained"

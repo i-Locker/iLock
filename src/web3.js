@@ -31,7 +31,7 @@ export const explorer = {
     "Binance": "https://bscscan.com",
     "Binance_testnet": "https://testnet.bscscan.com",
     "Avalanche": "https://snowtrace.io",
-    "Avalanche_test": "https://testnet.snowtrace.io",
+    "Avalanche_testnet": "https://testnet.snowtrace.io",
     "Kekchain": "https://mainnet-explorer.kekchain.com",
     "Kekchain_testnet": "https://testnet-explorer.kekchain.com",
     "Frenchain": "https://frenscan.io",
