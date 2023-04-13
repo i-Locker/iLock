@@ -6,7 +6,7 @@ import { provider } from "../../web3.js";
 const POLLING_INTERVAL = 12000;
 
 export const injected = new InjectedConnector({
-    supportedChainIds: [1, 5, 56, 97, 137, 444, 43113, 43114, 44444, 80001, 420420, 420666],
+    supportedChainIds: [1, 5, 25, 56, 97, 137, 338, 444, 43113, 43114, 44444, 80001, 420420, 420666],
 });
 
 export const walletconnect = new WalletConnectConnector({
