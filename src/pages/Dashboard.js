@@ -33,7 +33,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, websiteURI } from "../constants";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, websiteURI, ui_friendly_networks } from "../constants";
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
@@ -664,7 +664,7 @@ const Dashboard = (props) => {
                                                             </Grid>
                                                             <Grid item   xs={9} sm={10} md={10}>
                                                                 <p  color="textSecondary" className={dashboardClasses.networkTitle}>
-                                                                    {item.name}
+                                                                    {ui_friendly_networks[item.name]}
                                                                 </p>
                                                                 <p color="textSecondary" className={dashboardClasses.networkDes}>
                                                                     {item.subtitle}
