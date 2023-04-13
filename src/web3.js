@@ -5,7 +5,7 @@ import {
     Multicall
 } from 'ethereum-multicall';
 import liquidityPoolAbi from "./liquidityPool_abi.json";
-import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain } from './constants';
+import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain, network_lower_to_proper } from './constants';
 export const serverApi = 'http://localhost:5000/api';
 export const provider = {
     "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
@@ -306,20 +306,22 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
 export const getEtherBalance = async (provider, account, network) => {
     let balance;
     let float;
+    let ETH;
     try {
         let web3 = new Web3(provider);
-        console.log("get_ether_balance_account: ", await getETHtoChecksum(provider,account))
+        console.log("get_ether_balance_account: ", network, network_decimals[network_to_chain[network]], await getETHtoChecksum(provider,account))
         await web3.eth.getBalance(await getETHtoChecksum(provider,account), function(err, result) {
             if (err) {
                 console.log(err)
             } else {
-                balance = (result / 10 ** network_decimals[network_to_chain[network]]).toString();
+                balance = result;
                 float = (balance / 10 ** network_decimals[network_to_chain[network]]).toString();
-                console.log("get_ether_balance: ", result, result / 10**9, (result / 10 ** network_decimals[network_to_chain[network]]).toString(), (balance / 10 ** network_decimals[network_to_chain[network]]).toString());
+                ETH = result / 10**18;
+                console.log("get_ether_balance: ", balance, float, result / 10**9,result / 10**18, (result / 10 ** network_decimals[network_to_chain[network]]).toString(), (balance / 10 ** network_decimals[network_to_chain[network]]).toString());
             };
         });
         if (balance&&float) {
-            return [balance,float];
+            return [balance,float,ETH];
         };
     } catch (e) {
         console.log("hmm: ", e);

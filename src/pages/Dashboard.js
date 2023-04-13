@@ -114,8 +114,8 @@ const Dashboard = (props) => {
     };
     const checkEtherBalance = async (provider, account) => {
         getEtherBalance(provider, account, network).then(async (ebf) => {
-            console.log("ethereumBalance: ", ebf[0], ebf[1]);
-            fetchEtherBalance(ebf[1]);
+            console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
+            fetchEtherBalance(ebf[2]);
         });
     };
     const handleNext = async () => {
