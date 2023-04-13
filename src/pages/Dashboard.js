@@ -607,7 +607,7 @@ const Dashboard = (props) => {
                 <Grid container direction="row" justifyContent="space-evenly" alignItems="center" >
                     <Grid className={isMobile ? `${mobileClasses.root} grid text-center`  : "grid text-center"} style={{marginTop:40}} item xs={12} sm={12} md={6} >
                         <div style={{maxWidth:400, display:'inline-block', textAlign:'left'}}>
-                            <h1>Create your own custom token lock instantly.</h1>
+                            <h1>Create your own custom TimeLock instantly.</h1>
                             <p>All digital assets are locked into your very own TimeLock enabled smart contract which has been specially engineered by the top devs and tested to serve this purpose. TimeLock certified digital assets can only be withdrawn after the preset time lock expires.</p>
                             <Link
                                 href={`${websiteURI}`}
