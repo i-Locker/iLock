@@ -347,7 +347,7 @@ const Dashboard = (props) => {
             try {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ",await getETHtoChecksum(provider,contract_address));
-                const contractData = await getERC20Metadata(provider, CHAINDATA.find((item) => item.name == network).chain, contract_address, account);
+                const contractData = await getERC20Metadata(provider, CHAINDATA.find((item) => item.name == network).chain, await getETHtoChecksum(provider,contract_address), await getETHtoChecksum(provider,account));
                 let tokenData = contractData;
                 dispatch({
                     type: TOKENDATA,
