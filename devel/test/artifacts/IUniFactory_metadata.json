@@ -1,0 +1,70 @@
+{
+	"compiler": {
+		"version": "0.8.13+commit.abaa5c0e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenA",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenB",
+						"type": "address"
+					}
+				],
+				"name": "getPair",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/test/Locker.sol": "IUniFactory"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 40
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/test/Locker.sol": {
+			"keccak256": "0xcbd68d4d439cd934c09ffd9c55aac50d19a0cb289324a250b291eeb40c03e25b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c4f103a1398c07af154bd129e02ba909904048dc839d453528f721fac26ba830",
+				"dweb:/ipfs/QmRYmneUqa6h8J4G6oZLYuVFwk3DxerG4tXLadaEFUr9Au"
+			]
+		}
+	},
+	"version": 1
+}
