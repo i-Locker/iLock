@@ -96,7 +96,7 @@ const Dashboard = (props) => {
         p: 4,
     };
 
-    const { account, connector } = useWeb3React();
+    const { account, connector, chainId, active } = useWeb3React();
 
     const [values, setValues] = React.useState({
         tokenAddress: "",
@@ -123,11 +123,17 @@ const Dashboard = (props) => {
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
             const currentNetworkData = networkData.filter((each) => each.name === network);
+            let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
+            console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
             try {
-                await provider.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: currentNetworkData[0].chainData.chainId }],
-                });
+                if(NETWORK) {
+                    //
+                } else {
+                    await provider.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: currentNetworkData[0].chainData.chainId }],
+                    });   
+                }
                 console.log("You have successfully switched to ", network)
                 if (activeStep == 0) {
                     if (account === undefined) {
@@ -174,6 +180,8 @@ const Dashboard = (props) => {
                     if (switchError.code === 4902) {
                         console.log("This network is not available in your metamask, please add it");
                         let provider = await connector.getProvider();
+                        console.log("Switch Request has rejected:","\n network: ",network, "\n chainId:", chainId);
+                        console.log("chainId: ",chainId);
                         provider.request({
                             method: 'wallet_addEthereumChain',
                             params: [{ ...params_network_add }]
@@ -181,7 +189,8 @@ const Dashboard = (props) => {
                             console.log("provider_err: ", error);
                         });
                     } else if (switchError.code === 4001) {
-                        console.log("Switch Request has rejected");
+                        console.log("Switch Request has rejected:","\n network: ",network, "\n chainId:", chainId);
+                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     } else if (switchError.code === 4200) {
                         console.log("You have succefully switched to ", network)
                         if (activeStep == 0) {
@@ -225,45 +234,50 @@ const Dashboard = (props) => {
             toggleDrawer();
             return;
         };
-        try {
-            let provider = await connector.getProvider();
-            getData(provider, account, network).then(async(newData) => {
-                if (!newData) return;
-                try {
-                    dispatch({ type: TOKENLISTS, payload: newData });
-                } catch (e) {
-                    console.log(e);
-                };
-            });
-            const interval = setInterval(async(provider) => {
-                getData(provider, account, network).then(newData => {
-                    try {
-                        if (!newData) return;
-                        dispatch({ type: TOKENLISTS, payload: newData });
-                    } catch (e) {
-                        console.log(e);
-                    };
-                });
-            }, 5000, provider);
-            return () => clearInterval(interval);
-        } catch (e) {
-            console.log(e);
-        };
+     {
+        /*
+        // try {
+        //     let provider = await connector.getProvider();
+        //     getData(provider, account, network).then(async(newData) => {
+        //         if (!newData) return;
+        //         try {
+        //             dispatch({ type: TOKENLISTS, payload: newData });
+        //         } catch (e) {
+        //             console.log(e);
+        //         };
+        //     });
+        //     const interval = setInterval(async(provider) => {
+        //         getData(provider, account, network).then(newData => {
+        //             try {
+        //                 if (!newData) return;
+        //                 dispatch({ type: TOKENLISTS, payload: newData });
+        //             } catch (e) {
+        //                 console.log(e);
+        //             };
+        //         });
+        //     }, 5000, provider);
+        //     return () => clearInterval(interval);
+        // }
+        //    } catch (e) {
+        //        console.log(e);
+        //    };
+        */
+     }
     }, [account, network]);
 
     useEffect(async () => {
         if (!account) {
             setIsAllowed(0);
             alterLoaderText("Connect Wallet");
-            return;
+            return true;
         } else if (account && !network && !tokenContract) {
             setIsAllowed(0);
             alterLoaderText("Select Network");
-            return;
+            return true;
         } else if (account && network && !tokenContract) {
             setIsAllowed(0);
             alterLoaderText("Make a selection");
-            return;
+            return true;
         } else {
             try {
                 let provider = await connector.getProvider();

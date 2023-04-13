@@ -85,8 +85,27 @@ export const w3 = async (provider, network) => {
         return w3;
     } catch (e) {
         console.log(e);
-        return;
+        let web3 = new Web3(provider[network]);
+        w3 = web3;
+        return w3;
     };
+}
+{
+    /*
+        export const w3_getChainId = async (provider) => {
+            let w3;
+            try {
+                let web3 = new Web3(provider);
+                let chain_Id = await web3.eth.net.getId().then(console.log);
+                console.log("chain_Id: ",chain_Id);
+                w3 = web3;
+                return w3;
+            } catch (e) {
+                console.log(e);
+                return;
+            };
+        }
+    */
 }
 
 export const myLocks = async (provider, account, network) => {
