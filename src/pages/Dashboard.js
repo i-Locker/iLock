@@ -217,7 +217,7 @@ const Dashboard = (props) => {
         };
     };
 
-    useEffect(() => {
+    useEffect(async() => {
         setLoaderText(" ... ");
         alterLoaderText(loaderText);
         if (!network) return;
@@ -226,7 +226,8 @@ const Dashboard = (props) => {
             return;
         };
         try {
-            getData(account, network).then(newData => {
+            let provider = await connector.getProvider();
+            getData(provider, account, network).then(async(newData) => {
                 if (!newData) return;
                 try {
                     dispatch({ type: TOKENLISTS, payload: newData });
@@ -234,8 +235,8 @@ const Dashboard = (props) => {
                     console.log(e);
                 };
             });
-            const interval = setInterval(() => {
-                getData(account, network).then(newData => {
+            const interval = setInterval(async(provider) => {
+                getData(provider, account, network).then(newData => {
                     try {
                         if (!newData) return;
                         dispatch({ type: TOKENLISTS, payload: newData });
@@ -243,7 +244,7 @@ const Dashboard = (props) => {
                         console.log(e);
                     };
                 });
-            }, 5000);
+            }, 5000, provider);
             return () => clearInterval(interval);
         } catch (e) {
             console.log(e);
@@ -265,7 +266,8 @@ const Dashboard = (props) => {
             return;
         } else {
             try {
-                const tokenBalance = await getTokenBalance(tokenContract, account, network);
+                let provider = await connector.getProvider();
+                const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
                 console.log("tokenBalance: ", tokenBalance);
                 dispatch({ type: USERBALANCE, payload: tokenBalance });
             } catch (e) {
@@ -456,7 +458,7 @@ const Dashboard = (props) => {
                     console.log("(w3) gasLimit: ", block.gasLimit);
                     gasLimit = block.gasLimit;
                     deposit(provider, isEth, tokenContract, depositAmount, unlockDate, depositCreator, depositHolder, depositNetwork, gasLimit).then(async (results) => {
-                        const newData = await getData(account, network);
+                        const newData = await getData(provider, account, network);
                         dispatch({ type: TOKENLISTS, payload: newData });
                         setWithdrawDate(undefined);
                         setDateUseful(false);

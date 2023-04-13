@@ -165,13 +165,14 @@ const LockUp = (props) => {
                 connector.getChainId().then((chainId) => {
                     setChainId(chainId);
                     if (Number(chainId) === 1) setNetwork("Ethereum");
-                    if (Number(chainId) === 3) setNetwork("Ropsten");
                     if (Number(chainId) === 5) setNetwork("Goerli");
                     if (Number(chainId) === 56) setNetwork("Binance Smart Chain");
                     if (Number(chainId) === 97) setNetwork("Binance_testnet");
-                    if (Number(chainId) === 444) setNetwork("Frenchain_testnet");
                     if (Number(chainId) === 43114) setNetwork("Avalanche");
                     if (Number(chainId) === 43113) setNetwork("Avalanche_testnet");
+                    if (Number(chainId) === 137) setNetwork("Polygon");
+                    if (Number(chainId) === 80001) setNetwork("Polygon_testnet");
+                    if (Number(chainId) === 444) setNetwork("Frenchain_testnet");
                     if (Number(chainId) === 44444) setNetwork("Frenchain");
                     if (Number(chainId) === 420420) setNetwork("Kekchain");
                     if (Number(chainId) === 420666) setNetwork("Kekchain_testnet");
@@ -197,8 +198,9 @@ const LockUp = (props) => {
                     setStatus_(true);
                     try {
                         console.log("tokenBalance: ", lockToken, holdingContract, account, network);
-                        const tokenBalance_holding_contract = await getTokenBalance(lockToken, holdingContract, network);
-                        const tokenBalance_account = await getTokenBalance(lockToken, account, network);
+                        let provider = await connector.getProvider();
+                        const tokenBalance_holding_contract = await getTokenBalance(provider, lockToken, holdingContract, network);
+                        const tokenBalance_account = await getTokenBalance(provider, lockToken, account, network);
                         console.log("tokenBalance: ", tokenBalance_holding_contract, tokenBalance_account);
                     } catch (e) {
                         console.log(e);

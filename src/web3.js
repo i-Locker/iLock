@@ -8,8 +8,8 @@ import liquidityPoolAbi from "./liquidityPool_abi.json";
 import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi } from './constants';
 export const serverApi = 'http://localhost:5000/api';
 export const provider = {
-    "Ethereum": "https://mainnet.infura.io/v3/3587df9c45a740f9812d093074c6a505",
-    "Goerli": "https://goerli.infura.io/v3/3587df9c45a740f9812d093074c6a505",
+    "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
+    "Goerli": "https://rpc.ankr.com/eth_goerli",
     "Polygon_testnet": "https://rpc-mumbai.maticvigil.com",
     "Polygon": "https://polygon-rpc.com",
     "Binance Smart Chain": "https://bsc-dataseed.binance.org",
@@ -231,10 +231,10 @@ export const allowance = async (token, account, network) => {
     };
 }
 
-export const getTokenBalance = async (token, account, network) => {
+export const getTokenBalance = async (provider, token, account, network) => {
     let result;
     try {
-        let web3 = new Web3(provider[network]);
+        let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token);
         result = await contract.methods["balanceOf"](account).call();
         return result;
@@ -369,12 +369,12 @@ export const get_Data = async (account, network) => {
         return [{ "data": ["data"], "token": ["token"] }];
     };
 }
-export const getData = async (account, network) => {
+export const getData = async (provider, account, network) => {
     let lockerDataByWallet;
     console.log("account: ", account);
     console.log("network: ", network);
     try {
-        let web3 = new Web3(provider[network]);
+        let web3 = new Web3(provider);
         const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
         let latest_lockId = await tokenContract.methods.lastLockId().call({ from: account });
         let x = 0;

@@ -9,29 +9,7 @@ import Web3 from "web3";
 import dexscreener from 'dexscreener-api';
 import { walletAddress } from './redux/reducers';
 
-const provider = {
-    "Ethereum": "https://mainnet.infura.io/v3/3587df9c45a740f9812d093074c6a505",
-    "Binance Smart Chain": "https://data-seed-prebsc-1-s1.binance.org:8545",
-    "Binance": "https://data-seed-prebsc-1-s1.binance.org:8545",
-    "Avalanche": "https://api.avax.network/ext/bc/C/rpc",
-    "Avalanche_testnet": "https://api.avax-test.network/ext/bc/C/rpc",
-    "Kekchain_testnet": "https://testnet.kekchain.com",
-    "Kekchain": "https://mainnet.kekchain.com",
-    "Frenchain_testnet": "https://rpc-01tn.frenchain.app",
-    "Frenchain": "https://rpc-02.frenscan.io"
-};
-
-export const explorer = {
-    "Ethereum": "https://etherscan.io",
-    "Binance Smart Chain": "https://bscscan.com",
-    "Binance": "https://bscscan.com",
-    "Avalanche": "https://snowtrace.io",
-    "Avalanche_test": "https://testnet.snowtrace.io",
-    "Kekchain": "https://mainnet-explorer.kekchain.com",
-    "Kekchain_testnet": "https://testnet-explorer.kekchain.com",
-    "Frenchain": "https://frenscan.io",
-    "Frenchain_testnet": "https://testnet.frenscan.io"
-};
+import { provider, explorer, serverApi, dexscreenerUrl_ } from "./web3.js";
 
 const apiKey = 'SvMhtTsmQ239NmpwWjnnLWXtag5Jt8wYp7NF8F3Tear1QSaDRl9gnM34JZVXdLFV';
 const apiConfig = {
@@ -40,7 +18,6 @@ const apiConfig = {
     }
 }
 const serverUrl = 'https://deep-index.moralis.io/api/v2';
-const serverApi = 'http://localhost:5000/api';
 
 export const getTokenPrice = async function (_chain, _tokenAddress) {
     let price;
@@ -185,7 +162,7 @@ export const getNFTTokenMetadata = async function (_chain, _tokenAddress) {
     // const tokenMetadata = await axios.get(`${serverUrl}/erc20/metadata?chain=${_chain}&addresses=${_tokenAddress}`, apiConfig);
 }
 
-export const getTokenBalance = async function (_chain, _tokenAddress, _walletAddress) {
+export const getTokenBalance = async function (provider, _chain, _tokenAddress, _walletAddress) {
         console.log("getTokenBalance: ",_chain, _tokenAddress, _walletAddress);
     // replace moralis
     // call() to explorer => get_balance()
