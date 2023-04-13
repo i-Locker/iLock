@@ -113,9 +113,9 @@ const Dashboard = (props) => {
         });
     };
     const checkEtherBalance = async (provider, account) => {
-        getEtherBalance(provider, account, network).then(async (ethereumBalance) => {
-            console.log("ethereumBalance: ", ethereumBalance);
-            fetchEtherBalance(ethereumBalance);
+        getEtherBalance(provider, account, network).then(async (ebf) => {
+            console.log("ethereumBalance: ", ebf[0], ebf[1]);
+            fetchEtherBalance(ebf[1]);
         });
     };
     const handleNext = async () => {
@@ -123,18 +123,18 @@ const Dashboard = (props) => {
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
             const currentNetworkData = networkData.filter((each) => each.name === network);
-            let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
-            console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
             try {
+                let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
+                console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
                 if(NETWORK) {
                     //
-                    console.log("You are already on the proper network:  ", network)
+                    console.log("You are already on the proper network:  ", network);
                 } else {
                     await provider.request({
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: currentNetworkData[0].chainData.chainId }],
                     });   
-                    console.log("You have successfully switched to ", network)
+                    console.log("You have successfully switched to ", network);
                 }
                 if (activeStep == 0) {
                     if (account === undefined) {
@@ -193,7 +193,7 @@ const Dashboard = (props) => {
                         console.log("Switch Request has rejected:","\n network: ",network, "\n chainId:", chainId);
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     } else if (switchError.code === 4200) {
-                        console.log("You have succefully switched to ", network)
+                        console.log("You have succefully switched to ", network);
                         if (activeStep == 0) {
                             if (account === undefined) {
                                 setModalTitle("Please connect Wallet");

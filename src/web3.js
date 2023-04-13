@@ -305,6 +305,7 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
 
 export const getEtherBalance = async (provider, account, network) => {
     let balance;
+    let float;
     try {
         let web3 = new Web3(provider);
         console.log("get_ether_balance_account: ", await getETHtoChecksum(provider,account))
@@ -312,12 +313,13 @@ export const getEtherBalance = async (provider, account, network) => {
             if (err) {
                 console.log(err)
             } else {
-                balance = (result * 10 ** network_decimals[network_to_chain[network]]).toString();
-                console.log("get_ether_balance: ", (result * 10 ** network_decimals[network_to_chain[network]]).toString());
+                balance = (result / 10 ** network_decimals[network_to_chain[network]]).toString();
+                float = (balance / 10 ** network_decimals[network_to_chain[network]]).toString();
+                console.log("get_ether_balance: ", result, result / 10**9, (result / 10 ** network_decimals[network_to_chain[network]]).toString(), (balance / 10 ** network_decimals[network_to_chain[network]]).toString());
             };
         });
-        if (balance) {
-            return balance;
+        if (balance&&float) {
+            return [balance,float];
         };
     } catch (e) {
         console.log("hmm: ", e);
