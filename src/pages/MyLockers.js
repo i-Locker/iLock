@@ -32,7 +32,6 @@ import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Button from "@mui/material/Button";
-import { SxProps } from "@mui/system";
 import Link from "@mui/material/Link";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import useStyles from '../assets/styles';
