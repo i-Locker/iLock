@@ -15,17 +15,15 @@ contract ERC20 is IERC20, IERC20Metadata {
 
     uint256 private _totalSupply;
 
-    string private _name;
-    string private _symbol;
+    string public _name;
+    string public _symbol;
 
     constructor(
         string memory __name,
-        string memory __symbol,
-        uint256 supply
+        string memory __symbol
     ) {
         _name = __name;
         _symbol = __symbol;
-        _mint(msg.sender, supply * 10**18);
     }
 
     receive() external payable virtual {}

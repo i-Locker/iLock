@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.5;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./utilities/ILOCKER.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./utilities/Holder.sol";
 
 /**
@@ -65,33 +61,24 @@ import "./utilities/Holder.sol";
  * @notice Community FOSS R&D supported by Kekchain, FrenChain, Electronero Network, Crystaleum
  * @author Interchained && Lucas && Decentral && Muse
  */
-contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
+contract iLockerProtocol is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     using SafeERC20 for IERC20;
     using Counters for Counters.Counter;
 
-    iLocker iLOCKER_CORE;
-
-    uint256 internal latest_id;
-    uint256 internal donation_in_ETH;
-
-    bool internal donationsEnabled;
+    uint256 iLocker_index;
 
     /**
      *  @notice The list of all locks ever created, the key represents the lockId.
      */
     mapping(uint256 => Lock) internal locks;
-    mapping(address => i_Locks_) internal my_locks;
-    mapping(uint256 => bool) internal activity;
     mapping(address => uint256[]) internal myLocks;
+    mapping(address => i_Locks_) internal my_locks;
+    mapping(uint256 => iLocker) public iLOCKER_CORE;
 
     /**
-     *  @notice Changeable name for the iLock token.
+     *  @notice name && symbol for the iLock token.
      */
     string internal tokenName;
-
-    /**
-     *  @notice Changeable symbol for the iLock token.
-     */
     string internal tokenSymbol;
 
     event LockCreated(
@@ -123,9 +110,10 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     ) ERC721(_name, _symbol) Ownable() {
         tokenName = _name;
         tokenSymbol = _symbol;
-        donationsEnabled = true;
-        donation_in_ETH = 0.1 ether;
-        donation_in_ETH = block.chainid == 1 ? 0.005 ether : block.chainid == 3
+        iLOCKER_CORE[iLocker_index].donationsEnabled = true;
+        iLOCKER_CORE[iLocker_index].donation_in_ETH = block.chainid == 1
+            ? 0.005 ether
+            : block.chainid == 3
             ? 0.075 ether
             : block.chainid == 5
             ? 0.075 ether
@@ -147,32 +135,30 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
             ? 2500 ether
             : 0.01 ether;
         transferOwnership(genesisOps);
-        iLOCKER_CORE.operators = payable(owner());
-        emit OwnershipTransferred(address(0), iLOCKER_CORE.operators);
+        iLOCKER_CORE[iLocker_index].operators = payable(owner());
+        emit OwnershipTransferred(address(0), owner());
     }
 
     receive() external payable {}
 
     fallback() external payable {}
 
-    function Operators() external view returns (address payable) {
-        return iLOCKER_CORE.operators;
-    }
-
     /**
      * @notice sets donations in native coin
      */
-    function set_fee_in_ETH(uint256 fie, bool onOff) public virtual {
-        require(address(_msgSender()) == address(iLOCKER_CORE.operators));
-        donation_in_ETH = fie;
-        donationsEnabled = onOff;
-    }
-
-    /**
-     * @notice retrieves donations in native coin
-     */
-    function feesInETH() public view returns (uint256) {
-        return donation_in_ETH;
+    function setiLocker_Core(
+        uint256 index,
+        uint256 fie,
+        bool onOff
+    ) public virtual {
+        if (
+            address(_msgSender()) ==
+            address(iLOCKER_CORE[iLocker_index].operators)
+        ) {
+            iLocker_index = index;
+            iLOCKER_CORE[iLocker_index].donation_in_ETH = fie;
+            iLOCKER_CORE[iLocker_index].donationsEnabled = onOff;
+        }
     }
 
     /**
@@ -202,9 +188,9 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
             unlockTimestamp < type(uint256).max &&
                 unlockTimestamp > block.timestamp
         );
-        iLOCKER_CORE.lockIdCounter.increment();
-        uint256 lockId = iLOCKER_CORE.lockIdCounter.current();
-        latest_id = lockId;
+        iLOCKER_CORE[0].lockIdCounter.increment();
+        uint256 lockId = iLOCKER_CORE[0].lockIdCounter.current();
+        iLOCKER_CORE[iLocker_index].latest_id = lockId;
         require(
             uint256(amount) >= uint256(0) && uint256(msg.value) > uint256(0)
         );
@@ -217,7 +203,6 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
                         payable(holder),
                         _symbol,
                         unlockTimestamp,
-                        isEth,
                         amount
                     )
                 )
@@ -232,12 +217,14 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
             require(uint256(balanceAfter) >= uint256(balanceBefore));
         } else {
             require(
-                uint256(msg.value) >= uint256(amount) + uint256(donation_in_ETH)
+                uint256(msg.value) >=
+                    uint256(amount) +
+                        uint256(iLOCKER_CORE[iLocker_index].donation_in_ETH)
             );
             holdingContract = payable(
                 address(
                     new HoldingContract{
-                        value: donationsEnabled
+                        value: iLOCKER_CORE[iLocker_index].donationsEnabled
                             ? uint256(msg.value) - uint256(amount)
                             : msg.value
                     }(
@@ -245,7 +232,6 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
                         payable(holder),
                         _symbol,
                         unlockTimestamp,
-                        isEth,
                         amount
                     )
                 )
@@ -273,11 +259,12 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
             unlockedByGovernance: false,
             lockedByGovernance: false
         });
-        myLocks[address(_msgSender())].push(lockId);
         my_locks[address(locks[lockId].holder)]._my_iLocks.push(locks[lockId]);
         myLocks[address(locks[lockId].holder)].push(lockId);
-        iLOCKER_CORE.ALL_iLOCKS.push(locks[lockId]);
-        activity[lockId] = true;
+        if (address(locks[lockId].holder) != address(locks[lockId].creator)) {
+            myLocks[address(locks[lockId].creator)].push(lockId);
+        }
+        iLOCKER_CORE[iLocker_index].ALL_iLOCKS.push(locks[lockId]);
         // The ownership shard is minted to the holder.
         // It should be noted that anyone can unlock the iLock if they hold the proper shard.
         _safeMint(holder, lockId);
@@ -303,14 +290,13 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
 
     /**
      * @notice retrieves iLockers from a members storage
+     * @dev todo build library of internal functions
      */
     function Holder_iLock(address holder)
         public
         view
         returns (i_Locks_ memory)
     {
-        // while() toDo loop through this set, sort holders own iLocks : else drop();
-        // Lock[] storage __iLOCKS = ALL_iLOCKS;
         i_Locks_ storage HOLDER_iLOCKS = my_locks[address(holder)];
         return HOLDER_iLOCKS;
     }
@@ -334,7 +320,9 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
                 iLock.unlockedByGovernance
         );
         if (uint256(msg.value) >= uint256(0)) {
-            (bool sent, ) = iLOCKER_CORE.operators.call{value: msg.value}("");
+            (bool sent, ) = iLOCKER_CORE[iLocker_index].operators.call{
+                value: msg.value
+            }("");
             require(sent);
         }
         if (iLock.unlockedByGovernance == false) {
@@ -345,11 +333,11 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
         } else {
             require(
                 address(ownerOf(lockId)) == address(_msgSender()) ||
-                    address(iLOCKER_CORE.operators) == address(_msgSender())
+                    address(iLOCKER_CORE[iLocker_index].operators) ==
+                    address(_msgSender())
             );
         }
         // Mark iLock as claimed
-        activity[lockId] = false;
         if (isEth == false) {
             bool ERC20_success = IHOLD(holdingContract).transferTo(
                 iLock.token,
@@ -378,13 +366,9 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     ) internal virtual override nonReentrant {
         Lock storage iLock = locks[tokenId];
         require(address(iLock.holder) == address(from));
+        require(_isApprovedOrOwner(_msgSender(), tokenId));
         iLock.holder = payable(to);
-        require(
-            IHOLD(iLock.holdingContract).transferHolder(
-                payable(_msgSender()),
-                payable(to)
-            )
-        );
+        require(IHOLD(iLock.holdingContract).transferHolder(payable(to)));
         super._transfer(from, to, tokenId);
     }
 
@@ -392,7 +376,7 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
      * @notice returns whether the lockId exists (is created)
      */
     function isValidLock(uint256 lockId) public view override returns (bool) {
-        return lockId != 0 && lockId <= iLOCKER_CORE.lockIdCounter.current();
+        return lockId != 0 && lockId <= iLOCKER_CORE[0].lockIdCounter.current();
     }
 
     /**
@@ -407,15 +391,6 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
     }
 
     /**
-     * @notice Gets the incremental id of the most recent iLock. The first iLock is at id 1.
-     * @dev A lastLockId of zero means there are no locks yet!
-     * @return The id of the latest iLock.
-     */
-    function lastLockId() external view returns (uint256, uint256) {
-        return (iLOCKER_CORE.lockIdCounter.current(), latest_id);
-    }
-
-    /**
      * @notice Deliver stuck tokens to governance
      */
     function emergencyWithdraw(
@@ -424,7 +399,10 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
         bool isEth,
         bool isLocker
     ) public payable {
-        require(address(_msgSender()) == address(iLOCKER_CORE.operators));
+        require(
+            address(_msgSender()) ==
+                address(iLOCKER_CORE[iLocker_index].operators)
+        );
         if (isLocker == true) {
             require(isValidLock(lockId));
             Lock storage iLock = locks[lockId];
@@ -433,23 +411,23 @@ contract iLocker is ERC721Enumerable, Ownable, ReentrancyGuard, ILOCKER {
             if (!isEth) {
                 IHOLD(iLock.holdingContract).transferTo(
                     iLock.token,
-                    iLOCKER_CORE.operators,
+                    iLOCKER_CORE[iLocker_index].operators,
                     token.balanceOf(address(iLock.holdingContract))
                 );
             } else {
                 IHOLD(iLock.holdingContract).ETH_transferTo(
-                    iLOCKER_CORE.operators,
+                    iLOCKER_CORE[iLocker_index].operators,
                     address(iLock.holdingContract).balance
                 );
             }
         } else {
             if (!isEth) {
                 token.safeTransfer(
-                    iLOCKER_CORE.operators,
+                    iLOCKER_CORE[iLocker_index].operators,
                     IERC20(token).balanceOf(address(this))
                 );
             } else {
-                (bool sent_eth, ) = iLOCKER_CORE.operators.call{
+                (bool sent_eth, ) = iLOCKER_CORE[iLocker_index].operators.call{
                     value: address(this).balance
                 }("");
                 require(sent_eth);
