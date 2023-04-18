@@ -430,6 +430,33 @@ const Dashboard = (props) => {
         setTokenDecimals(parseFloat(e.target.value).toFixed(0));
     };
     const handleLockToken = async (e) => {
+                async function nextMsg(ctr) {
+                    switch (ctr) {
+                        case 0:
+                            break;
+                        case 1:
+                            window.alert("Good new, bad news friends...");
+                            nextCount(ctr);
+                            break;
+                        case 2:
+                            window.alert("Token Found! Also boss, there is no balance on this wallet... ")
+                            nextCount(ctr);
+                            break;
+                        case 3:
+                            window.alert("Transfer that Token to this wallet to continue...");
+                            nextCount(ctr);
+                            break;
+                        default:
+                            break;
+                    }
+                };
+                nextMsg(1);
+                async function nextCount(ctr) {
+                    let count_lt = ctr > 0 ? ctr : 0;
+                    let limit_lt = 3;
+                    count_lt = count_lt > limit_lt ? 0 : count_lt += 1;
+                    setTimeout(await nextMsg, 1024, count_lt, nextCount);
+                }; 
         try {
             if (!network) {
                 window.alert("Hey there friends, Network was not detected... Are your connected to a Blockchain via Web3?");
@@ -444,16 +471,15 @@ const Dashboard = (props) => {
             const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
             const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
-            window.alert("Savings Token Selected");
             console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
-            if(parseFloat(allowanceAmount) > 0) {
+            if (parseFloat(allowanceAmount) > 0) {
+                window.alert("Savings Token Selected");
                 setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
             } else {
-                window.alert("Transfer that Token to this wallet to continue...");
-                window.alert("Token Found! Also boss, there is no balance on this wallet... ")
-                window.alert("Good new, bad news friends...");
+                await nextCount();
             };
         } catch (e) {
+            console.log("e: ", e);
             window.alert("Valued member, Web3 could not detect this token... Please try another token.");
             //
         };
