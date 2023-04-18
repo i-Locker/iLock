@@ -430,7 +430,11 @@ const Dashboard = (props) => {
         setTokenDecimals(parseFloat(e.target.value).toFixed(0));
     };
     const handleLockToken = async (e) => {
-                async function nextMsg(ctr) {
+                async function nextMsg(ctr,lb,la) {
+                    // eslint-disable-next-line
+                    let string_to_add = lb==false?"there is no balance ":"there is a balance ";
+                    // eslint-disable-next-line
+                    string_to_add= la==false?string_to_add+"low allowance on this wallet... ":string_to_add+"";
                     switch (ctr) {
                         case 0:
                             break;
@@ -439,23 +443,23 @@ const Dashboard = (props) => {
                             nextCount(ctr);
                             break;
                         case 2:
-                            window.alert("Token Found! Also boss, there is no balance on this wallet... ")
+                            // eslint-disable-next-line
+                            window.alert("Token Found! Also boss, "+string_to_add)
                             nextCount(ctr);
                             break;
                         case 3:
-                            window.alert("Transfer that Token to this wallet to continue...");
-                            nextCount(ctr);
+                            window.alert("Transfer that Token to this wallet, or... change the Token address to continue...");
                             break;
                         default:
                             break;
                     }
                 };
-                nextMsg(1);
+                nextMsg(0);
                 async function nextCount(ctr) {
                     let count_lt = ctr > 0 ? ctr : 0;
                     let limit_lt = 3;
                     count_lt = count_lt > limit_lt ? 0 : count_lt += 1;
-                    setTimeout(await nextMsg, 1024, count_lt, nextCount);
+                    setTimeout(await nextMsg, 1024, count_lt, );
                 }; 
         try {
             if (!network) {
@@ -468,15 +472,18 @@ const Dashboard = (props) => {
             };
             let provider = await connector.getProvider();
             console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+            let tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, network);
             const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
             const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
+            const tokenBalanceFormatted = await ethers.utils.formatUnits(tokenBalance.toString(), tokenDecimals);
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
+            console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted,parseFloat(tokenBalance) > 0);
             console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
             if (parseFloat(allowanceAmount) > 0) {
                 window.alert("Savings Token Selected");
                 setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
             } else {
-                await nextCount();
+                await nextCount(0,false,parseFloat(tokenBalance) > 0);
             };
         } catch (e) {
             console.log("e: ", e);
