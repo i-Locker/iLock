@@ -188,10 +188,15 @@ export const networks_data = [
     { name: "Kekchain_testnet", currency: "tKEK", subtitle: "Choose if your project is deployed to tKEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: { chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } } }
 ];
 export const DEVNAME = 'interchained';
+export const DEVNAMEMED = DEVNAME;
+export const DEVNAMELG = 'Interchained';
+export const PROJECTNAME = 'FrenChain';
+export const PROJECTNAMEMED = 'frenchain';
 export const PROJECTGIT = 'fren-chain';
 export const PROJECTTWIT = 'fren_chain';
-export const PROJECTNAME = 'frenchain';
+export const PROJECTLG = 'Ethereum';
 export const PROJECTMED = 'ethereum';
+export const githubSourceURI = "https://github.com/i-Locker/iLock";
 export const websiteURI = "https://frenchain.app";
 export const TOKENADDRESS = '0x8e14c88aB0644eF41bd7138ab91C0160D8c1583A';
 export const devUrl = `https://t.me/${DEVNAME}`;
