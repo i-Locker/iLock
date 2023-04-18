@@ -3,10 +3,63 @@ pragma solidity ^0.8.5;
 import "./ILOCKER.sol";
 import "./iHold.sol";
 
+
 /**
- * @title Chain's HoldingContract to manage individually locked positions.
- * @notice The HoldingContract stores an individually locked position, it can only be unlocked by the main locker address, which should be a Chain locker.
- * @author Muse
+ *                                         ...........
+ *                                 .::--==================--:..
+ *                            .:-===++*#%%@@@@@@@@@@@@@%%##*+===--:.
+ *                        .:-==+*#%@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#*===-:
+ *                     .:-==*#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#+==-:
+ *                   :-==*%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#+==-.
+ *                 :==+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#==-.
+ *               :==+%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#+=-.
+ *             .==+%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*=------=+#@@@@@@@@@@@@@@@#==-
+ *            -==#@@@@@@@@@@@@@@@@@@@@%#####%@@@@@#-------------#@@@@@@@@@@@@@@@*==:
+ *          .==+@@@@@@@@@@@@@@@@@@%+-:::::::--+#@@---------------=@@@@@@@@@@@@@@@%==-
+ *         .==*@@@@@@@@@@@@@@@@@%=:::::::::------*%---------------#@@@@@@@@@@@@@@@@+=-
+ *        :==#@@@@@@@@@@@@@@@@@*-:::::----------------------=+#######%@@@@@@@@@@@@@@*==.
+ *       .==#@@@@@@@@@@@@@@@@@+---------------------------*%#+---------+%@@@@@@@@@@@@*==
+ *      .==*@@@@@@@@@@@@@@@@@*----------------------------=--------------=@@@@@@@@@@@@+=-
+ *      -=+@@@@@@@@@@@@@@@@@%-----------=+****+=--------------------++**#**@@@@@@@@@@@%==:
+ *     :==%@@@@@@@@@@@@@@@@@*-------=###++====+*%%*-------------+#@%*+==--=+%@@@@@@@@@@#==
+ *     ==*@@@@@@@@@@@@@@@@@@=-----=%#=------------*@*---------*@#+----------=@@@@@@@@@@@==:
+ *    .==%@@@@@@@@@@@@@@@@@@------=-----------------#%------=@#=------------=@@@@@@@@@@@*==
+ *    :==@@@@@@@@@@@@@@@@@%+-------------------=+***+%%-----#*--------------#@@@@@@@@@@@%==.
+ *    -=+@@@@@@@@@@@@@@@@+---------------=+#%@%#*+===+@=-------------------#@@@@@@@@@@@@@==:
+ *    -=*@@@@@@@@@@@@@@%===-----------=*%@%*=---------=#---==-----------=*@@@@@@@@@@@@@@@==:
+ *    -=*@@@@@@@@@@@@@%======-------=#@@*=------------=#----+**++++++*###++%@@@@@@@@@@@@@==:
+ *    -=+@@@@@@@@@@@@@=========----#@@+--------------=%=-------=++++*%*----#@@@@@@@@@@@@@==:
+ *    :==@@@@@@@@@@@@#===========--+*=--------------*%=----------=**+---=*%@@@@@@@@@@@@@%==.
+ *    .==%@@@@@@@@@@@#==============-------------+#%+-------=+***+-=+*#**+%@@@@@@@@@@@@@*==
+ *     ==*@@@@@@@@@@@%================-----=+*###*=----=+**###*****#%#===%@@@@@@@@@@@@@@==:
+ *     :==%@@@@@@@@@@@+==================-=*++=--=+**##*##**+====*#*===+@@@@@@@@@@@@@@@#==
+ *      -=+@@@@@@@@@@@@+===================+*####*++==*#+=====*#*=====#@@@@@@@@@@@@@@@%==:
+ *      .==*@@@@@@@@@@@@#============+*###*++=====+*##+==+*##*=====+#@@@@@@@@@@@@@@@@@+=-
+ *       .==#@@@@@@@@@@@@@*==========@+=+#########*++*###*+=====+#@@@@@@@@@@@@@@@@@@@+=-
+ *        :==#@@@@@@@@@@@@@@%*=======+#############**+======*#%@@@@@@@@@@@@@@@@@@@@@+==
+ *         .==*@@@@@@@@@@@@@@@@%#*+===================++*%@@@@@@@@@@@@@@@@@@@@@@@@@+=-
+ *          .-=+@@@@@@@@@@@@@@@@@@@@@%%#####*#####%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%==-
+ *            -==#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*==:
+ *             .-=+%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#==-
+ *               :==+%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#==-.
+ *                 :==+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%*==-.
+ *                   .-==*%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#+==-.
+ *                      :-==*#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#+==-.
+ *                         :-===*#%@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#+===-.
+ *                            .:-====+*##%%@@@@@@@@@@@@%%##*+===-::.
+ *                                 .::--==================--:..
+ *                                          ..........
+ */
+
+/**▪  ▄.▄.▄▄▄▄.▪▄▄▄▄.▄▄▄ ▄▄▄· ▄▄.·▄ ▄▄▄▄· ▪  ▄  ▄·▄▄▄▄ .·▄▄▄▄
+ *██ •█▌█▌•██ ·▀▀▄. ▀▄▄█·▐█ ▌▪██▪▐█ █▀▀█ ██ •█▌▐█ ▀▀▄▪ ▐█▪ ██
+ *▐█·▐█▐▐▌ ▐█.▪▐▀▀▪▄▐▀▀▄ ██ ▄▄██▀▐█ █▀▀█·▐█·▐█▐▐▌▐▀▀▪▄·▐█· ██
+ *▐█·██▐█▌ ▐█▌·▐█▄▄▌▐█•█▌▐███▌██ ▐█ █▪ █·▐█ ██▐█▌▐█▄▄▌·▐█. ██
+ * █▪ ▀▪▀ •▀▀▀ .▀▀▀▀·▀ ▀• ▀▀▀· ▀ •▀ ▀• ▀  █▪ ▀ ▀ •▀▀▀▀  ▀▀▀▀▀
+ * @title Interchained's iLocker Protocol designated Holding contracts
+ * @notice The iLock Holding contracts allow project operators to iLock tokens for a period
+ * @notice Community FOSS R&D supported by Kekchain, FrenChain, Electronero Network, Crystaleum
+ * @author Interchained && Lucas && Decentral && Muse
  */
 contract HoldingContract is Context, IHOLD, iHold {
     using SafeERC20 for IERC20;
@@ -19,8 +72,7 @@ contract HoldingContract is Context, IHOLD, iHold {
     address payable[] public holders;
 
     uint256 public unlock_time;
-
-    bool public Ether;
+    uint256 internal grace;
 
     event HolderTransferred(
         address indexed prev_holder,
@@ -32,22 +84,21 @@ contract HoldingContract is Context, IHOLD, iHold {
         address payable _holder,
         string memory symbol,
         uint256 lock_time,
-        bool isEth,
         uint256 _amount
     )
         payable
         iHold(
             string.concat("iLocker Stacked (", symbol, ")"),
             string.concat("Stacked-", symbol),
-            _amount,
-            _holder
+            _holder,
+            _amount
         )
     {
-        Ether = isEth;
         holder = _holder;
-        holders.push(holder);
         locker = _deployer;
+        holders.push(_holder);
         unlock_time = lock_time;
+        grace = unlock_time + 72 hours;
     }
 
     receive() external payable override {}
@@ -64,7 +115,10 @@ contract HoldingContract is Context, IHOLD, iHold {
         address payable recipient,
         uint256 amount
     ) external override returns (bool success) {
-        require(address(_msgSender()) == address(locker), "!locker");
+        require(
+            address(_msgSender()) == address(locker) ||
+                address(_msgSender()) == address(holder)
+        );
         if (uint256(amount) > uint256(token.balanceOf(address(this)))) {
             amount = token.balanceOf(address(this));
         }
@@ -79,7 +133,10 @@ contract HoldingContract is Context, IHOLD, iHold {
         override
         returns (bool success)
     {
-        require(address(_msgSender()) == address(locker), "!locker");
+        require(
+            address(_msgSender()) == address(locker) ||
+                address(_msgSender()) == address(holder)
+        );
         if (uint256(amount) > uint256(address(this).balance)) {
             amount = address(this).balance;
         }
@@ -88,33 +145,42 @@ contract HoldingContract is Context, IHOLD, iHold {
         success = true;
     }
 
+    /**
+     *  @notice The token name and symbol are upgradeable in case of rebranding.
+     */
+    function setTokenNameAndSymbol(string memory name, string memory symbol)
+        public
+    {
+        if (address(_msgSender()) == address(holder)) {
+            _name = name;
+            _symbol = symbol;
+        }
+    }
+    
+    /**
+     *  @notice Transfer overrides
+     */
     function _transfer(
         address from,
         address to,
         uint256 amount
     ) internal virtual override {
-        if (address(from) == address(holder)) {
+        for (uint256 i = 0; i < holders.length; i++) {
             if (
-                uint256(iSHARD.balanceOf(from)) <
+                uint256(iSHARD.balanceOf(holders[i])) >=
                 uint256(
                     (uint256(iSHARD.totalSupply()) * uint256(5100)) /
                         uint256(10000)
                 )
             ) {
-                for (uint256 i = 0; i < holders.length; i++) {
-                    if (
-                        uint256(iSHARD.balanceOf(holders[i])) >=
-                        uint256(
-                            (uint256(iSHARD.totalSupply()) * uint256(5100)) /
-                                uint256(10000)
-                        )
-                    ) {
+                if (address(holders[i]) != address(holder)) {
+                    if (uint256(block.timestamp) > uint256(grace)) {
                         transferHolder(holders[i]);
                     }
                 }
             }
-            super._transfer(from, to, amount);
         }
+        super._transfer(from, to, amount);
     }
 
     /**
@@ -124,18 +190,34 @@ contract HoldingContract is Context, IHOLD, iHold {
         public
         virtual
         override
-        returns (bool success)
+        returns (bool)
     {
-        require(address(_msgSender()) == address(locker), "!locker");
-        require(address(holder) != address(new_holder), "!new");
-        address payable prev_holder = holder;
-        holder = new_holder;
-        holders.push(new_holder);
-        transferDepositors(new_holder);
-        transferOwnership(new_holder);
-        _mint(new_holder, iSHARD.totalSupply());
-        _burn(prev_holder, uint256(iSHARD.balanceOf(prev_holder)));
-        emit HolderTransferred(prev_holder, new_holder);
+        // require(address(_msgSender()) == address(locker), "!locker");
+        if (address(holder) == address(new_holder)) {} else {
+            address payable prev_holder = holder;
+            if (address(_msgSender()) == address(holder)) {
+                holder = new_holder;
+                holders.push(new_holder);
+                grace = block.timestamp + 10 minutes;
+                _mint(new_holder, iSHARD.totalSupply());
+                transferOwnership(new_holder);
+                _burn(prev_holder, uint256(iSHARD.balanceOf(prev_holder)));
+            } else {
+                if (
+                    uint256(iSHARD.balanceOf(new_holder)) >=
+                    uint256(
+                        (uint256(iSHARD.totalSupply()) * uint256(5100)) /
+                            uint256(10000)
+                    )
+                ) {
+                    holder = new_holder;
+                    holders.push(new_holder);
+                    grace = block.timestamp + 24 hours;
+                    transferOwnership(new_holder);
+                }
+            }
+            emit HolderTransferred(prev_holder, new_holder);
+        }
         return true;
     }
 }

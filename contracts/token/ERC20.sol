@@ -15,8 +15,8 @@ contract ERC20 is IERC20, IERC20Metadata {
 
     uint256 private _totalSupply;
 
-    string internal _name;
-    string internal _symbol;
+    string public _name;
+    string public _symbol;
 
     constructor(
         string memory __name,
