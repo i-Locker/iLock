@@ -10,8 +10,8 @@ export const serverApi = 'http://localhost:5000/api';
 export const provider = {
     "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
     "Goerli": "https://rpc.ankr.com/eth_goerli",
-    "Cronos": "https://evm-t3.cronos.org/",
-    "Cronos_testnet": "https://evm.cronos.org/",
+    "Cronos": "https://evm.cronos.org/",
+    "Cronos_testnet": "https://evm-t3.cronos.org/",
     "Polygon_testnet": "https://rpc-mumbai.maticvigil.com",
     "Polygon": "https://polygon-rpc.com",
     "Binance Smart Chain": "https://bsc-dataseed.binance.org",
@@ -28,7 +28,7 @@ export const explorer = {
     "Ethereum": "https://etherscan.io",
     "Goerli": "https://goerli.etherscan.io",
     "Cronos": "https://cronoscan.com/",
-    "Cronos_testnet": "https://testnet.cronoscan.com/",
+    "Cronos_testnet": "https://cronos.org/explorer/testnet3/",
     "Binance Smart Chain": "https://bscscan.com",
     "Polygon_testnet": "https://mumbai.polygonscan.com",
     "Polygon": "https://polygonscan.com",
@@ -220,6 +220,18 @@ export const isLockClaimed = async (provider, id, account, network) => {
         const contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
         result = await contract.methods["myiLock"](id).call();
         console.log("isLockClaimed: ", id, account, result);
+        return result;
+    } catch (e) {
+        console.log(e);
+    };
+}
+
+export const _toBN = async (provider, int) => {
+    let result;
+    try {
+        let web3 = new Web3(provider);
+        result = await web3.utils.toBN(int);
+        console.log("toBN: ",await web3.utils.toBN(int));
         return result;
     } catch (e) {
         console.log(e);

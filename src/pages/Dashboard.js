@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from '@mui/material/styles';
 import { connect, useSelector, useDispatch } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import { useWeb3React } from "@web3-react/core";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { ethers } from "ethers";
 // ** Import Material UI Components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -38,10 +40,11 @@ import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
 import { alterLoaderText } from '../components/Loader';
-import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum } from "../web3"
+import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN } from "../web3"
 
 const Dashboard = (props) => {
 
+    const { account, connector, chainId, active } = useWeb3React();
     const { lockId, chainName } = props.match.params;
     const [activeStep, setActiveStep] = React.useState(0);
     const [open, setOpen] = React.useState(false);
@@ -96,7 +99,6 @@ const Dashboard = (props) => {
         p: 4,
     };
 
-    const { account, connector, chainId, active } = useWeb3React();
 
     const [values, setValues] = React.useState({
         tokenAddress: "",
@@ -509,9 +511,12 @@ const Dashboard = (props) => {
     };
 
     const approveToken = async () => {
-        console.log("approving: ", lockAmount * 10 ** tokenDecimals);
-        let provider = await connector.getProvider()
-        approve(provider, tokenContract, account, (lockAmount * 10 ** tokenDecimals).toString(), network).then((status) => {
+        let ap = lockAmount * 10 ** tokenDecimals;
+        // returns a BigNumber
+        const amountFormatted = await ethers.utils.parseUnits(lockAmount.toString(), tokenDecimals);
+        console.log("approving: ", lockAmount, tokenDecimals, ap,"\n ",amountFormatted,amountFormatted.toString());
+        let provider = await connector.getProvider();
+        approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
             if (status) setIsAllowed(2);
         });
     };
