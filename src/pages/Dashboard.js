@@ -432,34 +432,37 @@ const Dashboard = (props) => {
     const handleLockToken = async (e) => {
                 async function nextMsg(ctr,lb,la) {
                     // eslint-disable-next-line
-                    let string_to_add = lb==false?"there is no balance ":"there is a balance ";
+                    let string_to_add = lb==true?"there is no balance ":"there is a balance ";
                     // eslint-disable-next-line
-                    string_to_add= la==false?string_to_add+"low allowance on this wallet... ":string_to_add+"";
+                    string_to_add= la==true?string_to_add+"this wallet has a low iLocker allowance... ":string_to_add+"";
+                    let final_string = lb==true?"Transfer that Token to this wallet, ":"";
+                    final_string = la==true?"increase allowance on the next page, ":"";
                     switch (ctr) {
                         case 0:
                             break;
                         case 1:
                             window.alert("Good new, bad news friends...");
-                            nextCount(ctr);
+                            nextCount(ctr,lb,la);
                             break;
                         case 2:
                             // eslint-disable-next-line
                             window.alert("Token Found! Also boss, "+string_to_add)
-                            nextCount(ctr);
+                            nextCount(ctr,lb,la);
                             break;
                         case 3:
-                            window.alert("Transfer that Token to this wallet, or... change the Token address to continue...");
+                            // eslint-disable-next-line
+                            window.alert(final_string+" or... change the Token address to continue...");
                             break;
                         default:
                             break;
                     }
                 };
                 nextMsg(0);
-                async function nextCount(ctr) {
+                async function nextCount(ctr,tb,ta) {
                     let count_lt = ctr > 0 ? ctr : 0;
                     let limit_lt = 3;
                     count_lt = count_lt > limit_lt ? 0 : count_lt += 1;
-                    setTimeout(await nextMsg, 1024, count_lt, );
+                    setTimeout(await nextMsg, 1024, count_lt, parseFloat(tb) > 0,parseFloat(ta) > 0);
                 }; 
         try {
             if (!network) {
@@ -483,7 +486,7 @@ const Dashboard = (props) => {
                 window.alert("Savings Token Selected");
                 setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
             } else {
-                await nextCount(0,false,parseFloat(tokenBalance) > 0);
+                await nextCount(0,parseFloat(tokenBalanceFormatted),parseFloat(allowanceAmountFormatted));
             };
         } catch (e) {
             console.log("e: ", e);
