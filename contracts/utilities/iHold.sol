@@ -4,8 +4,6 @@ pragma solidity ^0.8.5;
 import "../token/ERC20.sol";
 
 interface IHOLD {
-    function Operators() external view returns (address payable);
-
     function transferTo(
         IERC20 token,
         address payable recipient,
@@ -17,10 +15,9 @@ interface IHOLD {
         payable
         returns (bool success);
 
-    function transferHolder(address payable _holder, address payable new_holder)
+    function transferHolder(address payable new_holder)
         external
         returns (bool success);
-
 }
 
 /**▪  ▄.▄.▄▄▄▄.▪▄▄▄▄.▄▄▄ ▄▄▄· ▄▄.·▄ ▄▄▄▄· ▪  ▄  ▄·▄▄▄▄ .·▄▄▄▄
@@ -41,16 +38,12 @@ contract iHold is ERC20, Ownable {
     constructor(
         string memory name,
         string memory symbol,
-        uint256 decimals,
+        uint256 supply,
         address payable _depositors
-    ) ERC20(name, symbol, decimals) Ownable() {
+    ) ERC20(name, symbol) Ownable() {
         depositors = _depositors;
+        _mint(depositors, supply);
         transferOwnership(depositors);
-        bool success = IERC20(address(this)).transfer(
-            IHOLD(address(this)).Operators(),
-            IERC20(address(this)).balanceOf(address(this))
-        );
-        require(success);
         emit OwnershipTransferred(address(0), depositors);
     }
 
@@ -58,22 +51,21 @@ contract iHold is ERC20, Ownable {
 
     fallback() external payable virtual override {}
 
-    function withdraw_ETH() external payable {
+    /// @notice The token name and symbol are upgradeable in case of rebranding.
+    function setTokenNameAndSymbol(string memory name, string memory symbol)
+        public virtual
+    {
         require(
-            address(msg.sender) == address(depositors) ||
-                address(msg.sender) == address(IHOLD(address(this)).Operators())
+            address(_msgSender()) == address(depositors)
         );
-        (bool sent, ) = payable(msg.sender).call{value: address(this).balance}(
-            ""
-        );
-        require(sent);
+        _name = name;
+        _symbol = symbol;
     }
 
-    function withdraw_ERC20(address token, uint256 amount) external payable {
+    function transferDepositors(address payable _depositors) public virtual {
         require(
-            address(msg.sender) == address(depositors) ||
-                address(msg.sender) == address(IHOLD(address(this)).Operators())
+            address(_msgSender()) == address(depositors)
         );
-        require(IERC20(token).transfer(payable(msg.sender), amount));
+        depositors = _depositors;
     }
 }

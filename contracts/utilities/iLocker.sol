@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 interface ILOCKER {
     struct iLocker {
+        uint donation_in_ETH;
+        bool donationsEnabled;
         Lock[] ALL_iLOCKS;
         /**
         *  @notice The operators can disable the unlockTimestamp (make a iLock withdrawable) if the iLock creator permits this.
