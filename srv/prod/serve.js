@@ -35,6 +35,6 @@ const boot = async () => {
     };
     const port = process.env.PORT || 420
     app.listen(port);
-    return console.log("Online: " + port, '\n', "branch: ", branch, '\n Logging: ', common);
+    return console.log("Online: "+port,'\n',"branch: ", branch,'\n Logging: ','common');
 };
 boot();
