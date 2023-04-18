@@ -437,6 +437,7 @@ const Dashboard = (props) => {
                     string_to_add= la==true?string_to_add+"this wallet has a low iLocker allowance... ":string_to_add+"";
                     let final_string = lb==true?"Transfer that Token to this wallet, ":"";
                     final_string = la==true?"increase allowance on the next page, ":"";
+                    let provider = await connector.getProvider();
                     switch (ctr) {
                         case 0:
                             break;
@@ -452,9 +453,15 @@ const Dashboard = (props) => {
                         case 3:
                             // eslint-disable-next-line
                             if(la==true&&lb==false) {
-                                window.alert(string_to_add);
-                            } else if(la==true&&lb==true) {
                                 window.alert("Savings Token Selected");
+                                setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                            } else if(la==false&&lb==false) {
+                                window.alert("Savings Token Selected");
+                                setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                            } else if(la==true&&lb==true) {
+                                window.alert(string_to_add);
+                            } else {
+                                window.alert(string_to_add);
                             };
                             break;
                         default:
