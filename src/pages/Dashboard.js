@@ -261,23 +261,20 @@ const Dashboard = (props) => {
     useEffect(async () => {
         let able = false;
         if (!account) {
-            return () => {
                 setIsAllowed(0);
                 alterLoaderText("Connect Wallet");
                 able = false;
-            };
+                 return able;
         } else if (account && !network && !tokenContract) {
-            return () => {
                 able = false;
                 setIsAllowed(0);
                 alterLoaderText("Select Network");
-            };
+                return able;
         } else if (account && network && !tokenContract) {
-            return () => {
                 able = false;
                 setIsAllowed(0);
                 alterLoaderText("Make a selection");
-            };
+                return able;
         } else {
             try {
                 let provider = await connector.getProvider();
@@ -294,9 +291,7 @@ const Dashboard = (props) => {
             } finally {
                 if (!lockAmount) {
                     window.alert("Awesome! Let's continue to create your iLocker smart contract...");
-                    //
                 } else {
-                    let able_b = false;
                     try {
                         let provider = await connector.getProvider();
                         console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
@@ -315,14 +310,6 @@ const Dashboard = (props) => {
                         };
                     } catch (e) {
                         console.log(e);
-                    } finally {
-                        // eslint-disable-next-line
-                        { `
-                            // eslint-disable-next-line
-                            return () => {
-                                able_b = true;
-                            }
-                        ` }
                     };
                 };
             };

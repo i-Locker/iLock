@@ -60,7 +60,9 @@ export const deposit = async (provider, tokenSymbol, isEth, token, amount, date,
         let UTCTimestamp = Math.round(unlockDate.getTime() / 1000)
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let feeInETH = await contract.methods.feesInETH().call();
+        let feeInETH = await contract.methods.ILOCKER_CORE(0).call();
+        feeInETH = feeInETH["feeInETH"];
+            console.log("feeInETH: ",feeInETH);
         gasLimit = parseFloat(gasLimit) > 30000000 ? parseFloat(gasLimit) * parseFloat(0.888) : gasLimit;
         feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.5);
         feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
