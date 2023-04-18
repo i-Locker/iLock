@@ -446,12 +446,16 @@ const Dashboard = (props) => {
                             break;
                         case 2:
                             // eslint-disable-next-line
-                            window.alert("Token Found! Also boss, "+string_to_add)
+                            window.alert("Token Found! ")
                             nextCount(ctr,lb,la);
                             break;
                         case 3:
                             // eslint-disable-next-line
-                            window.alert(final_string+" or... change the Token address to continue...");
+                            if(la==true&&lb==false) {
+                                window.alert(string_to_add);
+                            } else if(la==true&&lb==true) {
+                                window.alert("Savings Token Selected");
+                            };
                             break;
                         default:
                             break;
