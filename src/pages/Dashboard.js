@@ -449,9 +449,9 @@ const Dashboard = (props) => {
             if(parseFloat(allowanceAmount) > 0) {
                 setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
             } else {
-                window.alert("Good new, bad news friends...");
-                window.alert("Token Found! Also boss, there is no balance on this wallet... ")
                 window.alert("Transfer that Token to this wallet to continue...");
+                window.alert("Token Found! Also boss, there is no balance on this wallet... ")
+                window.alert("Good new, bad news friends...");
             };
         } catch (e) {
             window.alert("Valued member, Web3 could not detect this token... Please try another token.");
