@@ -1,30 +1,28 @@
 {
-    "name": "FrenChain-DApp",
-    "version": "1.0.0",
-    "description": "FrenChain Dapp",
-    "main": "index.js",
+    "name": "iLockers-DApp-FOSS-Interchained",
+    "version": "1.9.3",
+    "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
+    "main": "srv/prod/serve.js",
     "scripts": {
+        "test": "cd srv/test/ && node serve.js",
+        "devel": "cd srv/devel/ && node serve.js",
+        "dev": "cd srv/devel/ && node serve.js",
+        "prod": "cd srv/prod/ && node serve.js",
         "start": "react-scripts start",
         "build": "react-scripts build"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/interchained/iLock.git"
+        "url": "git+https://github.com/i-Lockers/iLock.git"
     },
     "author": "",
-    "license": "MIT",
+    "license": "BSL",
     "bugs": {
-        "url": "https://github.com/interchained/iLock/issues"
+        "url": "https://github.com/i-Lockers/iLock/issues"
     },
-    "homepage": "https://interchained.org",
+    "homepage": "https://ilocks.interchained.org",
     "dependencies": {
-        "@emotion/react": "^11.5.0",
-        "@emotion/styled": "^11.3.0",
         "@ethersproject/providers": "^5.3.1",
-        "@mui/icons-material": "^5.0.4",
-        "@mui/lab": "^5.0.0-alpha.51",
-        "@mui/material": "^5.0.4",
-        "@mui/styles": "^5.0.1",
         "@web3-react/core": "^6.1.9",
         "@web3-react/frame-connector": "^6.0.9",
         "@web3-react/injected-connector": "^6.0.7",
@@ -35,8 +33,7 @@
         "date-fns": "^2.28.0",
         "dexscreener-api": "^0.0.7",
         "ethereum-multicall": "^2.9.0",
-        "ethers": "^6.3.0",
-        "morgan": "^1.10.0",
+        "ethers": "@<6.3.0",
         "notistack": "^2.0.2",
         "parent-module": "^2.0.0",
         "react": "^17.0.2",
@@ -79,9 +76,15 @@
     },
     "devDependencies": {
         "eslint": "^7.28.0",
-        "eslint-config-prettier": "^8.8.0",
+        "@emotion/react": "^11.5.0",
+        "@emotion/styled": "^11.3.0",
+        "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-json": "^3.0.0",
         "eslint-plugin-jsx-a11y": "^6.4.1",
+        "@mui/icons-material": "^5.0.4",
+        "@mui/lab": "^5.0.0-alpha.51",
+        "@mui/material": "^5.0.4",
+        "@mui/styles": "^5.0.1",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-react": "^7.24.0",
         "eslint-plugin-react-hooks": "^4.2.0",
