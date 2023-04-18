@@ -283,8 +283,10 @@ const Dashboard = (props) => {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
                 const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
-                console.log("tokenBalance: ", tokenBalance);
-                window.alert("Token Found! Balance: ", tokenBalance);
+                const tokenBalanceFormatted = await ethers.utils.formatUnits(tokenBalance.toString(), tokenDecimals);
+                console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted);
+                // eslint-disable-next-line
+                window.alert("Token Found! Balance: " + tokenBalance);
                 dispatch({ type: USERBALANCE, payload: tokenBalance });
             } catch (e) {
                 console.log(e);
@@ -313,7 +315,8 @@ const Dashboard = (props) => {
                         };
                     } catch (e) {
                         console.log(e);
-                    } finally { 
+                    } finally {
+                        // eslint-disable-next-line
                         { `
                             // eslint-disable-next-line
                             return () => {
@@ -430,51 +433,51 @@ const Dashboard = (props) => {
         setTokenDecimals(parseFloat(e.target.value).toFixed(0));
     };
     const handleLockToken = async (e) => {
-                async function nextMsg(ctr,lb,la) {
+        async function nextMsg(ctr, lb, la) {
+            // eslint-disable-next-line
+            let string_to_add = lb == true ? "there is no balance " : "there is a balance ";
+            // eslint-disable-next-line
+            string_to_add = la == true ? string_to_add + "this wallet has a low iLocker allowance... " : string_to_add + "";
+            let final_string = lb == true ? "Transfer that Token to this wallet, " : "";
+            final_string = la == true ? "increase allowance on the next page, " : "";
+            let provider = await connector.getProvider();
+            switch (ctr) {
+                case 0:
+                    break;
+                case 1:
+                    window.alert("Good new, bad news friends...");
+                    nextCount(ctr, lb, la);
+                    break;
+                case 2:
                     // eslint-disable-next-line
-                    let string_to_add = lb==true?"there is no balance ":"there is a balance ";
+                    window.alert("Token Found! ")
+                    nextCount(ctr, lb, la);
+                    break;
+                case 3:
                     // eslint-disable-next-line
-                    string_to_add= la==true?string_to_add+"this wallet has a low iLocker allowance... ":string_to_add+"";
-                    let final_string = lb==true?"Transfer that Token to this wallet, ":"";
-                    final_string = la==true?"increase allowance on the next page, ":"";
-                    let provider = await connector.getProvider();
-                    switch (ctr) {
-                        case 0:
-                            break;
-                        case 1:
-                            window.alert("Good new, bad news friends...");
-                            nextCount(ctr,lb,la);
-                            break;
-                        case 2:
-                            // eslint-disable-next-line
-                            window.alert("Token Found! ")
-                            nextCount(ctr,lb,la);
-                            break;
-                        case 3:
-                            // eslint-disable-next-line
-                            if(la==true&&lb==false) {
-                                window.alert("Savings Token Selected");
-                                setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
-                            } else if(la==false&&lb==false) {
-                                window.alert("Savings Token Selected");
-                                setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
-                            } else if(la==true&&lb==true) {
-                                window.alert(string_to_add);
-                            } else {
-                                window.alert(string_to_add);
-                            };
-                            break;
-                        default:
-                            break;
-                    }
-                };
-                nextMsg(0);
-                async function nextCount(ctr,tb,ta) {
-                    let count_lt = ctr > 0 ? ctr : 0;
-                    let limit_lt = 3;
-                    count_lt = count_lt > limit_lt ? 0 : count_lt += 1;
-                    setTimeout(await nextMsg, 1024, count_lt, parseFloat(tb) > 0,parseFloat(ta) > 0);
-                }; 
+                    if (la == true && lb == false) {
+                        window.alert("Savings Token Selected");
+                        setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                    } else if (la == false && lb == false) {
+                        window.alert("Savings Token Selected");
+                        setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                    } else if (la == true && lb == true) {
+                        window.alert(string_to_add);
+                    } else {
+                        window.alert(string_to_add);
+                    };
+                    break;
+                default:
+                    break;
+            }
+        };
+        nextMsg(0);
+        async function nextCount(ctr, tb, ta) {
+            let count_lt = ctr > 0 ? ctr : 0;
+            let limit_lt = 3;
+            count_lt = count_lt > limit_lt ? 0 : count_lt += 1;
+            setTimeout(await nextMsg, 1024, count_lt, parseFloat(tb) > 0, parseFloat(ta) > 0);
+        };
         try {
             if (!network) {
                 window.alert("Hey there friends, Network was not detected... Are your connected to a Blockchain via Web3?");
@@ -491,13 +494,13 @@ const Dashboard = (props) => {
             const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
             const tokenBalanceFormatted = await ethers.utils.formatUnits(tokenBalance.toString(), tokenDecimals);
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
-            console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted,parseFloat(tokenBalance) > 0);
+            console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
             console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
             if (parseFloat(allowanceAmount) > 0) {
                 window.alert("Savings Token Selected");
                 setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
             } else {
-                await nextCount(0,parseFloat(tokenBalanceFormatted),parseFloat(allowanceAmountFormatted));
+                await nextCount(0, parseFloat(tokenBalanceFormatted), parseFloat(allowanceAmountFormatted));
             };
         } catch (e) {
             console.log("e: ", e);
