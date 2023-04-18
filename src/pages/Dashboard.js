@@ -283,7 +283,7 @@ const Dashboard = (props) => {
                 const tokenBalanceFormatted = await ethers.utils.formatUnits(tokenBalance.toString(), tokenDecimals);
                 console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted);
                 // eslint-disable-next-line
-                window.alert("Token Found! Balance: " + tokenBalance);
+                window.alert("Token Found! Balance: " + tokenBalanceFormatted);
                 dispatch({ type: USERBALANCE, payload: tokenBalance });
             } catch (e) {
                 console.log(e);
