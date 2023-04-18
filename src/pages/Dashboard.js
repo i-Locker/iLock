@@ -239,32 +239,52 @@ const Dashboard = (props) => {
     useEffect(async () => {
         setLoaderText(" ... ");
         alterLoaderText(loaderText);
-        if (!network) return;
-        if (!account) {
-            toggleDrawer();
-            return;
+        let able = false;
+        if (!network) {
+            return () => {
+                able = false;
+            };
+        } else {
+            if (!account) {
+                return () => {
+                    toggleDrawer();
+                    able = true;
+                };
+            } else {
+                return () => {
+                    able = false;
+                };
+            }
         };
     }, [account, network]);
 
     useEffect(async () => {
+        let able = false;
         if (!account) {
-            setIsAllowed(0);
-            alterLoaderText("Connect Wallet");
-            return true;
+            return () => {
+                setIsAllowed(0);
+                alterLoaderText("Connect Wallet");
+                able = false;
+            };
         } else if (account && !network && !tokenContract) {
-            setIsAllowed(0);
-            alterLoaderText("Select Network");
-            return true;
+            return () => {
+                able = false;
+                setIsAllowed(0);
+                alterLoaderText("Select Network");
+            };
         } else if (account && network && !tokenContract) {
-            setIsAllowed(0);
-            alterLoaderText("Make a selection");
-            return true;
+            return () => {
+                able = false;
+                setIsAllowed(0);
+                alterLoaderText("Make a selection");
+            };
         } else {
             try {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
                 const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
                 console.log("tokenBalance: ", tokenBalance);
+                window.alert("Token Found! Balance: ", tokenBalance);
                 dispatch({ type: USERBALANCE, payload: tokenBalance });
             } catch (e) {
                 console.log(e);
@@ -274,6 +294,7 @@ const Dashboard = (props) => {
                     window.alert("Awesome! Let's continue to create your iLocker smart contract...");
                     //
                 } else {
+                    let able_b = false;
                     try {
                         let provider = await connector.getProvider();
                         console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
@@ -292,6 +313,13 @@ const Dashboard = (props) => {
                         };
                     } catch (e) {
                         console.log(e);
+                    } finally { 
+                        { `
+                            // eslint-disable-next-line
+                            return () => {
+                                able_b = true;
+                            }
+                        ` }
                     };
                 };
             };
@@ -403,11 +431,11 @@ const Dashboard = (props) => {
     };
     const handleLockToken = async (e) => {
         try {
-            if(!network) {
+            if (!network) {
                 window.alert("Hey there friends, Network was not detected... Are your connected to a Blockchain via Web3?");
                 return false;
             };
-            if(!account) {
+            if (!account) {
                 window.alert("Hi friends, Web3 was not detected... Are you connected to a network?");
                 return false;
             };
@@ -418,9 +446,15 @@ const Dashboard = (props) => {
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
             window.alert("Savings Token Selected");
             console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
-            setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+            if(parseFloat(allowanceAmount) > 0) {
+                setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+            } else {
+                window.alert("Good new, bad news friends...");
+                window.alert("Token Found! Also boss, there is no balance on this wallet... ")
+                window.alert("Transfer that Token to this wallet to continue...");
+            };
         } catch (e) {
-                window.alert("Valued member, Web3 could not detect this token... Please try another token.");
+            window.alert("Valued member, Web3 could not detect this token... Please try another token.");
             //
         };
     };
@@ -469,7 +503,7 @@ const Dashboard = (props) => {
             let amountFormatted_UI = await _getUIfmt(amountFormatted, tokenDecimals);
             console.log("amountFormatted_UI: ", parseFloat(amountFormatted_UI).toFixed(0));
             console.log("tokenBalance_UI: ", tokenBalance / 10 ** tokenDecimals);
-            console.log("etherBalance_UI: ", etherBalance , etherBalance / 10 ** tokenDecimals);
+            console.log("etherBalance_UI: ", etherBalance, etherBalance / 10 ** tokenDecimals);
             console.log("amountFormatted: ", amountFormatted);
             const balanceChecker = isEth && etherBalance >= parseFloat(amountFormatted_UI).toFixed(0) ? true : tokenBalance / 10 ** tokenDecimals >= parseFloat(amountFormatted_UI).toFixed(0) ? true : false;
             console.log("balance:", balanceChecker);
@@ -515,7 +549,7 @@ const Dashboard = (props) => {
                                 console.log("err: ", e);
                             } finally {
                                 const newData = await getData(provider, account, network);
-                                dispatch({ type: TOKENLISTS, payload: newData });  
+                                dispatch({ type: TOKENLISTS, payload: newData });
                             };
                         });
                     });
