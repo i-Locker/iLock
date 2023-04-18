@@ -1,6 +1,16 @@
 # iLockers protocol
 ## FrenChain Open Source Software 
-## Alt-chains support R&D community working together to make a new, don't miss out!!! if you shoot the fade on this you going to end up in the shady shade 
+## Alt-chains support R&D community working together to make a new, don't miss out!!! If you shoot the fade on this you going to end up in the shady shade, naw uh... We told you so.
+
+# Live Demo
+[iLocker Protcol](https://ilock.interchained.org) 
+
+## Special Thanks
+[FrenChain](https://frenchain.app) 
+[KekChain](https://kekchain.com) 
+[Electronero Network](https://electronero.org) 
+[Crystaleum](https://crystaleum.org) 
+[Interchained Labs](https://interchained.org) 
 
 Introducing the decentralized, autonomous savings plan that the big banks don't want you to learn about.
 No-interest, no puzzles, no games.
@@ -89,26 +99,23 @@ Traditional banking is based on a system that's called "Fractional Reserve Banki
 
 iLockers put the user in control of their savings! Functional use cases for individuals and enterprise, anyone could lock up LP, ERC20, fungible coins to display sovereignty and sustainability, or as part of a savings plan. Use iLockers to lock up tokens or fungible coins in what is basically a "deep freezer", compared to cold storage, where as no one could unlock stored digital assets unless and until the block timestamp passes the expiration timestamp which is preset by the creator of the iLock upon deployment... Beat that paper wallet....
 
-OG publication: [Interchained](https://github.com/i-Locker/iLock)
-
-More to come! Stay tuned. 
-Thanks, [M](https://t.me/interchained)
-
-
 ## Implementations
-[PHASE] ---- TESTNET RELEASE V1
-
-Binance Smart Chain [testnet] (97): 0xd5f128FF1D1665d46c1F5668AecFed7C57FBeEBc
-
-Polygon [Mumbai] (80001) : 0x6752dEEE9231FA044Dc21aBA94295C1F94D4E8Bb
+[PHASE 1] ---- TESTNET RELEASES (in order of chainId)
 
 Ethereum [Goerli] (5) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
 
+Binance Smart Chain [testnet] (97): 0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c
+
+Cronos Smart Chain [testnet] (338): 0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c
+
 FrenChain [testnet] (444) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+
+Avalanche [Fuji] (43113) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+
+Polygon [Mumbai] (80001) : 0x7d2A16Eb08361cDA68C183a6e92f08e618B73c7F
 
 KekChain [testnet] (420666) : 0xCC8748Cb40575e42649d9652573eb8233CC30dEC
 
-Avalanche [Fuji] (43113) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
 
 ## Some Proposed Use Cases
 
@@ -153,3 +160,15 @@ Send BTC to: ```38jiBKevQHp8zhQpZ42bTvK4QpzzqWkA3K```
 Send XMR to: ```85PTaJNpkEEeJao2MNk1sRWTQXLUf1FGjZew8oR8R4cRUrXxFrTexa9GwrjmJD4Pyx6UrjgMQnuMoFNmaBKqxs7PPXVe9oX```
 
 Send DogeCoin to: ```DTTez7ggKPzDcKuUUTns8VzMrKesZUKMCk```
+
+# SOURCES
+
+OG publication: [Interchained](https://github.com/i-Locker/iLock)
+...
+
+## IN CONCLUSION
+
+Spirit and support from Snowburn UI. Thanks for all who inspire, let's collaborate!
+More to come! Stay tuned. Contact on TG for quick response!
+Thanks, [M](https://t.me/interchained)
+
