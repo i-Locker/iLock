@@ -89,11 +89,8 @@ So, iHold total supply will be identical to the total sum of the deposited token
 
 In any event, if a holder transfers greater that 51% of the iHold ERC20 tokens, the ability to claim digital assets locked in the matching iLock Vault would be transferred to the holder of the greater share of iHold supply. 100% of the locked digital assets could be unlocked and claimed at any time beyond the locker's expiration timestamp as long as the holder controls >= 51% of the corresponding iHold ERC20 tokens and holds the matching iLock NFT. Assuming the locked assets hold any marketable value, if the holder decides to sell or trade their iHold ERC20 or iLock NFT, the new holder could control the iLocker and withdraw the underlying locked digital assets. 
 
-Thank you to our supporters, and a big thanks to you community!!!
 
-This research has been funded in part by: @KekChain @Fren_Chain @Electronero_Network @Crystaleum
-Send donations on Ethereum Virtual Machine compatible chain: 
-0x4362eeD9fd20fA25251d040B0489a784d91Ec8B5
+This research has been funded in part by: [@Fren_Chain]](https://t.me/fren_chain) [@KekChain](https://t.me/kekchain) [@Interchained](https://t.me/Interchained) [@Electronero_Network](https://t.me/Electronero_Network) [@Crystaleum](https://t.me/Crystaleum)
 
 Traditional banking is based on a system that's called "Fractional Reserve Banking". Where as when you and I deposit funds into our bank account at the local branch, 90% could be used by our bank of choice funds earmarked immediately upon deposit tagged for loans, insurance, and other purposes. 
 
@@ -170,5 +167,9 @@ OG publication: [Interchained](https://github.com/i-Locker/iLock)
 
 Spirit and support from Snowburn UI. Thanks for all who inspire, let's collaborate!
 More to come! Stay tuned. Contact on TG for quick response!
-Thanks, [M](https://t.me/interchained)
 
+Thank you to our supporters, and a big thanks to you community!!!
+Send donations on Ethereum Virtual Machine compatible chain: 
+0x4362eeD9fd20fA25251d040B0489a784d91Ec8B5
+
+Thanks, [M](https://t.me/interchained)
