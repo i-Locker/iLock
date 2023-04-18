@@ -1,7 +1,7 @@
 {
-    "name": "FrenChain-DApp",
-    "version": "1.0.0",
-    "description": "FrenChain Dapp",
+    "name": "iLockers-DApp-FOSS-Interchained",
+    "version": "1.9.0",
+    "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
     "main": "index.js",
     "scripts": {
         "start": "react-scripts start",
@@ -9,14 +9,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/interchained/iLock.git"
+        "url": "git+https://github.com/i-Locker/iLock.git"
     },
     "author": "",
-    "license": "MIT",
+    "license": "BSL",
     "bugs": {
-        "url": "https://github.com/interchained/iLock/issues"
+        "url": "https://github.com/i-Locker/iLock/issues"
     },
-    "homepage": "https://interchained.org",
+    "homepage": "https://ilock.interchained.org",
     "dependencies": {
         "@emotion/react": "^11.5.0",
         "@emotion/styled": "^11.3.0",
