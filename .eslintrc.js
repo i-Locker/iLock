@@ -13,6 +13,7 @@ module.exports = {
     },
     plugins: ["react", "jsx-a11y", "json", "prettier", "react-hooks"],
     rules: {
+        "react/no-unknown-property": ['error', { ignore: ['sx','component','variant'] }],
         "react/prop-types": "off",
         "react-hooks/exhaustive-deps": "off",
         "no-var": "error",

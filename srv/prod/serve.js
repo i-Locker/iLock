@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 app.use(morgan('common'));
-app.use(morgan(':method :url :status :http-version :response-time '));
+app.use(morgan(':referrer :remote-addr :method :url :status :http-version :response-time '));
 app.use(logger('common', {
     stream: fs.createWriteStream('../access.log', {flags: 'a'})
 }));
@@ -15,5 +15,5 @@ app.use("/", serveStatic ( path.join (__dirname, '/build') ) );
 app.get('*', function (req, res) {
 res.sendFile(__dirname + '/build/index.html')
 });
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 420
 app.listen(port);
