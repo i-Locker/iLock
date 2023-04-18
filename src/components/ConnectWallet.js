@@ -135,7 +135,7 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
             </DialogTitle>
             {active && (
                 <Box className={classes.connectWalletButton}>
-                    <Button endIcon={<img src={cWallet.logo} alt={cWallet.name} />}>
+                    <Button endIcon={<img src={cWallet && cWallet.logo} alt={cWallet && cWallet.name} />}>
                         <Typography variant="caption">
                             {`${cWallet.name} Connected`}
                         </Typography>

@@ -41,7 +41,14 @@ import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
 import { alterLoaderText } from '../components/Loader';
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN } from "../web3"
-
+export const _getBN = async (lockAmount, tokenDecimals) => {
+    // returns a BigNumber
+    return await ethers.utils.parseUnits(lockAmount.toString(), tokenDecimals);
+};
+export const _getUIfmt = async (lockAmount, tokenDecimals) => {
+    // returns a BigNumber
+    return await ethers.utils.formatUnits(lockAmount.toString(), tokenDecimals);
+};
 const Dashboard = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
@@ -128,14 +135,14 @@ const Dashboard = (props) => {
             try {
                 let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
                 console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
-                if(NETWORK) {
+                if (NETWORK) {
                     //
                     console.log("You are already on the proper network:  ", network);
                 } else {
                     await provider.request({
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: currentNetworkData[0].chainData.chainId }],
-                    });   
+                    });
                     console.log("You have successfully switched to ", network);
                 }
                 if (activeStep == 0) {
@@ -183,8 +190,8 @@ const Dashboard = (props) => {
                     if (switchError.code === 4902) {
                         console.log("This network is not available in your metamask, please add it");
                         let provider = await connector.getProvider();
-                        console.log("Switch Request has rejected:","\n network: ",network, "\n chainId:", chainId);
-                        console.log("chainId: ",chainId);
+                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
+                        console.log("chainId: ", chainId);
                         provider.request({
                             method: 'wallet_addEthereumChain',
                             params: [{ ...params_network_add }]
@@ -192,7 +199,7 @@ const Dashboard = (props) => {
                             console.log("provider_err: ", error);
                         });
                     } else if (switchError.code === 4001) {
-                        console.log("Switch Request has rejected:","\n network: ",network, "\n chainId:", chainId);
+                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     } else if (switchError.code === 4200) {
                         console.log("You have succefully switched to ", network);
@@ -229,7 +236,7 @@ const Dashboard = (props) => {
         };
     };
 
-    useEffect(async() => {
+    useEffect(async () => {
         setLoaderText(" ... ");
         alterLoaderText(loaderText);
         if (!network) return;
@@ -237,35 +244,6 @@ const Dashboard = (props) => {
             toggleDrawer();
             return;
         };
-     {
-        /*
-        // try {
-        //     let provider = await connector.getProvider();
-        //     getData(provider, account, network).then(async(newData) => {
-        //         if (!newData) return;
-        //         try {
-        //             dispatch({ type: TOKENLISTS, payload: newData });
-        //         } catch (e) {
-        //             console.log(e);
-        //         };
-        //     });
-        //     const interval = setInterval(async(provider) => {
-        //         getData(provider, account, network).then(newData => {
-        //             try {
-        //                 if (!newData) return;
-        //                 dispatch({ type: TOKENLISTS, payload: newData });
-        //             } catch (e) {
-        //                 console.log(e);
-        //             };
-        //         });
-        //     }, 5000, provider);
-        //     return () => clearInterval(interval);
-        // }
-        //    } catch (e) {
-        //        console.log(e);
-        //    };
-        */
-     }
     }, [account, network]);
 
     useEffect(async () => {
@@ -284,25 +262,33 @@ const Dashboard = (props) => {
         } else {
             try {
                 let provider = await connector.getProvider();
-                const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
+                console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
+                const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
                 console.log("tokenBalance: ", tokenBalance);
                 dispatch({ type: USERBALANCE, payload: tokenBalance });
             } catch (e) {
                 console.log(e);
+                window.alert("Token not found, please try again...");
             } finally {
                 if (!lockAmount) {
+                    window.alert("Awesome! Let's continue to create your iLocker smart contract...");
                     //
                 } else {
                     try {
                         let provider = await connector.getProvider();
-                        const allowanceAmount = await getERC20allowance(provider, tokenContract, account, lockerAddress[network], network);
-                        console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
+                        console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
+                        const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, tokenContract), account, lockerAddress[network], network);
+                        const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
+                        const lockAmountFormatted = (lockAmount).toFixed(2).toString();
+                        console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
+                        console.log(parseFloat(allowanceAmountFormatted) >= parseFloat(lockAmountFormatted), parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                         setTokenAllowance(allowanceAmount);
-                        if (parseFloat(allowanceAmount) < parseFloat(lockAmount * 10 ** tokenDecimals)) {
-                            setIsAllowed(1);
-                        } else {
-                            console.log("allowed: ", allowanceAmount);
+                        if (parseFloat(allowanceAmountFormatted) >= parseFloat(lockAmountFormatted)) {
                             setIsAllowed(2);
+                            console.log("approved: ", allowanceAmount);
+                        } else {
+                            setIsAllowed(1);
+                            console.log("!approved: ", allowanceAmount);
                         };
                     } catch (e) {
                         console.log(e);
@@ -331,6 +317,9 @@ const Dashboard = (props) => {
                     const allowanceAmount = await getERC20allowance(provider, tokenContract, account, lockerAddress[network], network);
                     console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                     setTokenAllowance(allowanceAmount);
+                    let allowanceAmountFormatted = await _getBN(allowanceAmount, tokenDecimals);
+                    let allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount, tokenDecimals);
+                    console.log("allowanceAmountFormatted: ", allowanceAmount, parseFloat(allowanceAmountFormatted).toFixed(0), parseFloat(allowanceAmountFormatted_UI).toFixed(0));
                     if (parseFloat(allowanceAmount) < parseFloat(lockAmount * 10 ** tokenDecimals)) {
                         setIsAllowed(1);
                     } else {
@@ -348,8 +337,8 @@ const Dashboard = (props) => {
             const contract_address = event.target.value;
             try {
                 let provider = await connector.getProvider();
-                console.log("ETHtoChecksum: ",await getETHtoChecksum(provider,contract_address));
-                const contractData = await getERC20Metadata(provider, CHAINDATA.find((item) => item.name == network).chain, await getETHtoChecksum(provider,contract_address), await getETHtoChecksum(provider,account));
+                console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, contract_address));
+                const contractData = await getERC20Metadata(provider, CHAINDATA.find((item) => item.name == network).chain, await getETHtoChecksum(provider, contract_address), await getETHtoChecksum(provider, account));
                 let tokenData = contractData;
                 dispatch({
                     type: TOKENDATA,
@@ -364,7 +353,7 @@ const Dashboard = (props) => {
                 console.log("e: ", e);
             };
         } else {
-            //
+            window.alert("Token not found, please try again...");
         };
     };
 
@@ -412,8 +401,28 @@ const Dashboard = (props) => {
         console.log("balance: ", test_data.userBalance / Math.pow(10, e.target.value));
         setTokenDecimals(parseFloat(e.target.value).toFixed(0));
     };
-    const handleLockToken = (e) => {
-        setTokenContract(document.getElementById("outlined-adornment-password").value);
+    const handleLockToken = async (e) => {
+        try {
+            if(!network) {
+                window.alert("Hey there friends, Network was not detected... Are your connected to a Blockchain via Web3?");
+                return false;
+            };
+            if(!account) {
+                window.alert("Hi friends, Web3 was not detected... Are you connected to a network?");
+                return false;
+            };
+            let provider = await connector.getProvider();
+            console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+            const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
+            const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
+            const lockAmountFormatted = (lockAmount).toFixed(2).toString();
+            window.alert("Savings Token Selected");
+            console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
+            setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+        } catch (e) {
+                window.alert("Valued member, Web3 could not detect this token... Please try another token.");
+            //
+        };
     };
 
     const handleOpen = () => setOpen(true);
@@ -437,6 +446,10 @@ const Dashboard = (props) => {
         };
     };
 
+    const showLockup = async (network, lockId) => {
+        props.history.push(`/lockers/${network.toLowerCase()}/${lockId}`);
+    };
+
     const depositToken = async (e) => {
         try {
             let tokenAmount;
@@ -452,48 +465,73 @@ const Dashboard = (props) => {
                 console.log("holder unset! Defaulting ", holder);
                 setHolder(account);
             };
-            console.log("depositToken: ", e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, network);
-            let unset = true;
-            let allSet = false;
-            let gasLimit;
-            let depositAmount;
-            let depositNetwork;
-            let depositHolder;
-            let depositCreator;
-            if (unset) {
-                depositAmount = tokenAmount;
-                depositNetwork = network;
-                depositHolder = holder;
-                depositCreator = account;
-                unset = false;
-                allSet = true;
-            };
-            if (allSet) {
-                let provider = await connector.getProvider();
-                w3(provider, network).then(async (W3) => {
-                    let block = await W3.eth.getBlock("latest");
-                    console.log("(w3) block: ", block);
-                    console.log("(w3) gasLimit: ", block.gasLimit);
-                    gasLimit = block.gasLimit;
-                    deposit(provider, isEth, tokenContract, (depositAmount * 10 ** tokenDecimals).toString(), unlockDate, depositCreator, depositHolder, depositNetwork, gasLimit).then(async (results) => {
-                        const newData = await getData(provider, account, network);
-                        dispatch({ type: TOKENLISTS, payload: newData });
-                        setWithdrawDate(undefined);
-                        setDateUseful(false);
-                        try {
-                            console.log("events: ", parseFloat(results["events"]["Transfer"]["returnValues"].tokenId));
-                            showLockup(network, parseFloat(results["events"]["Transfer"]["returnValues"].tokenId));
-                        } catch (e) {
-                            dispatch({
-                                type: TOKENDATA,
-                                payload: {}
-                            })
-                            setActiveStep(0);
-                            console.log("err: ", e);
-                        };
+            let amountFormatted = await _getBN(tokenAmount, tokenDecimals);
+            let amountFormatted_UI = await _getUIfmt(amountFormatted, tokenDecimals);
+            console.log("amountFormatted_UI: ", parseFloat(amountFormatted_UI).toFixed(0));
+            console.log("tokenBalance_UI: ", tokenBalance / 10 ** tokenDecimals);
+            console.log("etherBalance_UI: ", etherBalance , etherBalance / 10 ** tokenDecimals);
+            console.log("amountFormatted: ", amountFormatted);
+            const balanceChecker = isEth && etherBalance >= parseFloat(amountFormatted_UI).toFixed(0) ? true : tokenBalance / 10 ** tokenDecimals >= parseFloat(amountFormatted_UI).toFixed(0) ? true : false;
+            console.log("balance:", balanceChecker);
+            if (balanceChecker == true) {
+                console.log("depositToken: ", amountFormatted, e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, network);
+                let unset = true;
+                let allSet = false;
+                let gasLimit;
+                let depositAmount;
+                let depositNetwork;
+                let depositHolder;
+                let depositCreator;
+                if (unset) {
+                    depositAmount = tokenAmount;
+                    depositNetwork = network;
+                    depositHolder = holder;
+                    depositCreator = account;
+                    unset = false;
+                    allSet = true;
+                };
+                if (allSet) {
+                    let provider = await connector.getProvider();
+                    w3(provider, network).then(async (W3) => {
+                        let block = await W3.eth.getBlock("latest");
+                        console.log("(w3) block: ", block);
+                        console.log("(w3) gasLimit: ", block.gasLimit);
+                        console.log("(ERC-20) tokenSymbol: ", tokenSymbol);
+                        gasLimit = block.gasLimit;
+                        deposit(provider, tokenSymbol, isEth, tokenContract, amountFormatted.toString(), unlockDate, depositCreator, depositHolder, depositNetwork, gasLimit).then(async (results) => {
+                            setWithdrawDate(undefined);
+                            setDateUseful(false);
+                            try {
+                                console.log("events: (Transfer)", parseFloat(results["events"]["Transfer"]["returnValues"].tokenId));
+                                console.log("events (LockCreated): ", parseFloat(results["events"]["LockCreated"]["returnValues"].lockId));
+                                showLockup(network, parseFloat(results["events"]["Transfer"]["returnValues"].tokenId));
+                            } catch (e) {
+                                dispatch({
+                                    type: TOKENDATA,
+                                    payload: {}
+                                })
+                                setActiveStep(0);
+                                window.alert("Transaction error, check block explorer for more intel.");
+                                console.log("err: ", e);
+                            } finally {
+                                const newData = await getData(provider, account, network);
+                                dispatch({ type: TOKENLISTS, payload: newData });  
+                            };
+                        });
                     });
-                });
-
+                };
+            } else {
+                try {
+                    window.alert("ERC20 insufficient balance. Reduce amount or fund balance to process specified token amount.");
+                    document.getElementById("iLockerDeploy").blur();
+                    document.getElementById("standard-number-amount").focus({ focusVisible: true });
+                    const restore = async () => {
+                        document.getElementById("iLockerDeploy").focus();
+                    };
+                    setTimeout(restore, 7777);
+                } catch (e) {
+                    console.log("err: ", e);
+                };
             };
         } catch (e) {
             console.log(e);
@@ -512,17 +550,12 @@ const Dashboard = (props) => {
 
     const approveToken = async () => {
         let ap = lockAmount * 10 ** tokenDecimals;
-        // returns a BigNumber
-        const amountFormatted = await ethers.utils.parseUnits(lockAmount.toString(), tokenDecimals);
-        console.log("approving: ", lockAmount, tokenDecimals, ap,"\n ",amountFormatted,amountFormatted.toString());
+        let amountFormatted = await _getBN(lockAmount, tokenDecimals);
+        console.log("approving: ", lockAmount, tokenDecimals, ap, "\n ", amountFormatted, amountFormatted.toString());
         let provider = await connector.getProvider();
         approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
             if (status) setIsAllowed(2);
         });
-    };
-
-    const showLockup = async (network, lockId) => {
-        props.history.push(`/lockers/${network.toLowerCase()}/${lockId}`);
     };
 
     const networkData = networks_data;
@@ -735,9 +768,9 @@ const Dashboard = (props) => {
                                                 Enter the token address you would like to lock for
                                             </p>
                                             <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" style={{width:'-webkit-fill-available'}}>
-                                                <InputLabel htmlFor="outlined-adornment-password">Address</InputLabel>
+                                                <InputLabel htmlFor="digital-asset-erc20-compatible-interchained-ilock">Address</InputLabel>
                                                 <OutlinedInput
-                                                    id="outlined-adornment-password"
+                                                    id="digital-asset-erc20-compatible-interchained-ilock"
                                                     type="text"
                                                     value={values.tokenAddress}
                                                     onChange={handleChange}
@@ -746,6 +779,7 @@ const Dashboard = (props) => {
                                                         <IconButton
                                                         aria-label="toggle search"
                                                         onClick={handleLockToken}
+                                                        onKeyDown={handleMouseDownPassword}
                                                         onMouseDown={handleMouseDownPassword}
                                                         edge="end"
                                                         >
@@ -781,7 +815,7 @@ const Dashboard = (props) => {
                                             }
                                             
                                         </div> : handleNext && <></> }
-                                        <div key={4} style={{paddingLeft:1, paddingRight:1}}>
+                                        <div id="iLockerDeploy" key={4} style={{paddingLeft:1, paddingRight:1}}>
                                             <br />
                                             { addressDemand ? <Grid 
                                                 container
@@ -816,7 +850,7 @@ const Dashboard = (props) => {
                                             >
                                                 <Grid item className={dashboardClasses.textLeft} xs={6} sm={6} md={6}>
                                                     <TextField
-                                                        id="standard-number"
+                                                        id="standard-number-amount"
                                                         label="Lock Amount"
                                                         type="number"
                                                         InputLabelProps={{
@@ -883,7 +917,7 @@ const Dashboard = (props) => {
                                             >
                                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                         <DateTimePicker
-                                                            id="standard-number"
+                                                            id="standard-number-date"
                                                             label="Unlock Date"
                                                             renderInput={(props) => <TextField {...props} className={isMobile ? `${mobileClasses.datetimepicker}` : ``} />}
                                                             value={withdrawDate}

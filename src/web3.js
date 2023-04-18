@@ -53,7 +53,7 @@ export const getETHtoChecksum = async (provider, account) => {
         console.log(e);
     };
 }
-export const deposit = async (provider, isEth, token, amount, date, account, holder, network, gasLimit) => {
+export const deposit = async (provider, tokenSymbol, isEth, token, amount, date, account, holder, network, gasLimit) => {
     let result;
     try {
         let unlockDate = new Date(date);
@@ -61,14 +61,15 @@ export const deposit = async (provider, isEth, token, amount, date, account, hol
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
         let feeInETH = await contract.methods.feesInETH().call();
+        gasLimit = parseFloat(gasLimit) > 30000000 ? parseFloat(gasLimit) * parseFloat(0.888) : gasLimit;
         feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.5);
         feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
         console.log("depositing: ", isEth, lockerAddress[network], feeInETH, token, web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp, await getETHtoChecksum(provider,account), await getETHtoChecksum(provider,holder), network)
         if (isEth == false) {
-            feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.15);
+            feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.05);
             feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
             if (feeInETH) {
-                result = await contract.methods["createLock"](token, isEth, holder, amount, UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: feeInETH, gasLimit: gasLimit });
+                result = await contract.methods["createLock"](token, tokenSymbol, isEth, holder, amount, UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: feeInETH, gasLimit: gasLimit });
                 console.log("deposited: ", result);
                 return result;
             } else {
@@ -81,7 +82,7 @@ export const deposit = async (provider, isEth, token, amount, date, account, hol
             sendingEther = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) + parseFloat(amount);
             sendingEther = await web3.utils.toWei(sendingEther.toString(), "ether");
             if (feeInETH) {
-                result = await contract.methods["createLock"](await getETHtoChecksum(provider,account), isEth, await getETHtoChecksum(provider,holder), web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: sendingEther, gasLimit: gasLimit });
+                result = await contract.methods["createLock"](await getETHtoChecksum(provider,account), tokenSymbol, isEth, await getETHtoChecksum(provider,holder), web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: sendingEther, gasLimit: gasLimit });
                 console.log("deposited: ", result);
                 return result;
             } else {
