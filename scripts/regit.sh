@@ -1,0 +1,1 @@
+git add . && git commit -am "genesis" && git push base main && git push fork main && git branch -D interchained && git checkout -b interchained && git push base interchained && git push fork interchained

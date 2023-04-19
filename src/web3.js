@@ -60,7 +60,7 @@ export const deposit = async (provider, tokenSymbol, isEth, token, amount, date,
         let UTCTimestamp = Math.round(unlockDate.getTime() / 1000)
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let feeInETH = await contract.methods.ILOCKER_CORE(0).call();
+        let feeInETH = await contract.methods.ILOCKER_CORE("0").call();
         feeInETH = feeInETH["feeInETH"];
             console.log("feeInETH: ",feeInETH);
         gasLimit = parseFloat(gasLimit) > 30000000 ? parseFloat(gasLimit) * parseFloat(0.888) : gasLimit;
@@ -435,23 +435,13 @@ export const getData = async (provider, account, network) => {
     try {
         let web3 = new Web3(provider);
         const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
-        let latest_lockId = await tokenContract.methods.lastLockId().call({ from: account });
+        let myLocks = await tokenContract.methods.myLocks_().call({ from: account });
         let x = 0;
         let l_arr = [];
-        let iLock = {
-            "lockId": "",
-            "holdingContract": "",
-            "token": "",
-            "amount": "",
-            "getLock": "",
-            "holder": "",
-            "lockerAddress": "",
-            "locker": ""
-        };
-        while (x < latest_lockId) {
-            let getLock = await tokenContract.methods.getLock(x).call({ from: account });
+        while (x < myLocks.length) {
+            let getLock = await tokenContract.methods.getLock(myLocks[x]).call({ from: account });
             console.log("getLock: ", getLock);
-            iLock = {
+            let iLock = {
                 "lockId": getLock["lockId"],
                 "holdingContract": getLock["holdingContract"],
                 "token": getLock["token"],
@@ -460,15 +450,15 @@ export const getData = async (provider, account, network) => {
                 "getLock": [getLock],
                 "lockerAddress": lockerAddress[network],
                 "locker": lockerAddress[network]
-            }
+            };
             l_arr.push(iLock);
-            if (x == latest_lockId - 1) {
+            if (x == myLocks.length - 1) {
+                lockerDataByWallet = [{ "data": l_arr, "token": ["token"], "getLock": [l_arr] }];
                 break;
             } else {
                 x++;
             };
         };
-        lockerDataByWallet = [{ "data": l_arr, "token": ["token"], "getLock": [l_arr] }];
         return lockerDataByWallet;
     } catch (e) {
         console.log(e);
