@@ -92,7 +92,6 @@ contract iHold is ERC20, Ownable {
     }
 
     receive() external payable virtual override {}
-
     fallback() external payable virtual override {}
 
 }

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.5;
-import "./ILOCKER.sol";
+import "../interfaces/iLOCKER.sol";
 import "./iHold.sol";
-
 
 /**
  *                                         ...........
@@ -67,12 +66,12 @@ contract HoldingContract is Context, IHOLD, iHold {
     IERC20 private iSHARD = IERC20(address(this));
 
     /// @notice The locker contract contains the actual information of the iLock and is the only address that can unlock funds.
-    address payable public immutable locker;
+    address payable public locker;
     address payable public holder;
     address payable[] public holders;
 
     uint256 public unlock_time;
-    uint256 internal grace;
+    uint256 private grace;
 
     event HolderTransferred(
         address indexed prev_holder,
@@ -98,7 +97,7 @@ contract HoldingContract is Context, IHOLD, iHold {
         locker = _deployer;
         holders.push(_holder);
         unlock_time = lock_time;
-        grace = unlock_time + 72 hours;
+        grace = block.timestamp + 72 hours;
     }
 
     receive() external payable override {}
@@ -156,7 +155,7 @@ contract HoldingContract is Context, IHOLD, iHold {
             _symbol = symbol;
         }
     }
-    
+
     /**
      *  @notice Transfer overrides
      */
@@ -192,7 +191,6 @@ contract HoldingContract is Context, IHOLD, iHold {
         override
         returns (bool)
     {
-        // require(address(_msgSender()) == address(locker), "!locker");
         if (address(holder) == address(new_holder)) {} else {
             address payable prev_holder = holder;
             if (address(_msgSender()) == address(holder)) {
