@@ -4,6 +4,7 @@ import Web3 from "web3";
 import {
     Multicall
 } from 'ethereum-multicall';
+import { ethers } from "ethers";
 import liquidityPoolAbi from "./liquidityPool_abi.json";
 import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain, network_lower_to_proper } from './constants';
 export const serverApi = 'http://localhost:5000/api';
@@ -41,7 +42,12 @@ export const explorer = {
     "Frenchain": "https://frenscan.io",
     "Frenchain_testnet": "https://testnet.frenscan.io"
 };
-
+export const _getBN = async (lockAmount, tokenDecimals) => {
+    return await ethers.utils.parseUnits(lockAmount.toString(), tokenDecimals);
+};
+export const _getUIfmt = async (lockAmount, tokenDecimals) => {
+    return await ethers.utils.formatUnits(lockAmount.toString(), tokenDecimals);
+};
 export const getETHtoChecksum = async (provider, account) => {
     let result;
     try {
@@ -246,11 +252,7 @@ export const approve = async (provider, token, account, lockAmount, network) => 
             console.log("approve: ", lockAmount);
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token); {
-            /*
-             * // web3.utils.toBN("115792089237316195423570985008687907853269984665640564039457584007913129639935")
-             */
-        }
+        let contract = new web3.eth.Contract(erc20Abi, token); 
         result = await contract.methods["approve"](lockerAddress[network], lockAmount).send({ from: account });
         if (result.status) {
             return result.status;

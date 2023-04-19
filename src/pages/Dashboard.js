@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from '@mui/material/styles';
 import { connect, useSelector, useDispatch } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import { useWeb3React } from "@web3-react/core";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { ethers } from "ethers";
 // ** Import Material UI Components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -40,15 +38,8 @@ import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
 import { alterLoaderText } from '../components/Loader';
-import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN } from "../web3"
-export const _getBN = async (lockAmount, tokenDecimals) => {
-    // returns a BigNumber
-    return await ethers.utils.parseUnits(lockAmount.toString(), tokenDecimals);
-};
-export const _getUIfmt = async (lockAmount, tokenDecimals) => {
-    // returns a BigNumber
-    return await ethers.utils.formatUnits(lockAmount.toString(), tokenDecimals);
-};
+import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
+
 const Dashboard = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
@@ -280,7 +271,7 @@ const Dashboard = (props) => {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
                 const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
-                const tokenBalanceFormatted = await ethers.utils.formatUnits(tokenBalance.toString(), tokenDecimals);
+                const tokenBalanceFormatted = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
                 console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted);
                 // eslint-disable-next-line
                 window.alert("Token Found! Balance: " + tokenBalanceFormatted);
@@ -296,7 +287,7 @@ const Dashboard = (props) => {
                         let provider = await connector.getProvider();
                         console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
                         const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, tokenContract), account, lockerAddress[network], network);
-                        const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
+                        const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
                         const lockAmountFormatted = (lockAmount).toFixed(2).toString();
                         console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
                         console.log(parseFloat(allowanceAmountFormatted) >= parseFloat(lockAmountFormatted), parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
@@ -478,8 +469,8 @@ const Dashboard = (props) => {
             console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
             let tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, network);
             const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
-            const allowanceAmountFormatted = await ethers.utils.formatUnits(allowanceAmount.toString(), tokenDecimals);
-            const tokenBalanceFormatted = await ethers.utils.formatUnits(tokenBalance.toString(), tokenDecimals);
+            const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
+            const tokenBalanceFormatted = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
             console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
@@ -622,7 +613,7 @@ const Dashboard = (props) => {
     const approveToken = async () => {
         let ap = lockAmount * 10 ** tokenDecimals;
         let amountFormatted = await _getBN(lockAmount, tokenDecimals);
-        console.log("approving: ", lockAmount, tokenDecimals, ap, "\n ", amountFormatted, amountFormatted.toString());
+        console.log("approving: ", lockAmount, tokenDecimals, ap, "\n ", amountFormatted);
         let provider = await connector.getProvider();
         approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
             if (status) setIsAllowed(2);

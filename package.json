@@ -2,7 +2,7 @@
     "name": "iLockers-DApp-FOSS-Interchained",
     "version": "1.9.3",
     "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
-    "main": "srv/prod/serve.js",
+    "main": "index.js",
     "scripts": {
         "test": "cd srv/test/ && node serve.js",
         "devel": "cd srv/devel/ && node serve.js",
@@ -10,6 +10,17 @@
         "prod": "cd srv/prod/ && node serve.js",
         "start": "react-scripts start",
         "build": "react-scripts build"
+    },
+    "babel": {
+        "presets": [
+            "@babel/env",
+            "@babel/preset-typescript"
+        ],
+        "plugins": [
+            "@babel/proposal-class-properties",
+            "@babel/proposal-object-rest-spread",
+            "@babel/plugin-proposal-class-properties"
+        ]
     },
     "repository": {
         "type": "git",
@@ -28,15 +39,14 @@
         "@web3-react/injected-connector": "^6.0.7",
         "@web3-react/walletconnect-connector": "^6.2.8",
         "axios": "^0.21.1",
-        "bignumber.js": "^9.1.1",
         "clsx": "^1.1.1",
         "date-fns": "^2.28.0",
         "dexscreener-api": "^0.0.7",
         "ethereum-multicall": "^2.9.0",
-        "ethers": "@<6.3.0",
+        "ethers": "^6.0.0",
         "notistack": "^2.0.2",
         "parent-module": "^2.0.0",
-        "react": "^17.0.2",
+        "react": "18.2.0",
         "react-copy-to-clipboard": "^5.0.4",
         "react-dom": "^17.0.2",
         "react-redux": "^7.2.4",
