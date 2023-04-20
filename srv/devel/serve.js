@@ -15,5 +15,6 @@ app.use("/", serveStatic ( path.join (__dirname, '/build') ) );
 app.get('*', function (req, res) {
 res.sendFile(__dirname + '/build/index.html')
 });
-const port = process.env.PORT || 3000
+const port = process.env.PORT>1337?process.env.PORT:1337;
 app.listen(port);
+console.log("DApp listening on port: ",port);
