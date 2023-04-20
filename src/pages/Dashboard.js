@@ -423,7 +423,7 @@ const Dashboard = (props) => {
                 case 0:
                     break;
                 case 1:
-                    window.alert("Good new, bad news friends...");
+                    window.alert("Good news friends...");
                     nextCount(ctr, lb, la);
                     break;
                 case 2:
