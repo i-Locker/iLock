@@ -11,6 +11,7 @@ import { createBrowserHistory } from "history";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Locker = lazy(() => import("./pages/Locker"));
+const iBridge = lazy(() => import("./pages/iBridge"));
 const Bridge = lazy(() => import("./pages/Bridge"));
 const LockUp = lazy(() => import("./pages/LockUp"));
 const iLocks = lazy(() => import("./pages/MyLockers"));
