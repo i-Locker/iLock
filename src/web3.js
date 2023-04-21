@@ -269,7 +269,7 @@ export const approveToken = async (provider, token, account, deployedContract) =
     let result;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token);
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
         result = await contract.methods["approve"](deployedContract, web3.utils.toBN("115792089237316195423570985008687907853269984665640564039457584007913129639935")).send({ from: account });
         return result.status;
     } catch (e) {
@@ -281,8 +281,8 @@ export const allowance = async (token, account, network) => {
     let result;
     try {
         let web3 = new Web3(provider[network]);
-        let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["allowance"](account, lockerAddress[network]).call();
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        result = await contract.methods["allowance"](account, lockerAddress[network]).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);
@@ -293,8 +293,8 @@ export const getTokenBalance = async (provider, token, account, network) => {
     let result;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call();
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);
@@ -305,8 +305,8 @@ export const getERC20balance = async (provider, token, account, network) => {
     let result;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call();
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);
@@ -317,8 +317,8 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
     let result;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token);
-        result = await contract.methods["allowance"](await getETHtoChecksum(provider,account), spender).call();
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        result = await contract.methods["allowance"](await getETHtoChecksum(provider,account), spender).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);

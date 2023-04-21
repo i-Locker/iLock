@@ -58,6 +58,7 @@ const Dashboard = (props) => {
     const [tokenDecimals, setTokenDecimals] = useState(0);
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [tokenName, setTokenName] = useState("");
+    const [tokenBalanceString, setTokenBalanceString] = useState("");
     const [etherBalance, setEtherBalance] = useState(0);
     const [tokenBalance, setTokenBalance] = useState(0);
     const [tokenAllowance, setTokenAllowance] = useState(0);
@@ -225,6 +226,16 @@ const Dashboard = (props) => {
             };
         };
     };
+    async function start_(tokenDecimals) {
+        let provider = await connector.getProvider();
+        const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
+        let data_ = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
+        // eslint-disable-next-line
+        console.log("tokenBalance: ", tokenBalance, data_, (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2));
+        // eslint-disable-next-line
+        window.alert("Token Found! Balance: " + (test_data.userBalance ? test_data.userBalance : tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
+        dispatch({ type: USERBALANCE, payload: tokenBalance });
+    };
 
     useEffect(() => {
         if (!account) {
@@ -239,53 +250,34 @@ const Dashboard = (props) => {
         } else if (account && network && !tokenContract) {
             setIsAllowed(0);
             alterLoaderText("Make a selection");
-        } else {
             try {
-                async function start_() {
-                    let provider = await connector.getProvider();
-                    console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
-                    const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
-                    let data_ = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
-                    // eslint-disable-next-line
-                    console.log("tokenBalance: ", tokenBalance, data_, (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2));
-                    // eslint-disable-next-line
-                    window.alert("Token Found! Balance: " + (test_data.userBalance ? test_data.userBalance : tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
-                    dispatch({ type: USERBALANCE, payload: tokenBalance });
+                if(tokenBalance&&tokenDecimals) {
+                    start_(tokenBalance,tokenDecimals);
                 };
-                start_();
             } catch (e) {
                 console.log(e);
                 window.alert("Token not found, please try again...");
             } finally {
                 if (!lockAmount) {
                     window.alert("Awesome! Let's continue to create your iLocker smart contract...");
-                } else {
-                    try {
-                        async function start_b() {
-                            let provider = await connector.getProvider();
-                            console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
-                            const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, tokenContract), account, lockerAddress[network], network);
-                            const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
-                            const lockAmountFormatted = (lockAmount).toFixed(2).toString();
-                            console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
-                            console.log(parseFloat(allowanceAmountFormatted) >= parseFloat(lockAmountFormatted), parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
-                            setTokenAllowance(allowanceAmount);
-                            if (parseFloat(allowanceAmountFormatted) >= parseFloat(lockAmountFormatted)) {
-                                setIsAllowed(2);
-                                console.log("approved: ", allowanceAmount);
-                            } else {
-                                setIsAllowed(1);
-                                console.log("!approved: ", allowanceAmount);
-                            };
-                        };
-                        start_b();
-                    } catch (e) {
-                        console.log(e);
-                    };
+                };
+            };
+        } else {
+            try {
+                if(tokenBalance&&tokenDecimals) {
+                    start_(tokenBalance,tokenDecimals);
+                };
+            } catch (e) {
+                console.log(e);
+                window.alert("Token not found, please try again...");
+            } finally {
+                alterLoaderText("Deploy iLocker");
+                if (!lockAmount) {
+                    window.alert("Awesome! Let's continue to create your iLocker smart contract...");
                 };
             };
         };
-    }, [account, tokenContract, connector, network]);
+    }, [account, tokenContract, tokenDecimals, connector, network]);
 
     const handleAllowance = async (e) => {
         if (!account || !tokenContract) return;
@@ -453,6 +445,7 @@ const Dashboard = (props) => {
             const tokenBalanceFormatted = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
+            setTokenBalanceString(tokenBalanceFormatted);
             console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
             if (parseFloat(allowanceAmount) > 0) {
                 window.alert("Savings Token Selected");
@@ -461,8 +454,8 @@ const Dashboard = (props) => {
                 await nextCount(0, parseFloat(tokenBalanceFormatted), parseFloat(allowanceAmountFormatted));
             };
         } catch (e) {
-            console.log("e: ", e);
             window.alert("Valued member, Web3 could not detect this token... Please try another token.");
+            console.log("e: ", e);
             //
         };
     };
