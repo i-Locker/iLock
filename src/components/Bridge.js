@@ -107,12 +107,12 @@ export default function Bridge({ chainState, setChainState }) {
     useEffect(() => {
         setSwapSelectData(0);
         async function ____SWAP_ENGINE(chainState) {
-            let select_router = await Router_address.find(data => (data.chainId === chainState.chainId)).dexs;
-            let select_factory = await Factory_address.find(data => (data.chainId === chainState.chainId)).dexs;
-            console.log(select_router);
-            setRouterAddress(select_router);
-            setFactoryAddress(select_factory);
             try {
+                let select_router = await Router_address.find(data => (data.chainId === chainState.chainId)).dexs;
+                let select_factory = await Factory_address.find(data => (data.chainId === chainState.chainId)).dexs;
+                console.log(select_router);
+                setRouterAddress(select_router);
+                setFactoryAddress(select_factory);
                 if(chainState.tokens[0].length>0) {
                     axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[0].address}?network=${chainState.symbol}`).then(res => {
                         if (res.data.data.length) {
@@ -377,8 +377,8 @@ export default function Bridge({ chainState, setChainState }) {
     }
  
     return (
-        <Box sx={{ position: "sticky", top: 0, left: "50%", backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)" }}>
-            <ThemeProvider theme={theme}>
+        <>
+             <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }}>
                     <ActiveStack direction="column" alignItems="center" sx={{ p: "70px 0 0" }}>
                         <Typography variant='h5' align="center" sx={{ p: "16px 0" }}>THE MOST EFFICIENT DEFI AGGREGATOR</Typography>
@@ -469,7 +469,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
                                                                 <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
-                                                                <Typography gutterBottom>{dexsOrder ? dexsOrder[0].amountOut : maxAmount}</Typography>
+                                                                <Typography gutterBottom>{maxAmount}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
                                                                 <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}>Tx cost 41682.3131 FREN</Typography>
@@ -643,6 +643,6 @@ export default function Bridge({ chainState, setChainState }) {
                 </Stack>
             </ThemeProvider>
             <Cwallet isOpen={isOpenDialog} setIsOpen={setIsOpenDialog} tokenDialogState={tokenDialogState} setTokenDialogState={setTokenDialogState} chain={chainState} setChain={setChainState} selectToken={selectToken} swapSettingDialogState={swapSettingDialogState} setSwapSettingDialogState={setSwapSettingDialogState} setImportAlert={setImportAlert} />
-        </Box>
+            </>
     );
 }

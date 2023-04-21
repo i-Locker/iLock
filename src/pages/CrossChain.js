@@ -676,7 +676,7 @@ const CrossChain = (props) => {
         )
     }
     return (
-        <Container className={classes.root} maxWidth="fluid" style={{margin:'auto'}}>
+        <Container className={classes.root} maxWidth="fluid" style={{margin:'auto', backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)"}}>
             <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
             <Snackbar
                 open={snackbar}
