@@ -56,7 +56,6 @@ import { TokenABI } from "../../config/abi/TokenABI";
 import { Router_address } from "../../config/abi/router/dexRouter";
 import { Factory_address } from "../../config/abi/router/dexFactory";
 import { getBalance } from "../../config/app";
-// Import Icons
 import CloseIcon from "@mui/icons-material/Close";
 import ReplayIcon from '@mui/icons-material/Replay';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
@@ -68,16 +67,14 @@ import DoneIcon from '@mui/icons-material/Done';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
-
 import { styled } from '@mui/material/styles';
 import { walletconnect } from "./connectors";
 import { useEagerConnect, useInactiveListener } from "../../config";
 import { IOSSwitch, CAccordion, CAccordionDetails, CAccordionSummary, BootstrapDialog, BootstrapDialogTitle } from "../../config/style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-
 import { create_pool, get_pools } from "../../services/pool/liquidity.service";
 import { token_import, token_filter } from "../../services/tokens/tokens.service";
-
+import { explorer_,network_dec_to_hex,__TOKENLIST } from "../../web3.js";
 import Inch from '../img/common/1inch_color 1.png';
 
 const ConnectButton = styled(Button)(() => ({
@@ -101,6 +98,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     const {
         activate,
         active,
+        chainId,
         account,
         deactivate,
         connector,
@@ -534,15 +532,11 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             token2_address = token2.address;
         }
 
-        // create_pool(chain.test_chainId, pair, token1_address, token2_address, token_amounts1[0], token_amounts1[1]).then((data) => {
-        //     get_pools(chain.test_chainId)
         create_pool(chain.chainId, pair, token1_address, token2_address, token_amounts1[0], token_amounts1[1]).then((data) => {
             get_pools(chain.chainId)
                 .then((data) => {
                     if (data !== "NoResult") {
                         data.map((pool, index) => {
-                            // let token_1 = chain.test_tokens.find(token => (token.address === pool.token1_address));
-                            // let token_2 = chain.test_tokens.find(token => (token.address === pool.token2_address));
                             let token_1 = chain.tokens.find(token => (token.address === pool.token1_address));
                             let token_2 = chain.tokens.find(token => (token.address === pool.token2_address));
                             data[index].token1_symbol = token_1.symbol;
@@ -595,7 +589,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                 />
                                 <ListItemSecondaryAction className="action">
                                     <Link
-                                        href={`https://cchain.explorer.avax.network/address/${account}`}
+                                        href={`explorer_[network_dec_to_hex[chainId]]/address/${account}`}
                                         target="_blank"
                                         underline="none"
                                     >
