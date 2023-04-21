@@ -66,9 +66,9 @@ export const deposit = async (provider, tokenSymbol, isEth, token, amount, date,
         let UTCTimestamp = Math.round(unlockDate.getTime() / 1000)
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let feeInETH = await contract.methods.ILOCKER_CORE("0").call();
-        feeInETH = feeInETH["feeInETH"];
+        let feeInETH = await contract.methods.iLocker_CORE(0).call();
             console.log("feeInETH: ",feeInETH);
+        feeInETH = feeInETH["feeInETH"];
         gasLimit = parseFloat(gasLimit) > 30000000 ? parseFloat(gasLimit) * parseFloat(0.888) : gasLimit;
         feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.5);
         feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
@@ -134,18 +134,39 @@ export const w3 = async (provider, network) => {
 }
 
 export const myLocks = async (provider, account, network) => {
-    let result;
+    let result; let lockerDataByWallet;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let ml = await contract.methods.myLocks_().call();
-        let glr = await contract.methods.getLocks_Range().call();
-        console.log("myLocks_: ", ml, glr, account, network)
-        if (ml) {
-            //
+        const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
+        let myLocks = await tokenContract.methods.myLocks_(account).call({ from: account });
+        let ml = await contract.methods.myLocks_(account).call();
+        console.log("myLocks_: ", ml, account, network);
+        let x = 0; let l_arr = [];
+        while (x < myLocks.length) {
+            let getLock = await tokenContract.methods.myiLock(myLocks[x]).call({ from: account });
+            console.log("getLock: ", getLock);
+            let iLock = {
+                "lockId": getLock["lockId"],
+                "holdingContract": getLock["holdingContract"],
+                "token": getLock["token"],
+                "amount": getLock["amount"],
+                "holder": getLock["holder"],
+                "getLock": [getLock],
+                "lockerAddress": lockerAddress[network],
+                "locker": lockerAddress[network]
+            };
+            l_arr.push(iLock);
+            if (x == myLocks.length - 1) {
+                lockerDataByWallet = [{ "data": l_arr, "token": ["token"], "getLock": [l_arr] }];
+                break;
+            } else {
+                x++;
+            };
         };
+        return lockerDataByWallet;
     } catch (e) {
         console.log(e);
+        return [{ "data": ["data"], "token": ["token"] }];
     };
 }
 
@@ -184,10 +205,8 @@ export const updateProfile = async (provider, newLocker, token, account, network
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let lastLockId = await contract.methods.lastLockId().call();
-        let myLocks_ = await contract.methods.myLocks_().call();
-        console.log("updateProfile: ", lastLockId, newLocker, myLocks_, token, account, network, myLocks_[myLocks_.length - 1], myLocks_.length);
-        return await getLocker(provider, myLocks_[myLocks_.length - 1], account, network);
+        console.log("updateProfile: ", newLocker, newLocker[0], newLocker[1], myLocks_, token, account, network);
+        return await getLocker(provider, newLocker[0], account, network);
     } catch (e) {
         console.log(e);
     };
@@ -402,34 +421,6 @@ export const getRawData = async (account, network) => {
     };
 }
 
-export const get_Data = async (account, network) => {
-    let lockerDataByWallet;
-    console.log("account: ", account);
-    console.log("network: ", network);
-    try {
-        let web3 = new Web3(provider[network]);
-        const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
-        let latest_lockId = await tokenContract.methods.lastLockId().call({ from: account });
-        console.log("latest_lockId: ", latest_lockId[0], latest_lockId[1]);
-        let lid_1 = latest_lockId[0];
-        let lid_2 = latest_lockId[1];
-        if (lid_1 > 0 || lid_2 > 0) {
-            let getLock = await tokenContract.methods.getLock(1).call({ from: account });
-            lockerDataByWallet = [{ "data": ["data"], "token": [getLock["token"]], "lockToken": getLock["token"], "unclaimed": getLock["claimed"], "claimed": getLock["claimed"], "unlockTimestamp": getLock["unlockTimestamp"], "lockId": getLock["lockId"], "holdingContract": getLock["holdingContract"], "amount": getLock["amount"], "getLock": [getLock], "lockerAddress": [lockerAddress[network]] }];
-        } else {
-            lockerDataByWallet = [{ "data": ["data"], "token": ["token"] }];
-        };
-        if (lid_1 !== lid_2) {
-            console.log("liquidity mismatch");
-        } else {
-            console.log("liquidity match");
-        }
-        return lockerDataByWallet;
-    } catch (e) {
-        console.log(e);
-        return [{ "data": ["data"], "token": ["token"] }];
-    };
-}
 export const getData = async (provider, account, network) => {
     let lockerDataByWallet;
     console.log("account: ", account);
@@ -437,11 +428,10 @@ export const getData = async (provider, account, network) => {
     try {
         let web3 = new Web3(provider);
         const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
-        let myLocks = await tokenContract.methods.myLocks_().call({ from: account });
-        let x = 0;
-        let l_arr = [];
+        let myLocks = await tokenContract.methods.myLocks_(account).call({ from: account });
+        let x = 0; let l_arr = [];
         while (x < myLocks.length) {
-            let getLock = await tokenContract.methods.getLock(myLocks[x]).call({ from: account });
+            let getLock = await tokenContract.methods.myiLock(myLocks[x]).call({ from: account });
             console.log("getLock: ", getLock);
             let iLock = {
                 "lockId": getLock["lockId"],
@@ -477,9 +467,9 @@ export const getLockers = async (provider, account, network) => {
         if (tokenContract.options.address !== null || tokenContract.options.address !== undefined) {
             let i = 0;
             let getLock = [];
-            let getLocks = await tokenContract.methods.myLocks_().call({ from: account });
+            let getLocks = await tokenContract.methods.myLocks_(account).call({ from: account });
             while(i<getLocks.length) {
-	            getLock.push(await tokenContract.methods.getLock(getLocks[i]).call({ from: account }));
+	            getLock.push(await tokenContract.methods.myiLock(getLocks[i]).call({ from: account }));
             	if(i==getLocks.length-1) {
             		break;
             	} else {
@@ -504,7 +494,7 @@ export const getLocker = async (provider_, lockId, account, network) => {
         const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
         tokenContract.options.address = lockerAddress[network];
         if (tokenContract.options.address !== null || tokenContract.options.address !== undefined) {
-            let getLock = await tokenContract.methods.getLock(lockId).call({ from: account });
+            let getLock = await tokenContract.methods.myiLock(lockId).call({ from: account });
             console.log("getLock: ", getLock, account);
             lockerDataByWallet = [{ "data": ["data"], "token": [getLock["token"]], "Ether": getLock["Ether"], "creator": getLock["creator"], "holder": getLock["holder"], "lockToken": getLock["token"], "unclaimed": getLock["claimed"], "claimed": getLock["claimed"], "unlockTimestamp": getLock["unlockTimestamp"], "lockId": getLock["lockId"], "holdingContract": getLock["holdingContract"], "amount": getLock["amount"], "getLock": [getLock], "lockerAddress": [lockerAddress[network]] }];
         } else {
