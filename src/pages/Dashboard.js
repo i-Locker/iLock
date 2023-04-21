@@ -271,10 +271,11 @@ const Dashboard = (props) => {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
                 const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
+                let CHECKED=false; 
                 let data_ = await _getUIfmt(tokenBalance.toString(), tokenDecimals)
-                console.log("tokenBalance: ", tokenBalance, data_);
+                console.log("tokenBalance: ", tokenBalance, data_, (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2));
                 // eslint-disable-next-line
-                window.alert("Token Found! Balance: " + data_);
+                window.alert("Token Found! Balance: " + (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2));
                 dispatch({ type: USERBALANCE, payload: tokenBalance });
             } catch (e) {
                 console.log(e);
