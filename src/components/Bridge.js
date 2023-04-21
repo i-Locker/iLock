@@ -375,9 +375,9 @@ export default function Bridge({ chainState, setChainState }) {
         });
         setSwapBtnState(4);
     }
-
+ 
     return (
-        <Box sx={{ background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)" }}>
+        <Box sx={{ position: "sticky", top: 0, left: "50%", backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)" }}>
             <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }}>
                     <ActiveStack direction="column" alignItems="center" sx={{ p: "70px 0 0" }}>

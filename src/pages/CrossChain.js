@@ -676,28 +676,8 @@ const CrossChain = (props) => {
         )
     }
     return (
-        <Container className={classes.root} maxWidth="lg" style={{paddingLeft:20, paddingRight:20}}>
-            <Box className={classes.info}>
-                   <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
-            </Box>
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    
-                    {networkData.find((item)=>item.name==network) && <div style={{textAlign:'center'}}><img style={{width:"50px"}} src={networkData.find((item)=>item.name==network).url} alt="network" /></div>}
-                    <h3 id="modal-modal-title" variant="h6" component="h2" style={{textAlign:'center', marginTop:0}}>
-                        {modalTitle}
-                    </h3>
-                    <p id="modal-modal-description" sx={{ mt: 2 }} style={{textAlign:'center', fontSize:12, color:'grey'}}>
-                        {modalDes}
-                    </p>
-                    <Button variant="contained" color="error" style={{width:'100%'}} onClick={handleClose}>Close</Button>
-                </Box>
-            </Modal>
+        <Container className={classes.root} maxWidth="fluid" style={{margin:'auto'}}>
+            <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
             <Snackbar
                 open={snackbar}
                 autoHideDuration={600}
