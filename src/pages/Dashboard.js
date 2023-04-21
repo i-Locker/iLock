@@ -226,14 +226,14 @@ const Dashboard = (props) => {
             };
         };
     };
-    async function start_(tokenDecimals) {
+    async function start_(tokenContract,tokenDecimals) {
         let provider = await connector.getProvider();
         const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
         let data_ = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
         // eslint-disable-next-line
-        console.log("tokenBalance: ", tokenBalance, data_, (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2));
+        console.log("tokenBalance: ", tokenBalance, data_, (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
         // eslint-disable-next-line
-        window.alert("Token Found! Balance: " + (test_data.userBalance ? test_data.userBalance : tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
+        window.alert("Token Found! Balance: " + (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
         dispatch({ type: USERBALANCE, payload: tokenBalance });
     };
 
@@ -250,22 +250,10 @@ const Dashboard = (props) => {
         } else if (account && network && !tokenContract) {
             setIsAllowed(0);
             alterLoaderText("Make a selection");
-            try {
-                if(tokenBalance&&tokenDecimals) {
-                    start_(tokenBalance,tokenDecimals);
-                };
-            } catch (e) {
-                console.log(e);
-                window.alert("Token not found, please try again...");
-            } finally {
-                if (!lockAmount) {
-                    window.alert("Awesome! Let's continue to create your iLocker smart contract...");
-                };
-            };
         } else {
             try {
-                if(tokenBalance&&tokenDecimals) {
-                    start_(tokenBalance,tokenDecimals);
+                if(tokenContract&&tokenDecimals) {
+                    start_(tokenContract,tokenDecimals);
                 };
             } catch (e) {
                 console.log(e);
@@ -442,7 +430,7 @@ const Dashboard = (props) => {
             let tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, network);
             const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
             const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
-            const tokenBalanceFormatted = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
+            const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2)
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
             setTokenBalanceString(tokenBalanceFormatted);
@@ -899,7 +887,7 @@ const Dashboard = (props) => {
                                                     />
                                                 </Grid>
                                                 <Grid item className={dashboardClasses.textRight}  xs={6} sm={6} md={6}>
-                                                    <p style={{marginBottom:2, marginTop:0, fontSize: "10px"}}>Balance: {addressDemand ? (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance}</p>
+                                                    <p style={{marginBottom:2, marginTop:0, fontSize: "10px"}}>Balance: {addressDemand ? (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance}</p>
                                                     <Grid 
                                                         container
                                                         direction="row"

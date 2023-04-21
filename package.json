@@ -3,6 +3,7 @@
     "version": "1.9.444",
     "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
     "main": "index.js",
+    "homepage":"/dashboard",
     "scripts": {
         "test": "cd srv/test/ && node serve.js",
         "devel": "cd srv/devel/ && node serve.js",
