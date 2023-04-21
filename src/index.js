@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
+import { createRoot } from 'react-dom/client';
 // ** Import Providers
 import MaterialThemeProvider from "./providers/theme";
 import MuiSnackbarProvider from "./providers/snackbar";
@@ -17,8 +17,9 @@ import App from "./App";
 
 const store = configureStore();
 
-ReactDOM.render(
-    <ReduxProvider store={store}>
+const container = document.getElementById('app-root');
+const root = createRoot(container);
+root.render(<ReduxProvider store={store}>
         <MaterialThemeProvider>
             <MuiSnackbarProvider>
                 <NotificationProvider>
@@ -28,6 +29,4 @@ ReactDOM.render(
                 </NotificationProvider>
             </MuiSnackbarProvider>
         </MaterialThemeProvider>
-    </ReduxProvider>,
-    document.getElementById("app-root")
-);
+    </ReduxProvider>);

@@ -29,7 +29,7 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 // ** Import Modules
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "../hooks";
 
 // ** Import Assets
@@ -50,7 +50,7 @@ let _toggleDrawer; // replicated internal function
 // ** Import
 const Header = () => {
     // ** Declare Maintainers
-    const history = useHistory();
+    const navigate = useNavigate();
     const classes = useStyles.header();
     const isMobile = useMediaQuery("(max-width:1100px)");
     const { chainId, account } = useWeb3React();
@@ -70,6 +70,10 @@ const Header = () => {
         if(!link) return false;
         window.location = link;
     }; 
+    const handleClick = (l) => {
+      // 👇️ navigate programmatically
+      navigate(l);
+    };
     _toggleDrawer = () => {
         setOpenDrawer(!openDrawer);
     }; 

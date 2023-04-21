@@ -1,6 +1,6 @@
 {
     "name": "iLockers-DApp-FOSS-Interchained",
-    "version": "1.9.3",
+    "version": "1.9.444",
     "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
     "main": "index.js",
     "scripts": {
@@ -26,7 +26,7 @@
         "type": "git",
         "url": "git+https://github.com/i-Lockers/iLock.git"
     },
-    "author": "",
+    "author": "Interchained",
     "license": "BSL",
     "bugs": {
         "url": "https://github.com/i-Lockers/iLock/issues"
@@ -44,14 +44,15 @@
         "dexscreener-api": "^0.0.7",
         "ethereum-multicall": "^2.9.0",
         "ethers": "^6.0.0",
+        "history": "^5.3.0",
         "notistack": "^2.0.2",
         "parent-module": "^2.0.0",
         "react": "18.2.0",
         "react-copy-to-clipboard": "^5.0.4",
-        "react-dom": "^17.0.2",
-        "react-redux": "^7.2.4",
-        "react-router-dom": "^5.2.0",
-        "react-scripts": "^4.0.3",
+        "react-dom": "^18.0.0",
+        "react-redux": "^8.0.0",
+        "react-router-dom": "^6.0.0",
+        "react-scripts": "^5.0.0",
         "react-swipeable-views": "^0.14.0",
         "react-thunk": "^1.0.0",
         "recharts": "^2.1.8",
@@ -85,16 +86,16 @@
         ]
     },
     "devDependencies": {
-        "eslint": "^7.28.0",
         "@emotion/react": "^11.5.0",
         "@emotion/styled": "^11.3.0",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-json": "^3.0.0",
-        "eslint-plugin-jsx-a11y": "^6.4.1",
         "@mui/icons-material": "^5.0.4",
         "@mui/lab": "^5.0.0-alpha.51",
         "@mui/material": "^5.0.4",
         "@mui/styles": "^5.0.1",
+        "eslint": "^7.28.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-json": "^3.0.0",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-react": "^7.24.0",
         "eslint-plugin-react-hooks": "^4.2.0",
