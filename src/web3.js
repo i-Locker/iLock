@@ -139,8 +139,7 @@ export const myLocks = async (provider, account, network) => {
         let web3 = new Web3(provider);
         const tokenContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network], account);
         let myLocks = await tokenContract.methods.myLocks_(account).call({ from: account });
-        let ml = await contract.methods.myLocks_(account).call();
-        console.log("myLocks_: ", ml, account, network);
+        console.log("myLocks_: ", myLocks, account, network);
         let x = 0; let l_arr = [];
         while (x < myLocks.length) {
             let getLock = await tokenContract.methods.myiLock(myLocks[x]).call({ from: account });
@@ -205,7 +204,7 @@ export const updateProfile = async (provider, newLocker, token, account, network
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        console.log("updateProfile: ", newLocker, newLocker[0], newLocker[1], myLocks_, token, account, network);
+        console.log("updateProfile: ", newLocker, newLocker[0], newLocker[1], token, account, network);
         return await getLocker(provider, newLocker[0], account, network);
     } catch (e) {
         console.log(e);
