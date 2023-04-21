@@ -8,7 +8,9 @@ import Typography from "@mui/material/Typography";
 import useStyles from "../assets/styles";
 import SpinnerLogoWhite from "../assets/img/spinner-logo-white.png";
 
-export let alterLoaderText;
+export let alterLoaderText = async function() {
+  //
+};
 const Loader = ({ isLoading }) => {
     const classes = useStyles.base();
     const [loaderText,setLoaderText] = React.useState("");

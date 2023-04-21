@@ -11,7 +11,7 @@ import { createBrowserHistory } from "history";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Locker = lazy(() => import("./pages/Locker"));
-const iBridge = lazy(() => import("./pages/iBridge"));
+const CrossChain = lazy(() => import("./pages/CrossChain"));
 const Bridge = lazy(() => import("./pages/Bridge"));
 const LockUp = lazy(() => import("./pages/LockUp"));
 const iLocks = lazy(() => import("./pages/MyLockers"));
@@ -35,6 +35,7 @@ const AppRouter = () => {
                         <Route path="/lockers/:chainName/:lockId" exact element={<LockUp />} />
                         <Route path="/lockup/:chainName/:lockId" exact element={<LockUp />} />
                         <Route path="/bridge" exact element={<Bridge />} />
+                        <Route path="/iBridge" exact element={<CrossChain />} />
                     </Routes>
                     </BaseLayout>
             </Suspense>

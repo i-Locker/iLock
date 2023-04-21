@@ -1,8 +1,78 @@
 import abi from "./abi";
+export const getBalance = (balance, decimal) => {
+    if (balance.length < decimal+1) {
+        for (let i = 0; i < decimal + 3 - balance.length; i++) {
+            balance = `0${balance}`;
+        }
+    }
+    let fixed_balance = balance.slice(0, -(decimal - 5));
+    let exact_balance = `${fixed_balance.slice(0, -5)}.${fixed_balance.slice(-5)}`;
+    return Number(exact_balance);
+};
 export default {
     netId: 1,
+    networks: {   
+    1: {
+            chainId: 1,
+            name: "Ethereum Mainnet"
+        },
+        5: {
+            chainId: 5,
+            name: "Goerli Test Network"
+        },
+        137: {
+            chainId: 137,
+            name: "Matic Network"
+        },
+        338: {
+            chainId: 338,
+            name: "Cronos Network (testnet)"
+        },
+        56: {
+            chainId: 56,
+            name: "Binance Smart Chain"
+        },
+        100: {
+            chainId: 100,
+            name: "xDai"
+        },
+        66: {
+            chainId: 66,
+            name: "OKEx"
+        },
+        1666600000: {
+            chainId: 1666600000,
+            name: "Harmony"
+        },
+        43114: {
+            chainId: 43114,
+            name: "Avalanche"
+        },
+    },
     updateTime: 35000,
     swapFee: 0.0025,
+    Languages: [
+        {
+            id: "english",
+            code: "us",
+            name: "English"
+        },
+        {
+            id: "russian",
+            code: "ru",
+            name: "Русский"
+        },
+        {
+            id: "korean",
+            code: "kr",
+            name: "한국어"
+        },
+        {
+            id: "japanese",
+            code: "jp",
+            name: "日本語"
+        },
+    ],
     base: {
         mint: {
             rate: "0.3"

@@ -18,23 +18,23 @@ import {
     Collapse,
     Link
 } from '@mui/material';
-import { CustomTab } from '../../config/style';
-import { TokenABI } from "../../config/abis/TokenABI";
+import { CustomTab } from '../config/style';
+import { TokenABI } from "../config/abi/TokenABI";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import fren from '../../assets/img/common/fren.svg';
-import Filter from '../../assets/img/common/filter.png';
-import Refresh from '../../assets/img/common/refresh.png';
+import fren from '../assets/img/common/fren.svg';
+import Filter from '../assets/img/common/filter.png';
+import Refresh from '../assets/img/common/refresh.png';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import { styled, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import { useWeb3React } from "@web3-react/core";
-import Cwallet from "../../assets/constants/Cwallet";
-import { getBalance } from "../../config/app";
+import Cwallet from "../assets/constants/Cwallet";
+import { getBalance } from "../config/app";
 import './swap.css';
-import { Router_address } from "../../config/abis/router/dexRouter";
-import { Factory_address } from "../../config/abis/router/dexFactory";
+import { Router_address } from "../config/abi/router/dexRouter";
+import { Factory_address } from "../config/abi/router/dexFactory";
 import Web3 from 'web3';
 import axios from 'axios';
 
@@ -68,15 +68,15 @@ let ActiveStack = styled(Stack)(() => ({
     display: "none"
 }));
 
-export default function Swap({ chainState, setChainState }) {
+export default function Bridge({ chainState, setChainState }) {
     const [swapTabValue, setSwapTabValue] = useState(0);
     const [activeRate, setActiveRate] = useState(12);
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [tokenDialogState, setTokenDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
     const { active, account } = useWeb3React();
-    const [token1, setToken1] = useState(chainState.tokens[0]?chainState.tokens[0]:"");
-    const [token2, setToken2] = useState(chainState.tokens[1]?chainState.tokens[1]:"");
+    const [token1, setToken1] = useState(chainState["tokens"][0].length>0?chainState["tokens"][0]:"");
+    const [token2, setToken2] = useState(chainState["tokens"][1].length>0?chainState["tokens"][1]:"");
     const [token1Balance, setToken1Balance] = useState();
     const [token2Balance, setToken2Balance] = useState();
     const [token3, setToken3] = useState('WETH/DAI');
@@ -84,8 +84,8 @@ export default function Swap({ chainState, setChainState }) {
     const [dexsOrder, setDexsOrder] = useState();
     const [swapSelectData, setSwapSelectData] = useState(0);
     const [swapBtnState, setSwapBtnState] = useState(0);
-    const [routerAddress, setRouterAddress] = useState(Router_address[0].dexs);
-    const [factoryAddress, setFactoryAddress] = useState(Factory_address[0].dexs);
+    const [routerAddress, setRouterAddress] = useState(Router_address[0].length>0?Router_address[0].dexs:"");
+    const [factoryAddress, setFactoryAddress] = useState(Factory_address[0].length>0?Factory_address[0].dexs:"");
     const [maxAmount, setMaxAmount] = useState();
     const [importAlert, setImportAlert] = useState({ state1: false, state2: "success", data: "" });
     const [rateState, setRateState] = useState(0);
@@ -112,23 +112,37 @@ export default function Swap({ chainState, setChainState }) {
             console.log(select_router);
             setRouterAddress(select_router);
             setFactoryAddress(select_factory);
-            axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[0].address}?network=${chainState.symbol}`).then(res => {
-                if (res.data.data.length) {
-                    console.log(res.data.data[0]);
-                    setToken1(res.data.data[0]);
-                } else {
-                    let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
-                    setToken1(pj1.data[0]);
+            try {
+                if(chainState.tokens[0].length>0) {
+                    axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[0].address}?network=${chainState.symbol}`).then(res => {
+                        if (res.data.data.length) {
+                            console.log(res.data.data[0]);
+                            setToken1(res.data.data[0]);
+                        } else {
+                            let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
+                            setToken1(pj1["data"][0]);
+                        };
+                    });   
                 };
-            });
-            axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[1].address}?network=${chainState.symbol}`).then(res => {
-                if (res.data.data.length) {
-                    setToken2(res.data.data[0]);
-                } else {
-                    let pj2 = {"total":1,"data":[{"id":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth","address":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a","symbol":"FREN","name":"FrenChain","description":"FrenChain/FREN","txns24h":2,"txns24hChange":-0.5,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":235.84081844012337,"volume24hETH":0.12303964262357231,"volumeChange24h":0.0,"liquidityUSD":31783.183491244,"liquidityETH":16.581487310242,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png","priceUSD":0.00021155709187981557,"priceETH":1.1037066929948508e-07,"priceUSDChange24h":-0.036307376632898423,"priceETHChange24h":-0.007719123029520966,"timestamp":1667493912,"blockNumber":1,"AMM":"all","network":"eth","tokenListsNames":["CoinGecko"],"marketCap":0.0,"marketCapChange24h":0.0,"liquidityUSDChange24h":-0.032555487289210386,"liquidityETHChange24h":-0.0038559326740329647,"volumeUSDChange24h":-0.9497107384650174,"volumeETHChange24h":-0.948233885660636}]};
-                    setToken2(pj2.data[0]);
+            } catch(e) {
+                let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
+                setToken1(pj1["data"][0]);
+            };
+            try {
+                if(chainState.tokens[1].length>0) {
+                    axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[1].address}?network=${chainState.symbol}`).then(res => {
+                        if (res.data.data.length) {
+                            setToken2(res.data.data[0]);
+                        } else {
+                            let pj2 = {"total":1,"data":[{"id":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth","address":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a","symbol":"FREN","name":"FrenChain","description":"FrenChain/FREN","txns24h":2,"txns24hChange":-0.5,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":235.84081844012337,"volume24hETH":0.12303964262357231,"volumeChange24h":0.0,"liquidityUSD":31783.183491244,"liquidityETH":16.581487310242,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png","priceUSD":0.00021155709187981557,"priceETH":1.1037066929948508e-07,"priceUSDChange24h":-0.036307376632898423,"priceETHChange24h":-0.007719123029520966,"timestamp":1667493912,"blockNumber":1,"AMM":"all","network":"eth","tokenListsNames":["CoinGecko"],"marketCap":0.0,"marketCapChange24h":0.0,"liquidityUSDChange24h":-0.032555487289210386,"liquidityETHChange24h":-0.0038559326740329647,"volumeUSDChange24h":-0.9497107384650174,"volumeETHChange24h":-0.948233885660636}]};
+                            setToken2(pj2["data"][0]);
+                        };
+                    });
                 };
-            });
+            } catch(e) {
+                let pj2 = {"total":1,"data":[{"id":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth","address":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a","symbol":"FREN","name":"FrenChain","description":"FrenChain/FREN","txns24h":2,"txns24hChange":-0.5,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":235.84081844012337,"volume24hETH":0.12303964262357231,"volumeChange24h":0.0,"liquidityUSD":31783.183491244,"liquidityETH":16.581487310242,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png","priceUSD":0.00021155709187981557,"priceETH":1.1037066929948508e-07,"priceUSDChange24h":-0.036307376632898423,"priceETHChange24h":-0.007719123029520966,"timestamp":1667493912,"blockNumber":1,"AMM":"all","network":"eth","tokenListsNames":["CoinGecko"],"marketCap":0.0,"marketCapChange24h":0.0,"liquidityUSDChange24h":-0.032555487289210386,"liquidityETHChange24h":-0.0038559326740329647,"volumeUSDChange24h":-0.9497107384650174,"volumeETHChange24h":-0.948233885660636}]};
+                setToken2(pj2["data"][0]);
+            };
         };
         ____SWAP_ENGINE(chainState);
     }, [chainState]);
@@ -466,7 +480,7 @@ export default function Swap({ chainState, setChainState }) {
                                                     {dexsOrder && dexsOrder.length > 1 &&
                                                         <Box>
                                                             <Paper sx={{ margin: "0 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 1 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }}
-                                                                onClick={() => setDexsOrder(dexsOrder.length > 2 ? [dexsOrder[0], dexsOrder[1], dexsOrder[2]] : [dexsOrder[0], dexsOrder[1]], setSwapSelectData(1))}>
+                                                                onClick={() => setDexsOrder(dexsOrder&&dexsOrder.length > 2 ? [dexsOrder[0], dexsOrder[1], dexsOrder[2]] : [dexsOrder[0], dexsOrder[1]], setSwapSelectData(1))}>
                                                                 <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 1 && "#7E8B74"}` }}>
                                                                     <Stack direction="row" justifyContent="space-between">
                                                                         <Stack direction="row" spacing={1} onClick={() => setSwapSelectState(dexsOrder.length > 2 ? swapSelectState ? false : true : false)}>

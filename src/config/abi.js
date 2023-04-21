@@ -12,7 +12,7 @@ export default {
         vault: require("./abi/vault.json"),
         single: require("./abi/reward-pool-single.json"),
         double: require("./abi/reward-pool-double.json")
-    }
+    },
     stake: {
         vault: require("./abi/vault.json"),
         rewarder: require("./abi/vault.json")

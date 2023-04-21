@@ -16,6 +16,7 @@ export const walletconnect = new WalletConnectConnector({
         56: provider[network_[network_dec_to_hex[56]]],
         97: provider[network_[network_dec_to_hex[97]]],
         137: provider[network_[network_dec_to_hex[137]]],
+        338: provider[network_[network_dec_to_hex[338]]],
         444: provider[network_[network_dec_to_hex[444]]],
         43113: provider[network_[network_dec_to_hex[43113]]],
         43114: provider[network_[network_dec_to_hex[43114]]],
