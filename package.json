@@ -1,9 +1,9 @@
 {
     "name": "iLockers-DApp-FOSS-Interchained",
-    "version": "1.9.444",
+    "version": "1.9.999",
     "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
     "main": "index.js",
-    "homepage":"/dashboard",
+    "homepage": "https://ilocks.interchained.org",
     "scripts": {
         "test": "cd srv/test/ && node serve.js",
         "devel": "cd srv/devel/ && node serve.js",
@@ -32,16 +32,16 @@
     "bugs": {
         "url": "https://github.com/i-Lockers/iLock/issues"
     },
-    "homepage": "https://ilocks.interchained.org",
     "dependencies": {
         "@ethersproject/providers": "^5.3.1",
+        "@mui/x-date-pickers": "^6.2.1",
         "@web3-react/core": "^6.1.9",
         "@web3-react/frame-connector": "^6.0.9",
         "@web3-react/injected-connector": "^6.0.7",
         "@web3-react/walletconnect-connector": "^6.2.8",
         "axios": "^0.21.1",
         "clsx": "^1.1.1",
-        "date-fns": "^2.28.0",
+        "date-fns": "^2.29.3",
         "dexscreener-api": "^0.0.7",
         "ethereum-multicall": "^2.9.0",
         "ethers": "^6.0.0",

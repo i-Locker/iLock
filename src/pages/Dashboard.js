@@ -23,9 +23,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Search from '@mui/icons-material/Search';
 import { Snackbar } from "@mui/material";
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
 import CheckIcon from '@mui/icons-material/Check';
 import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Box, IconButton } from "@mui/material";
 import Link from "@mui/material/Link";
@@ -37,9 +34,11 @@ import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddr
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
+import DateTime from '../components/DateTime';
+import { useNavigate } from "react-router-dom";
 import { alterLoaderText } from '../components/Loader';
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
-
+export let handle_Date;
 const Dashboard = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
@@ -83,6 +82,7 @@ const Dashboard = (props) => {
     const test_data = useSelector(state => state);
     console.log("test_data: ", test_data, test_data.tokenData);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const style = {
         position: 'absolute',
@@ -229,11 +229,11 @@ const Dashboard = (props) => {
     async function start_(tokenContract,tokenDecimals) {
         let provider = await connector.getProvider();
         const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
-        let data_ = await _getUIfmt(tokenBalance.toString(), tokenDecimals);
+        let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
         // eslint-disable-next-line
-        console.log("tokenBalance: ", tokenBalance, data_, (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
+        console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
         // eslint-disable-next-line
-        window.alert("Token Found! Balance: " + (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2));
+        window.alert("Token Found! Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
         dispatch({ type: USERBALANCE, payload: tokenBalance });
     };
 
@@ -286,8 +286,8 @@ const Dashboard = (props) => {
                     const allowanceAmount = await getERC20allowance(provider, tokenContract, account, lockerAddress[network], network);
                     console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                     setTokenAllowance(allowanceAmount);
-                    let allowanceAmountFormatted = await _getBN(allowanceAmount, tokenDecimals);
-                    let allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount, tokenDecimals);
+                    let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
+                    let allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount, parseFloat(tokenDecimals));
                     console.log("allowanceAmountFormatted: ", allowanceAmount, parseFloat(allowanceAmountFormatted).toFixed(0), parseFloat(allowanceAmountFormatted_UI).toFixed(0));
                     if (parseFloat(allowanceAmount) < parseFloat(lockAmount * 10 ** tokenDecimals)) {
                         setIsAllowed(1);
@@ -458,9 +458,9 @@ const Dashboard = (props) => {
         console.log("holder: ", holder);
     };
 
-    const handleDate = (value) => {
+    handle_Date = (value) => {
         const currentDate = new Date();
-        console.log("DATETIME: ", value, value > currentDate)
+        console.log("DATETIME (dashboard): ", value, value > currentDate)
         if (value > currentDate) {
             setDateUseful(true);
             setWithdrawDate(value);
@@ -470,7 +470,7 @@ const Dashboard = (props) => {
     };
 
     const showLockup = async (network, lockId) => {
-        props.history.push(`/lockers/${network.toLowerCase()}/${lockId}`);
+        navigate(`/lockers/${network.toLowerCase()}/${lockId}`);
     };
 
     const depositToken = async (e) => {
@@ -478,26 +478,23 @@ const Dashboard = (props) => {
             let tokenAmount;
             tokenAmount = lockAmount;
             let isEth = false;
+            let __decimals = 18;
             let unlockDate = withdrawDate;
             if (addressDemand == true) {
                 isEth = false;
+                console.log("(ERC-20) tokenSymbol: ", tokenSymbol);
+                __decimals = tokenDecimals ? tokenDecimals : 18;
             } else {
                 isEth = true;
+                __decimals = 18;
             };
             if (holder == undefined) {
                 console.log("holder unset! Defaulting ", holder);
                 setHolder(account);
             };
-            let amountFormatted = await _getBN(tokenAmount, tokenDecimals);
-            let amountFormatted_UI = await _getUIfmt(amountFormatted, tokenDecimals);
-            console.log("amountFormatted_UI: ", parseFloat(amountFormatted_UI).toFixed(0));
-            console.log("tokenBalance_UI: ", tokenBalance / 10 ** tokenDecimals);
-            console.log("etherBalance_UI: ", etherBalance, etherBalance / 10 ** tokenDecimals);
-            console.log("amountFormatted: ", amountFormatted);
-            const balanceChecker = isEth && etherBalance >= parseFloat(amountFormatted_UI).toFixed(0) ? true : tokenBalance / 10 ** tokenDecimals >= parseFloat(amountFormatted_UI).toFixed(0) ? true : false;
-            console.log("balance:", balanceChecker);
+            const balanceChecker = true;
             if (balanceChecker == true) {
-                console.log("depositToken: ", amountFormatted, e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, network);
+                console.log("depositToken: ", e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, __decimals, network);
                 let unset = true;
                 let allSet = false;
                 let gasLimit;
@@ -519,9 +516,8 @@ const Dashboard = (props) => {
                         let block = await W3.eth.getBlock("latest");
                         console.log("(w3) block: ", block);
                         console.log("(w3) gasLimit: ", block.gasLimit);
-                        console.log("(ERC-20) tokenSymbol: ", tokenSymbol);
                         gasLimit = block.gasLimit;
-                        deposit(provider, tokenSymbol, isEth, tokenContract, amountFormatted.toString(), unlockDate, depositCreator, depositHolder, depositNetwork, gasLimit).then(async (results) => {
+                        deposit(provider, tokenSymbol ? tokenSymbol : "iLocker", isEth, tokenContract, tokenAmount, unlockDate, depositCreator, depositHolder, depositNetwork, __decimals, gasLimit).then(async (results) => {
                             setWithdrawDate(undefined);
                             setDateUseful(false);
                             try {
@@ -938,15 +934,7 @@ const Dashboard = (props) => {
                                                 alignItems="center"
                                                 className={!isMobile ? `${dashboardClasses.balanceContainer}` : `${mobileClasses.balanceContainer}`}
                                             >
-                                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                        <DateTimePicker
-                                                            id="standard-number-date"
-                                                            label="Unlock Date"
-                                                            renderInput={(props) => <TextField {...props} className={isMobile ? `${mobileClasses.datetimepicker}` : ``} />}
-                                                            value={withdrawDate}
-                                                            onChange={(value) => handleDate(value)}
-                                                        />
-                                                    </LocalizationProvider>
+                                                    <DateTime />
                                                     <div>
                                                     {
                                                         !addressDemand || isAllowed == 2 ? <Button variant="contained" color="secondary" sm={12} disabled={!dateUseful} value={addressDemand} onClick={depositToken} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button>

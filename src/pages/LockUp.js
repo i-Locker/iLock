@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { useNavigate, useParams } from "react-router-dom";
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { useWeb3React } from '@web3-react/core';
 import { styled } from '@mui/material/styles';
@@ -54,16 +54,17 @@ const dateTime = async (date) => {
     return date.toLocaleString();
 };
 const LockUp = (props) => {
-    const { lockId, wallet, token, chainName } = props.match.params;
+    const { account, connector, chainId, active } = useWeb3React();
+    let { chainName, lockId } = useParams();
+    const navigate = useNavigate();
     if(isNaN(lockId)) {
-        props.history.push(`/dashboard/`);
+        navigate(`/dashboard/`);
     }
-    const { account, connector } = useWeb3React();
     connector_ = connector;
     const [amount, setAmount] = useState(0);
     const [_token, set_Token] = useState("");
     const [lockToken, setLockToken] = useState("");
-    const [chainId, setChainId] = useState(0);
+    const [chain_Id, setChain_Id] = useState(0);
     const [network, setNetwork] = useState("");
     const [status_, setStatus_] = useState(false);
     const [ownable, setOwnable] = useState(false);
@@ -109,7 +110,7 @@ const LockUp = (props) => {
         let provider = await connector_.getProvider();
         try {
             transferOwnership_iLock(provider, lockId, account, to, await getNetwork()).then((ownershipTransfer) => {
-                console.log("transferOwnership: ", ownershipTransfer)
+            console.log("transferOwnership: ", ownershipTransfer)
             });
             _toggleOwnershipModal("Thanks", "Processing", await getLockId(), await getNetwork());
         } catch (e) {
@@ -120,7 +121,7 @@ const LockUp = (props) => {
     const _transfer_ownership = async (e) => {
         _toggleOwnershipModal(modalInner, "Ownership Transfer", await getLockId(), await getNetwork());
     };
-    useEffect(async () => {
+    useEffect(() => {
         if (claimed || doneForSure) {
             setDoneForSure(true);
             // eslint-disable-next-line
@@ -163,7 +164,7 @@ const LockUp = (props) => {
             setModalInner(modalInner);
             try {
                 connector.getChainId().then((chainId) => {
-                    setChainId(chainId);
+                    setChain_Id(chainId);
                     if (Number(chainId) === 1) setNetwork("Ethereum");
                     if (Number(chainId) === 5) setNetwork("Goerli");
                     if (Number(chainId) === 56) setNetwork("Binance Smart Chain");
@@ -187,7 +188,7 @@ const LockUp = (props) => {
             let timer;
             timer = setTimeout(async () => {
                 const iLock = {
-                    "wallet": wallet,
+                    "wallet": account,
                     "unclaimed": claimed,
                     "unlockTimestamp": unlockTimestamp,
                     "_token": _token,
@@ -384,7 +385,7 @@ const LockUp = (props) => {
                 return () => clearInterval(timer);
             };
         };
-    }, [account, wallet, lockId, network])
+    }, [account, chainName, lockId, network])
 
     const classes = useStyles.pools();
     const mobileClasses = useStyles.mobile();
@@ -730,7 +731,7 @@ const LockUp = (props) => {
 // export default Portfolio
 const mapStateToProps = state => ({
     statistics: state.statistics,
-    walletAddress: state.walletAddress
+    walletAddress: state.account
 })
 
 //connect function INJECTS dispatch function as a prop!!

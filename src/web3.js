@@ -43,10 +43,10 @@ export const explorer = {
     "Frenchain_testnet": "https://testnet.frenscan.io"
 };
 export const _getBN = async (lockAmount, tokenDecimals) => {
-    return await parseUnits(lockAmount.toString(), tokenDecimals);
+    return await parseUnits(lockAmount.toString(), parseInt(tokenDecimals));
 };
 export const _getUIfmt = async (lockAmount, tokenDecimals) => {
-    return await formatUnits(lockAmount.toString(), tokenDecimals);
+    return await formatUnits(lockAmount.toString(), parseInt(tokenDecimals));
 };
 export const getETHtoChecksum = async (provider, account) => {
     let result;
@@ -59,7 +59,7 @@ export const getETHtoChecksum = async (provider, account) => {
         console.log(e);
     };
 }
-export const deposit = async (provider, tokenSymbol, isEth, token, amount, date, account, holder, network, gasLimit) => {
+export const deposit = async (provider, tokenSymbol, isEth, token, amount, date, account, holder, network, decimals, gasLimit) => {
     let result;
     try {
         let unlockDate = new Date(date);
@@ -67,17 +67,17 @@ export const deposit = async (provider, tokenSymbol, isEth, token, amount, date,
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
         let feeInETH = await contract.methods.iLocker_CORE(0).call();
+        feeInETH = feeInETH["donation_in_ETH"];
             console.log("feeInETH: ",feeInETH);
-        feeInETH = feeInETH["feeInETH"];
         gasLimit = parseFloat(gasLimit) > 30000000 ? parseFloat(gasLimit) * parseFloat(0.888) : gasLimit;
         feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.5);
         feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
-        console.log("depositing: ", isEth, lockerAddress[network], feeInETH, token, web3.utils.toWei(amount.toString(), 'ether'), UTCTimestamp, await getETHtoChecksum(provider,account), await getETHtoChecksum(provider,holder), network)
+        console.log("depositing: ", isEth, lockerAddress[network], feeInETH, token, await web3.utils.toBN(amount*10**decimals).toString(), UTCTimestamp, await getETHtoChecksum(provider,account), await getETHtoChecksum(provider,holder), network)
         if (isEth == false) {
             feeInETH = parseFloat(web3.utils.fromWei(feeInETH.toString(), "ether")) * parseFloat(1.05);
             feeInETH = await web3.utils.toWei(feeInETH.toString(), "ether");
             if (feeInETH) {
-                result = await contract.methods["createLock"](token, tokenSymbol, isEth, holder, amount, UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: feeInETH, gasLimit: gasLimit });
+                result = await contract.methods["createLock"](token, tokenSymbol, isEth, holder, await web3.utils.toBN(amount*10**decimals).toString(), UTCTimestamp).send({ from: await getETHtoChecksum(provider,account), value: feeInETH, gasLimit: gasLimit });
                 console.log("deposited: ", result);
                 return result;
             } else {

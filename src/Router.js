@@ -26,13 +26,14 @@ const AppRouter = () => {
             <Suspense fallback={<Spinner />}>
                     <BaseLayout>
                     <Routes>
-                        <Route path="/" element={<Navigate  to="/dashboard" replace />} />
+                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/locker" exact component={Locker} />
-                        <Route path="/my-lockers/:wallet/:chainName" exact component={iLocks} />
-                        <Route path="/lockers/:chainName/:lockId" exact component={LockUp} />
-                        <Route path="/lockup/:chainName/:lockId" exact component={LockUp} />
-                        <Route path="/bridge" exact component={Bridge} />
+                        <Route path="/locker" exact element={<Locker />} />
+                        <Route path="/my-lockers/:wallet/:chainName" exact element={<iLocks />} />
+                        <Route path="/locks/:chainName/:lockId" exact element={<iLocks />} />
+                        <Route path="/lockers/:chainName/:lockId" exact element={<LockUp />} />
+                        <Route path="/lockup/:chainName/:lockId" exact element={<LockUp />} />
+                        <Route path="/bridge" exact element={<Bridge />} />
                     </Routes>
                     </BaseLayout>
             </Suspense>
