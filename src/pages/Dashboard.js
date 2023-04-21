@@ -274,7 +274,7 @@ const Dashboard = (props) => {
                 let CHECKED=false; 
                 const tokenBalanceFormatted = async () => { 
                     console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted);
-                    CHECKED = TRUE;
+                    CHECKED = true;
                     if(CHECKED) {
                         data_ = await _getUIfmt(tokenBalance.toString(), tokenDecimals)
                     }
