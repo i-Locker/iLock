@@ -271,7 +271,7 @@ const Dashboard = (props) => {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
                 const tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract), account, network);
-                const tokenBalanceFormatted = () => { 
+                const tokenBalanceFormatted = async () => { 
                     console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted);
                     return await _getUIfmt(tokenBalance.toString(), tokenDecimals); 
                 };
