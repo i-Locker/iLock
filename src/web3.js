@@ -171,7 +171,9 @@ export const bridgeToken = async (provider, token, amount, date, account, holder
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let feeInETH = await contract.methods.feesInETH().call();
+        let feeInETH = await contract.methods.iLocker_CORE(0).call();
+        feeInETH = feeInETH["donation_in_ETH"];
+            console.log("feeInETH: ",feeInETH);
         feeInETH = feeInETH * 2;
         console.log("bridge: ", feeInETH, token, amount, account, holder, network)
         if (feeInETH) {
@@ -201,7 +203,9 @@ export const withdraw = async (provider, id, account, receiver, isETH, network, 
         let web3 = new Web3(provider);
         if (ownable !== true) {
             const contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-            let feeInETH = await contract.methods.feesInETH().call();
+            let feeInETH = await contract.methods.iLocker_CORE(0).call();
+            feeInETH = feeInETH["donation_in_ETH"];
+            console.log("feeInETH: ",feeInETH);
             feeInETH = feeInETH * 1.5103090031291;
             feeInETH = web3.utils.fromWei(feeInETH.toString(), "ether");
             feeInETH = web3.utils.toWei(feeInETH.toString(), "ether");
@@ -210,7 +214,9 @@ export const withdraw = async (provider, id, account, receiver, isETH, network, 
             return result;
         } else {
             const contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-            let feeInETH = await contract.methods.feesInETH().call();
+            let feeInETH = await contract.methods.iLocker_CORE(0).call();
+            feeInETH = feeInETH["donation_in_ETH"];
+            console.log("feeInETH: ",feeInETH);
             feeInETH = feeInETH * 1.0103090031291;
             feeInETH = web3.utils.fromWei(feeInETH.toString(), "ether");
             feeInETH = web3.utils.toWei(feeInETH.toString(), "ether");
@@ -655,7 +661,8 @@ export const sendTokenVesting = async (provider, deployedContract, csvData, toke
     abi = [{ "inputs": [{ "internalType": "address[]", "name": "_users", "type": "address[]" }, { "internalType": "uint128[]", "name": "_amounts", "type": "uint128[]" }, { "internalType": "uint32[]", "name": "_lockHours", "type": "uint32[]" }, { "internalType": "uint256", "name": "_sendAmount", "type": "uint256" }], "name": "sendLockTokenMany", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "feesInETH", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }]
 
     contract = new web3.eth.Contract(abi, deployedContract)
-    let feesInETH = await contract.methods.feesInETH().call();
+    let feeInETH = await contract.methods.iLocker_CORE(0).call();
+    feeInETH = feeInETH["donation_in_ETH"];
     console.log(_users, _amounts, _lockHours, _sendAmount, account)
     let result = await contract.methods.sendLockTokenMany(_users, _amounts, _lockHours, _sendAmount).send({
         from: account,
@@ -764,7 +771,8 @@ export const airdrop = async (provider, csvData, token, account, network) => {
     // console.log(_amounts)
     abi = [{ "inputs": [{ "internalType": "address", "name": "token", "type": "address" }, { "internalType": "address[]", "name": "_users", "type": "address[]" }, { "internalType": "uint128[]", "name": "_amounts", "type": "uint128[]" }], "name": "airdrop", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "companyWallet", "outputs": [{ "internalType": "addresspayable", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "feesInETH", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }]
     contract = new web3.eth.Contract(abi, airdropAddress[network]);
-    let feeInETH = await contract.methods.feesInETH().call();
+    let feeInETH = await contract.methods.iLocker_CORE(0).call();
+    feeInETH = feeInETH["donation_in_ETH"];
     let result = await contract.methods.airdrop(token, _users, _amounts).send({
         from: account,
         value: network === "Avalanche" || network === "Avalanche_testnet" ? BigInt(feeInETH * Math.pow(10, 18)).toString() : feeInETH

@@ -53,40 +53,37 @@ function BasicModal() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            <span dangerouslySetInnerHTML={{__html: [headerText]}}>
-            </span>
+            <span dangerouslySetInnerHTML={{__html: [headerText]}} />
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <span dangerouslySetInnerHTML={{__html: [toggleText]}}>
-            </span>
-                                             <Grid 
-                                                container
-                                                direction="row"
-                                                alignItems="center"
-                                                className={dashboardClasses.balanceContainer}
-                                            >
-                                                <Grid item className={dashboardClasses.textLeft} xs={12} sm={12} md={12}>
-                                                    <TextField
-                                                        id="standard-holder"
-                                                        label="Holder"
-                                                        type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                            inputprops: { min: 1 }
-                                                        }}
-                                                        InputProps={{ inputprops: { min: 1 } }}
-                                                        value={holder}
-                                                        onChange={handleHolder}
-                                                        variant="standard"
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                            <Button style={{padding:5,margin:5}} onClick={_toggleModal} >TRANSFER OWNERSHIP</Button>
-
+            <span dangerouslySetInnerHTML={{__html: [toggleText]}} />
+                <Grid 
+                    container
+                    direction="row"
+                    alignItems="center"
+                    className={dashboardClasses.balanceContainer}
+                >
+                    <Grid item className={dashboardClasses.textLeft} xs={12} sm={12} md={12}>
+                        <TextField
+                         id="standard-holder"
+                         label="Holder"
+                         type="text"
+                         InputLabelProps={{
+                            shrink: true,
+                            inputprops: { min: 1 }
+                         }}
+                         InputProps={{ inputprops: { min: 1 } }}
+                         value={holder}
+                         onChange={handleHolder}
+                         variant="standard"
+                    />
+                    </Grid>
+                </Grid>
+                <Button style={{padding:5,margin:5}} onClick={_toggleModal} >TRANSFER OWNERSHIP</Button>
           </Typography>
         </Box>
       </Modal>
     </div>
     );
-}
+};
 export default BasicModal;

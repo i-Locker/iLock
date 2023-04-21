@@ -465,16 +465,24 @@ const LockUp = (props) => {
         if (claimed) return;
         let provider = await connector.getProvider();
         let gasLimit;
+        let ___RECEIVER;
+        if(receiver.length > 0) {
+            ___RECEIVER = receiver;
+            console.log("___RECEIVER: ",___RECEIVER);
+        } else {
+            ___RECEIVER = account;
+            console.log("___RECEIVER: ",___RECEIVER);
+        };
         w3(provider, network).then(async (W3) => {
             let block = await W3.eth.getBlock("latest");
             console.log("(w3) block: ", block);
             console.log("(w3) gasLimit: ", block.gasLimit);
             gasLimit = block.gasLimit;
-            console.log("Processing withdrawal: ", id, gasLimit, isEth, lockId, account, receiver, network);
+            console.log("Processing withdrawal: ", id, gasLimit, isEth, lockId, account, ___RECEIVER, network);
             withdraw(provider, lockId, account, receiver, isEth, network, ownable, gasLimit).then(async (status) => {
                 const newData = JSON.parse(JSON.stringify(data));
                 if (status) {
-                    console.log("Withdrawal processed: ", newData);
+                    console.log("Withdrawal processed: ", newData, "\n status: ", status);
                     setClaimed(true);
                     setIsWithdrawn(true);
                     _toggleWithdrawalModal("Confirmed", "Transaction: ", id, network);
@@ -487,15 +495,6 @@ const LockUp = (props) => {
     const withdrawProperty = async (id) => {
         console.log("withdrawProperty: ", id);
         _toggleWithdrawalModal("Delegate a receiver wallet and submit the transfer", "Withdraw", id, network);
-    }
-
-    const transferOwnership = async (id) => {
-        if (!account) return;
-        let provider = await connector.getProvider()
-        withdraw(provider, lockId, account, network).then(async (status) => {
-            const newData = JSON.parse(JSON.stringify(data));
-            if (status) console.log("Withdrawal processed: ", newData);
-        })
     }
 
     const LockedEvent = (props) => {

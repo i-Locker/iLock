@@ -97,6 +97,13 @@ const Header = () => {
                                         Lockers
                                     </span>
                                 </Link>
+                                <Link underline="none" href="/bridge">
+                                    <span
+                                       className={classes.btnHeader}
+                                    >
+                                        Bridge
+                                    </span>
+                                </Link>
                                 {/*
                                     <Link underline="none" href="/deployer">
                                     <span
