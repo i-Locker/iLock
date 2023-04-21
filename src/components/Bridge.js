@@ -380,11 +380,6 @@ export default function Bridge({ chainState, setChainState }) {
         <>
              <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }}>
-                    <ActiveStack direction="column" alignItems="center" sx={{ p: "70px 0 0" }}>
-                        <Typography variant='h5' align="center" sx={{ p: "16px 0" }}>THE MOST EFFICIENT DEFI AGGREGATOR</Typography>
-                        <Typography align="center" sx={{ maxWidth: "761px", color: "#808080", fontSize: "18px" }}>Access the most liquidity, lowest slippage and best exchange rates across Ethereum,
-                            Binance Smart Chain, Polygon, Optimistic Ethereum (OΞ) and Arbitrum.</Typography>
-                    </ActiveStack>
                     {<Grid container justifyContent="space-between">
                         <ActiveGrid xs={12} md={7} sx={{ margin: "80px 0 130px" }} className='responsive3'>
                             <Paper sx={{ width: "100%", height: "630px", background: "#191919" }}>
@@ -413,7 +408,7 @@ export default function Bridge({ chainState, setChainState }) {
                                 <Box sx={{ m: "0 8% 25px" }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Stack direction="row" justifyContent="space-between" sx={{ width: "45%", maxWidth: "200px" }} spacing={1}>
-                                            <CustomTab text={["Swap", "Limit"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
+                                            <CustomTab text={["Bridge"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
                                         </Stack>
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             {/* <CircularProgress variant="determinate" value={progress} size={20} /> */}
@@ -427,7 +422,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>From</Typography>
-                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
+                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
                                                         <Button startIcon={token1.logoURI&&token1.logoURI !== null ?

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-
 import {
   Paper,
   Stack,
@@ -13,7 +12,6 @@ import {
   DialogTitle,
   IconButton
 } from '@mui/material';
-
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';

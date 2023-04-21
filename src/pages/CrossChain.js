@@ -12,11 +12,12 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Modal from '@mui/material/Modal';
-import { RadioGroup } from "@mui/material";
+import { RadioGroup, Typography } from "@mui/material";
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { styled, createTheme } from '@mui/material/styles';
 import SwipeableViews from 'react-swipeable-views';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -66,11 +67,7 @@ const CrossChain = (props) => {
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
-    const [isAllowed, setIsAllowed] = useState(0); {
-        /*
-                // 0: checking, 1: not allowed, 2: allowed
-            */
-    }
+    const [isAllowed, setIsAllowed] = useState(0); 
     const [lockAmountMax, setLockAmountMax] = useState(false);
     const maxSteps = 4;
     const theme = useTheme();
@@ -129,7 +126,6 @@ const CrossChain = (props) => {
                 let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
                 console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
                 if (NETWORK) {
-                    //
                     console.log("You are already on the proper network:  ", network);
                 } else {
                     await provider.request({
@@ -165,11 +161,6 @@ const CrossChain = (props) => {
                     };
                 }
             } catch (switchError) {
-                {
-                    /*
-                    // This error code indicates that the chain has not been added to MetaMask.
-                    */
-                }
                 try {
                     const params_network_add = {
                         chainId: currentNetworkData[0].chainData.chainId,
@@ -599,7 +590,9 @@ const CrossChain = (props) => {
     const changeNetwork = (name) => {
         setNetwork(name);
     };
-
+    let ActiveStack = styled(CrossChain)(() => ({
+        display: "none"
+    }));
     const Row = (props) => {
         const { index, row } = props;
         let nextUnlock, lockedTokenAmount = 0,
@@ -640,44 +633,19 @@ const CrossChain = (props) => {
                     <TableCell align="right">
                         <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>View</Button>
                     </TableCell>
-                </TableRow> {
-                /* <TableRow>
-                                    <TableCell colSpan={2}></TableCell>
-                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
-                                    <Collapse in={open} timeout="auto" unmountOnExit>
-                                        <Box sx={{ margin: 1 }}>
-                                            <Typography variant="h6" gutterBottom component="div">
-                                                History
-                                            </Typography>
-                                            <Table size="small" aria-label="purchases">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>Withdrawable Date</TableCell>
-                                                        <TableCell align="right">Amount</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                {row.vesting.map((vestingRow) => (
-                                                    <TableRow key={vestingRow[0]}>
-                                                        <TableCell component="th" scope="row">
-                                                            {new Date(vestingRow[0] * 1000).toDateString()}
-                                                        </TableCell>
-                                                        <TableCell align="right">{(vestingRow[1] / Math.pow(10, row.decimals)).toFixed(2)}</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                                </TableBody>
-                                            </Table>
-                                        </Box>
-                                    </Collapse>
-                                    </TableCell>
-                                </TableRow> */
-            } <
-            />
+                </TableRow> 
+            </>
         )
     }
     return (
         <Container className={classes.root} maxWidth="fluid" style={{margin:'auto', backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)"}}>
-            <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
+                    <ActiveStack direction="column" alignItems="center" sx={{ p: "70px 0 0" }}>
+                        <Typography variant='h5' align="center" sx={{ p: "16px 0" }}>THE MOST EFFICIENT DEFI AGGREGATOR</Typography>
+                        <Typography align="center" sx={{ maxWidth: "761px", color: "#808080", fontSize: "18px" }}>
+                            Access the most liquidity, lowest slippage and best exchange rates across Ethereum,
+                            Binance Smart Chain, Polygon, Optimistic Ethereum (OΞ) and Arbitrum.</Typography>
+                    </ActiveStack>
+                    <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
             <Snackbar
                 open={snackbar}
                 autoHideDuration={600}
