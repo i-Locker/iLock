@@ -19,7 +19,8 @@ import {
     Link
 } from '@mui/material';
 import { CustomTab } from '../config/style';
-import { TokenABI } from "../config/abi/TokenABI";
+import { erc20Abi, network_, network_dec_to_hex } from "../constants";
+import { fetch_Balance } from "../web3";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -74,7 +75,7 @@ export default function Bridge({ chainState, setChainState }) {
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [tokenDialogState, setTokenDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
-    const { active, account } = useWeb3React();
+    const { active, account, chainId, connector } = useWeb3React();
     const [token1, setToken1] = useState(chainState["tokens"][0]&&chainState["tokens"][0].length>0?chainState["tokens"][0]:"");
     const [token2, setToken2] = useState(chainState["tokens"][1]&&chainState["tokens"][1].length>0?chainState["tokens"][1]:"");
     const [token1Balance, setToken1Balance] = useState();
@@ -91,7 +92,11 @@ export default function Bridge({ chainState, setChainState }) {
     const [rateState, setRateState] = useState(0);
     const [slippage, setSlippage] = useState(1);
 
-    // const [progress, setProgress] = React.useState(0);
+    { 
+     /*
+      * const [progress, setProgress] = React.useState(0);
+      */
+    }
 
     const web3 = new Web3(window.ethereum);
     const BN = web3.utils.BN;
@@ -151,13 +156,13 @@ export default function Bridge({ chainState, setChainState }) {
         async function ___SWAP_CORE(token1, token2, account) {
             if (maxAmount && maxAmount > 0) {
                 setSwapAmount(maxAmount);
-            }
-            let token1Inst = new web3.eth.Contract(TokenABI, token1.address);
-            let token2Inst = new web3.eth.Contract(TokenABI, token2.address);
-            let balance1_v1 = await token1Inst.methods.balanceOf(account).call();
-            let balance2_v1 = await token2Inst.methods.balanceOf(account).call();
-            let balance1_v2 = await getBalance(balance1_v1, token1.decimals);
-            let balance2_v2 = await getBalance(balance2_v1, token2.decimals);
+            };
+            let provider = await connector.getProvider();
+                console.log("network_ ",network_[network_dec_to_hex[chainId]], "token1 ",token1,"token2: ", token2);
+            let balance1_v2 = await fetch_Balance(provider, token1.address,account,network_[network_dec_to_hex[chainId]]);
+                console.log("balance: (token1) ",balance1_v2, token1.address, token1.name, token1.symbol, token1.decimals);
+            let balance2_v2 = await fetch_Balance(provider, token2.address,account,network_[network_dec_to_hex[chainId]]);
+                console.log("balance: (token2) ",balance2_v2, token2.address, token2.name, token2.symbol, token2.decimals);
             setToken1Balance(balance1_v2 ? balance1_v2 : 0);
             setToken2Balance(balance2_v2 ? balance2_v2 : 0);
         };
@@ -195,7 +200,7 @@ export default function Bridge({ chainState, setChainState }) {
                         };
                     };
                     try {
-                        let token1Inst = new web3.eth.Contract(TokenABI, token1.address);
+                        let token1Inst = new web3.eth.Contract(erc20Abi, token1.address);
                         let balance = await token1Inst.methods.balanceOf(account).call();
                         let balance_v2 = await getBalance(balance, token1.decimals);
                         if (!balance_v2 || balance_v2 < maxAmount) {
@@ -224,7 +229,7 @@ export default function Bridge({ chainState, setChainState }) {
         } else {
             ___SWAP_ORDERS(token1, token2, dexsOrder, swapSelectData, routerAddress);
         };
-    }, [token1, token2, dexsOrder, swapSelectData, routerAddress]);
+    }, [token1, token2, dexsOrder, swapSelectData, routerAddress, erc20Abi]);
 
     const swapTabChange = (newValue) => {
         setSwapTabValue(newValue);
@@ -344,7 +349,7 @@ export default function Bridge({ chainState, setChainState }) {
     }
 
     const tokenApprove = async () => {
-        let tokenInst = new web3.eth.Contract(TokenABI, token1.address);
+        let tokenInst = new web3.eth.Contract(erc20Abi, token1.address);
         let approve_amount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
         setSwapBtnState(6);
         await tokenInst.methods.approve(routerAddress[dexsOrder[swapSelectData].num].address, approve_amount).send({

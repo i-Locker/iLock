@@ -32,7 +32,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks } from "../constants";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, tokens_data } from "../constants";
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
@@ -41,7 +41,7 @@ import { alterLoaderText } from '../components/Loader';
 import Bridge from '../components/Bridge';
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
 export let handle_Date;
-export let chainHook; 
+export let chainHook;
 export let handle_dispatch;
 const CrossChain = (props) => {
 
@@ -238,8 +238,19 @@ const CrossChain = (props) => {
             "tokens": [tokens_____]
         };
         setChainState(state_chain);
-    }; chainHook = chain_Hook;
-    async function start_(tokenContract,tokenDecimals) {
+    };
+    chainHook = chain_Hook;
+    async function start_(tokenContract, tokenDecimals) {
+        let state_chain = {
+            "chainId": chainId,
+            "tokens": [{
+                "name": "FrenChain",
+                "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
+                "symbol": "FREN"
+            }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
+            "symbol": "FREN"
+        };
+        console.log("tokens_data: ", tokens_data[network_[network_dec_to_hex[chainId]]][0].address);
         let provider = await connector.getProvider();
         const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
         let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
@@ -262,25 +273,22 @@ const CrossChain = (props) => {
             alterLoaderText("Select Network");
         } else if (account && network && chainId && !tokenContract) {
             setIsAllowed(0);
-                let state_chain = {
-                    "chainId": chainId,
-                    "tokens": [{
-                        "name":"FrenChain",
-                        "address":"0x",
-                        "symbol":"FREM"
-                    },{
-                        "name":"Ethereum",
-                        "address":"0x",
-                        "symbol":"ETH"
-                    }],
-                    "symbol": "ETH"
-                };
-                setChainState(state_chain);
+            let state_chain = {
+                "chainId": chainId,
+                "tokens": [{
+                    "name": "FrenChain",
+                    "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
+                    "symbol": "FREN"
+                }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
+                "symbol": "FREN"
+            };
+            console.log("tokens_data: ", [network_[network_dec_to_hex[chainId]]][0].address);
+            setChainState(state_chain);
             alterLoaderText("Make a selection");
         } else {
             try {
-                if(tokenContract&&tokenDecimals) {
-                    start_(tokenContract,tokenDecimals);
+                if (tokenContract && tokenDecimals) {
+                    start_(tokenContract, tokenDecimals);
                 };
             } catch (e) {
                 console.log(e);
@@ -355,7 +363,8 @@ const CrossChain = (props) => {
 
     const handleDispatch = (d) => {
         dispatch({ type: TOKENLISTS, payload: d });
-    }; handle_dispatch = handleDispatch;
+    };
+    handle_dispatch = handleDispatch;
 
     const handleClickSearch = () => {
         setValues({
@@ -653,8 +662,8 @@ const CrossChain = (props) => {
                     <TableCell align="right">
                         <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>View</Button>
                     </TableCell>
-                </TableRow> 
-            </>
+                </TableRow> <
+            />
         )
     }
     return (

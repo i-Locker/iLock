@@ -74,7 +74,7 @@ import { IOSSwitch, CAccordion, CAccordionDetails, CAccordionSummary, BootstrapD
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { create_pool, get_pools } from "../../services/pool/liquidity.service";
 import { token_import, token_filter } from "../../services/tokens/tokens.service";
-import { explorer_,__TOKENLIST } from "../../web3.js";
+import { explorer_,__TOKENLIST, getTokenBalance, fetch_Balance } from "../../web3.js";
 import { tokens_data, network_hex_to_dec, network_, network_dec_to_hex  } from "../../constants.js";
 import { chainHook, handle_dispatch } from "../../pages/CrossChain.js";
 import Inch from '../img/common/1inch_color 1.png';
@@ -111,10 +111,11 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     const [isSelectingWallet, setIsSelectingWallet] = useState(true);
     const [expanded, setExpanded] = useState(false);
     const [button, setButton] = useState(1);
+    const [wroteTokenState, setWroteTokenState] = useState(false);
     const [activeSlipageButton, setActiveSlipageButton] = useState(1);
     const [liquidityDialogState, setLiquidityDialogState] = useState(false);
     const [liquiditySources, setLiquiditySources] = useState([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
-    const [baseToken, setBaseToken] = useState([0, 1, 2, 3, 4, 5, 6, 7]);
+    const [baseToken, setBaseToken] = useState([0]);
     const [gusMenu, setGusMenu] = useState([
         { min: 44.05, max: 63.91, name: "Instant", time: "< 10 sec" },
         { min: 44.05, max: 63.91, name: "High", time: "~ 12 sec" },
@@ -141,30 +142,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     }
     async function logout(m) {
         return (m) => console.log(m);
-    };
-    if(tokens_data) {
-        let tokens__; 
-        try {
-            tokens__ = tokens_data[network_[network_dec_to_hex[chainId]]];
-            tokens__ = JSON.parse(tokens__);
-            console.log("tokens: ",tokens_data[network_[network_dec_to_hex[chainId]]],tokens_data[network_[network_dec_to_hex[chainId]]],network_[network_dec_to_hex[chainId]], chainId); 
-        } catch(e) {
-            //
-        } finally {
-            try {
-                if(tokens__["chainData"]) {
-                    // this line reads if this didn't throw
-                    tokens__ = tokens__["chainData"]["tokens"][0];
-
-                    chainHook(tokens__);
-                };
-            } catch(e) {
-                //
-            } finally {
-                console.log("chain: ",chain);
-                console.log("tokens__: ",tokens__);
-            };
-        };
     };
     const [token1, setToken1] = useState(chain.tokens[0]?chain.tokens[0]:"");
     const [token2, setToken2] = useState(chain.tokens[1]?chain.tokens[1]:"");
@@ -210,13 +187,15 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             if (poolCreateDialogState) {
                 setToken1(poolCreateDialogState.token1);
                 setToken2(poolCreateDialogState.token2);
+                let provider = await connector.getProvider();
                 if (poolCreateDialogState.title === "Remove Liquidity") {
                     const FactoryInst = new web3.eth.Contract(factoryAddress.abi, factoryAddress.address);
                     const LPAddress = await FactoryInst.methods.getPair(poolCreateDialogState.token1.address, poolCreateDialogState.token2.address).call();
                     const LPInst = new web3.eth.Contract(TokenABI, LPAddress);
-                    let lp_balance_v1 = await LPInst.methods.balanceOf(account).call();
-                    let lp_decimal = await LPInst.methods.decimals().call();
+                    let lp_balance_v1 = await LPInst.methods.balanceOf().call();
                     let lp_balance_v2 = await getBalance(lp_balance_v1, lp_decimal);
+                    let lp_decimal = await LPInst.methods.decimals().call();
+                    console.log("balance: (LP) ", await fetch_Balance(provider, LPAddress,account,network_[network_dec_to_hex[chainId]]));
                     setLPMax(lp_balance_v2);
                 } else {
                     const token1Inst = new web3.eth.Contract(TokenABI, poolCreateDialogState.token1.address);
@@ -225,6 +204,8 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                     const token2Inst = new web3.eth.Contract(TokenABI, poolCreateDialogState.token2.address);
                     let balance2_v1 = await token2Inst.methods.balanceOf(account).call();
                     let balance2_v2 = await getBalance(balance2_v1, poolCreateDialogState.token2.decimals);
+                    console.log("balance: (t1) ", await fetch_Balance(provider, poolCreateDialogState.token1.address,account,network_[network_dec_to_hex[chainId]]));
+                    console.log("balance: (t2) ", await fetch_Balance(provider, poolCreateDialogState.token2.address,account,network_[network_dec_to_hex[chainId]]));
                     setToken1Max(balance1_v2);
                     setToken2Max(balance2_v2);
                 }
@@ -236,6 +217,37 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
     useEffect(() => {
         async function __FREE(token1, token2,poolCreateDialogState) {
+            if(tokens_data) {
+                let tokens__; 
+                try {
+                    tokens__ = tokens_data[network_[network_dec_to_hex[chainId]]];
+                    tokens__ = JSON.parse(tokens__);
+                    console.log("tokens: ",tokens_data[network_[network_dec_to_hex[chainId]]],tokens_data[network_[network_dec_to_hex[chainId]]],network_[network_dec_to_hex[chainId]], chainId); 
+                } catch(e) {
+                    //
+                } finally {
+                    try {
+                        if(tokens__["chainData"]) {
+                            {
+                             /*
+                              * codee below this line runs while if statement does not throw
+                              */
+                            }
+                            tokens__ = tokens__["chainData"]["tokens"][0];
+                            handle_dispatch(tokens__);
+                            chainHook(tokens__);
+                            if(!wroteTokenState) {
+                                setWroteTokenState(true);
+                            };
+                        };
+                    } catch(e) {
+                        //
+                    } finally {
+                        console.log("chain: ",chain);
+                        console.log("tokens__: ",tokens__);
+                    };
+                };
+            };
             if (poolCreateDialogState) {
                 if (poolCreateDialogState.title === "Remove Liquidity") {
                     const FactoryInst = new web3.eth.Contract(factoryAddress.abi, factoryAddress.address);
@@ -807,7 +819,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                                             </Stack>
                                                         </Stack>
                                                         <Button variant="contained" size="small" onClick={() => setTokenImportDialogState(true)} sx={{ borderRadius: "6px", color: "white" }}>import</Button>
-                                                    </Stack>
+                                                    </Stack> 
                                                     :
                                                     <MenuItem key={index} onClick={(e) => tokenDialogClose(e, data)}>
                                                         <Stack key={index} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: "10px" }}>

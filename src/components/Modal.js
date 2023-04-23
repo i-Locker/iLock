@@ -1,5 +1,4 @@
-import { useState } from "react";
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -21,23 +20,46 @@ const style = {
 };
 export let _toggleModal;
 
-function BasicModal() {
-    const [open, setOpen] = React.useState(false);
+export default function BasicModal({ headersText, togglesText }) {
+    const [open, setOpen] = useState(false);
     const [headerText, setHeaderText] = useState("Loading...");
     const [toggleText, setToggleText] = useState("Loading...");
     const [holder, setHolder] = useState("");
-    const openModal = () => setOpen(true);
-    const closeModal = () => setOpen(false);
     const changeHeaderText = (header_Text) => setHeaderText(header_Text);
     const changeToggleText = (toggle_Text) => setToggleText(toggle_Text);
+    const openModal = () => setOpen(true);
+    const closeModal = () => setOpen(false);
     const dashboardClasses = useStyles.dashboard();
+    async function opened_(isOpen) {
+        if (!open) {
+          isOpen = isOpen == true ? isOpen : true;
+        } else {
+          isOpen = isOpen == false ? isOpen : false;
+        };
+      switch(isOpen){
+        case true:
+          openModal();
+          setOpen(true);
+          break;        
+        case false:
+          closeModal();
+          setOpen(false);
+          break;        
+        default:
+          break;
+      };
+    };
     _toggleModal = (toggle_Text, header_Text) => {
+        console.log("modal: (text) ", headersText, togglesText);
         if (header_Text !== undefined) {
             changeToggleText(toggle_Text);
             changeHeaderText(header_Text);
-        }
-        if (!open) openModal()
-        else closeModal()
+        };
+        if (!open) {
+          opened_(true);
+        } else {
+          opened_(false);
+        };
     };
     const handleHolder = async (e) => {
         await setHolder(e.target.value);
@@ -47,7 +69,9 @@ function BasicModal() {
         <div>
       <Modal
         open={open}
-        onClose={closeModal}
+        close={close}
+        onOpen={opened_}
+        onClose={opened_}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -86,4 +110,3 @@ function BasicModal() {
     </div>
     );
 };
-export default BasicModal;

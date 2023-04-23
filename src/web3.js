@@ -295,6 +295,18 @@ export const allowance = async (token, account, network) => {
     };
 }
 
+export const fetch_Balance = async (provider, token, account, network) => {
+    let result;
+    try {
+        let web3 = new Web3(provider);
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        result = await contract.methods["balanceOf"](account).call({ from: account });
+        return result;
+    } catch (e) {
+        console.log(e);
+    };
+}
+
 export const getTokenBalance = async (provider, token, account, network) => {
     let result;
     try {
