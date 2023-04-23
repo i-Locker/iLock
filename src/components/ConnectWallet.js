@@ -53,10 +53,12 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch({
-            type:CHANGE_WALLET,
-            payload: account
-        })
+        if(account) {
+          dispatch({
+                type:CHANGE_WALLET,
+                payload: account
+            })
+        };
     }, [account])
     // ** Actions
     const copyAddress = () => {

@@ -6,7 +6,7 @@ import MaterialThemeProvider from "./providers/theme";
 import MuiSnackbarProvider from "./providers/snackbar";
 import NotificationProvider from "./providers/notification";
 import Web3Provider from "./providers/web3";
-
+import { Buffer } from 'buffer';
 import { Provider as ReduxProvider } from "react-redux";
 
 // ** Initialize Store
@@ -14,9 +14,9 @@ import configureStore from "./redux/store";
 
 // ** Import App
 import App from "./App";
+window.Buffer = window.Buffer || Buffer;
 
 const store = configureStore();
-
 const container = document.getElementById('app-root');
 const root = createRoot(container);
 root.render(<ReduxProvider store={store}>

@@ -74,7 +74,9 @@ import { IOSSwitch, CAccordion, CAccordionDetails, CAccordionSummary, BootstrapD
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { create_pool, get_pools } from "../../services/pool/liquidity.service";
 import { token_import, token_filter } from "../../services/tokens/tokens.service";
-import { explorer_,network_dec_to_hex,__TOKENLIST } from "../../web3.js";
+import { explorer_,__TOKENLIST } from "../../web3.js";
+import { tokens_data, network_hex_to_dec, network_, network_dec_to_hex  } from "../../constants.js";
+import { chainHook, handle_dispatch } from "../../pages/CrossChain.js";
 import Inch from '../img/common/1inch_color 1.png';
 
 const ConnectButton = styled(Button)(() => ({
@@ -137,6 +139,33 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
           * const [token2, setToken2] = useState(chain.test_tokens[1]);
         */
     }
+    async function logout(m) {
+        return (m) => console.log(m);
+    };
+    if(tokens_data) {
+        let tokens__; 
+        try {
+            tokens__ = tokens_data[network_[network_dec_to_hex[chainId]]];
+            tokens__ = JSON.parse(tokens__);
+            console.log("tokens: ",tokens_data[network_[network_dec_to_hex[chainId]]],tokens_data[network_[network_dec_to_hex[chainId]]],network_[network_dec_to_hex[chainId]], chainId); 
+        } catch(e) {
+            //
+        } finally {
+            try {
+                if(tokens__["chainData"]) {
+                    // this line reads if this didn't throw
+                    tokens__ = tokens__["chainData"]["tokens"][0];
+
+                    chainHook(tokens__);
+                };
+            } catch(e) {
+                //
+            } finally {
+                console.log("chain: ",chain);
+                console.log("tokens__: ",tokens__);
+            };
+        };
+    };
     const [token1, setToken1] = useState(chain.tokens[0]?chain.tokens[0]:"");
     const [token2, setToken2] = useState(chain.tokens[1]?chain.tokens[1]:"");
     const [poolBtnState, setPoolBtnState] = useState(false);
@@ -165,6 +194,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
     useEffect(() => {
         setPage(1);
+        console.log("chain.tokens: ",chain.tokens);
         setList(chain.tokens.slice(0, 19));
         setToken1(chain.tokens[0]);
         setToken2(chain.tokens[1]);
@@ -228,7 +258,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 }
             }
         };
-        __FREE(token1, token2,poolCreateDialogState);
+        setTimeout(__FREE,5000,token1, token2,poolCreateDialogState);
     }, [token1, token2])
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -722,7 +752,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 </DialogContent>
             </BootstrapDialog>
 
-            {chain.tokens.length ?
+            {chain.tokens&&chain.tokens.length ?
                 <BootstrapDialog
                     onClose={tokenDialogClose}
                     aria-labelledby="customized-dialog-title1"
@@ -831,7 +861,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
             {customToken.length ?
                 <BootstrapDialog
-                    onClose={tokenImportDialogClose}
+                    onClose={tokenImportDialogState!=false?tokenImportDialogClose:logout}
                     aria-labelledby="customized-dialog-title1"
                     open={tokenImportDialogState}
                 >

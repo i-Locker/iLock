@@ -28,6 +28,22 @@ export default {
             chainId: 338,
             name: "Cronos Network (testnet)"
         },
+        444: {
+            chainId: 444,
+            name: "FrenChain Network"
+        },
+        44444: {
+            chainId: 444,
+            name: "FrenChain Network (testnet)"
+        },
+        420420: {
+            chainId: 420420,
+            name: "KekChain Network"
+        },
+        420666: {
+            chainId: 420666,
+            name: "KekChain Network (testnet)"
+        },
         56: {
             chainId: 56,
             name: "Binance Smart Chain"
@@ -43,6 +59,10 @@ export default {
         1666600000: {
             chainId: 1666600000,
             name: "Harmony"
+        },
+        43113: {
+            chainId: 43113,
+            name: "Avalanche (testnet)"
         },
         43114: {
             chainId: 43114,

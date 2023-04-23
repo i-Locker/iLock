@@ -75,8 +75,8 @@ export default function Bridge({ chainState, setChainState }) {
     const [tokenDialogState, setTokenDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
     const { active, account } = useWeb3React();
-    const [token1, setToken1] = useState(chainState["tokens"][0].length>0?chainState["tokens"][0]:"");
-    const [token2, setToken2] = useState(chainState["tokens"][1].length>0?chainState["tokens"][1]:"");
+    const [token1, setToken1] = useState(chainState["tokens"][0]&&chainState["tokens"][0].length>0?chainState["tokens"][0]:"");
+    const [token2, setToken2] = useState(chainState["tokens"][1]&&chainState["tokens"][1].length>0?chainState["tokens"][1]:"");
     const [token1Balance, setToken1Balance] = useState();
     const [token2Balance, setToken2Balance] = useState();
     const [token3, setToken3] = useState('WETH/DAI');
@@ -161,7 +161,11 @@ export default function Bridge({ chainState, setChainState }) {
             setToken1Balance(balance1_v2 ? balance1_v2 : 0);
             setToken2Balance(balance2_v2 ? balance2_v2 : 0);
         };
-        ___SWAP_CORE(token1, token2, account);
+        if(account) {
+            ___SWAP_CORE(token1, token2, account);   
+        } else {
+            return;
+        };
     }, [token1, token2, account])
 
     let num = 0;

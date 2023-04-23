@@ -41,6 +41,8 @@ import { alterLoaderText } from '../components/Loader';
 import Bridge from '../components/Bridge';
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
 export let handle_Date;
+export let chainHook; 
+export let handle_dispatch;
 const CrossChain = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
@@ -229,6 +231,14 @@ const CrossChain = (props) => {
             };
         };
     };
+
+    async function chain_Hook(tokens_____) {
+        let state_chain = {
+            "chainId": chainId,
+            "tokens": [tokens_____]
+        };
+        setChainState(state_chain);
+    }; chainHook = chain_Hook;
     async function start_(tokenContract,tokenDecimals) {
         let provider = await connector.getProvider();
         const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
@@ -250,11 +260,10 @@ const CrossChain = (props) => {
         } else if (account && !network && !tokenContract) {
             setIsAllowed(0);
             alterLoaderText("Select Network");
-        } else if (account && network && !tokenContract) {
+        } else if (account && network && chainId && !tokenContract) {
             setIsAllowed(0);
-            const currentNetworkData = networkData.filter((each) => each.name === network);
                 let state_chain = {
-                    "chainId": currentNetworkData[0].chainData.chainId,
+                    "chainId": chainId,
                     "tokens": [{
                         "name":"FrenChain",
                         "address":"0x",
@@ -343,6 +352,10 @@ const CrossChain = (props) => {
             window.alert("Token not found, please try again...");
         };
     };
+
+    const handleDispatch = (d) => {
+        dispatch({ type: TOKENLISTS, payload: d });
+    }; handle_dispatch = handleDispatch;
 
     const handleClickSearch = () => {
         setValues({
