@@ -25,7 +25,7 @@ const style = {
 };
 
 export let _toggleWithdrawalModal; // replicated internal function
-function WithdrawModal() {
+export default function WithdrawModal({ _account }) {
     const [open, setOpen] = React.useState(false);
     const [headerText, setHeaderText] = useState("Loading...");
     const [toggleText, setToggleText] = useState("Loading...");
@@ -70,8 +70,15 @@ function WithdrawModal() {
         console.log("receiver: ", receiver);
     };
     const iLock_transfer_helper = async (e) => {
-      console.log("isEth: ",await getChecked());
-        _transfer(lockId,receiver,await getChecked()).then(async (transferred) => {
+        console.log("_account: ", _account);
+        let ___delegate;
+        if(!receiver||receiver==undefined) {
+            ___delegate = account;
+        } else {
+            ___delegate = receiver;
+        };
+        console.log("isEth: ",await getChecked(), ___delegate);
+        _transfer(lockId,___delegate,await getChecked()).then(async (transferred) => {
             console.log("transferred: ", transferred);
         });
     };
@@ -156,4 +163,3 @@ function WithdrawModal() {
       </Typography>
     );
 }
-export default WithdrawModal;

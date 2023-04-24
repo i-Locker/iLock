@@ -1,5 +1,4 @@
-import { useState } from "react";
-import * as React from 'react';
+import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -20,9 +19,8 @@ const style = {
     boxShadow: 24,
     p: 4
 };
-
-export let _toggleOwnershipModal; // replicated internal function
-function TransferOwnershipModal() {
+export let _toggleOwnershipModal;
+const TransferOwnershipModal = ({ isOpen, setIsOpen }) => {
     const [open, setOpen] = React.useState(false);
     const [headerText, setHeaderText] = useState("Loading...");
     const [toggleText, setToggleText] = useState("Loading...");
@@ -53,14 +51,18 @@ function TransferOwnershipModal() {
             console.log("network: ",network);
           };
       };
-      if (!open) openModal()
-      else closeModal()
+      if (!open) {
+        openModal();
+      } else {
+        closeModal();
+      };
     };
     const handleHeadHolder = async(e) => {
-        changeHeadHolder(e.target.value);
-        console.log("holder: ",headHolder);
+      changeHeadHolder(e.target.value);
+      console.log("holder: ",headHolder);
     };
     const iLock_transferOwnership_helper = async(e) => {
+      console.log("isOpen: ",isOpen);
       _wrap(headHolder).then(async(wrapped)=>{
         console.log("wrapped: ",wrapped);
       });

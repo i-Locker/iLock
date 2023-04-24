@@ -18,24 +18,23 @@ import {
     Collapse,
     Link
 } from '@mui/material';
-import { CustomTab } from '../config/style';
-import { erc20Abi, network_, network_dec_to_hex } from "../constants";
-import { fetch_Balance } from "../web3";
+import { CustomTab } from '../../config/style';
+import { TokenABI } from "../../config/abis/TokenABI";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import fren from '../assets/img/common/fren.svg';
-import Filter from '../assets/img/common/filter.png';
-import Refresh from '../assets/img/common/refresh.png';
+import fren from '../../assets/img/common/fren.svg';
+import Filter from '../../assets/img/common/filter.png';
+import Refresh from '../../assets/img/common/refresh.png';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import { styled, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import { useWeb3React } from "@web3-react/core";
-import Cwallet from "../assets/constants/Cwallet";
-import { getBalance } from "../config/app";
+import Cwallet from "../../assets/constants/Cwallet";
+import { getBalance } from "../../config/app";
 import './swap.css';
-import { Router_address } from "../config/abi/router/dexRouter";
-import { Factory_address } from "../config/abi/router/dexFactory";
+import { Router_address } from "../../config/abis/router/dexRouter";
+import { Factory_address } from "../../config/abis/router/dexFactory";
 import Web3 from 'web3';
 import axios from 'axios';
 
@@ -69,28 +68,30 @@ let ActiveStack = styled(Stack)(() => ({
     display: "none"
 }));
 
-export default function Bridge({ chainState, setChainState }) {
-    const { active, account, chainId, connector } = useWeb3React();
+export default function Swap({ chainState, setChainState }) {
     const [swapTabValue, setSwapTabValue] = useState(0);
     const [activeRate, setActiveRate] = useState(12);
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [tokenDialogState, setTokenDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
-    const [token1, setToken1] = useState(chainState["tokens"][0]&&chainState["tokens"][0].length>0?chainState["tokens"][0]:"");
-    const [token2, setToken2] = useState(chainState["tokens"][1]&&chainState["tokens"][1].length>0?chainState["tokens"][1]:"");
-    const [token1Balance, setToken1Balance] = useState(0);
-    const [token2Balance, setToken2Balance] = useState(0);
+    const { active, account } = useWeb3React();
+    const [token1, setToken1] = useState(chainState.tokens[0]?chainState.tokens[0]:"");
+    const [token2, setToken2] = useState(chainState.tokens[1]?chainState.tokens[1]:"");
+    const [token1Balance, setToken1Balance] = useState();
+    const [token2Balance, setToken2Balance] = useState();
     const [token3, setToken3] = useState('WETH/DAI');
     const [swapSelectState, setSwapSelectState] = useState(false);
-    const [dexsOrder, setDexsOrder] = useState("");
+    const [dexsOrder, setDexsOrder] = useState();
     const [swapSelectData, setSwapSelectData] = useState(0);
     const [swapBtnState, setSwapBtnState] = useState(0);
-    const [routerAddress, setRouterAddress] = useState(Router_address[0].length>0?Router_address[0].dexs:"");
-    const [factoryAddress, setFactoryAddress] = useState(Factory_address[0].length>0?Factory_address[0].dexs:"");
-    const [maxAmount, setMaxAmount] = useState(0);
+    const [routerAddress, setRouterAddress] = useState(Router_address[0].dexs);
+    const [factoryAddress, setFactoryAddress] = useState(Factory_address[0].dexs);
+    const [maxAmount, setMaxAmount] = useState();
     const [importAlert, setImportAlert] = useState({ state1: false, state2: "success", data: "" });
     const [rateState, setRateState] = useState(0);
     const [slippage, setSlippage] = useState(1);
+
+    // const [progress, setProgress] = React.useState(0);
 
     const web3 = new Web3(window.ethereum);
     const BN = web3.utils.BN;
@@ -106,42 +107,28 @@ export default function Bridge({ chainState, setChainState }) {
     useEffect(() => {
         setSwapSelectData(0);
         async function ____SWAP_ENGINE(chainState) {
-            try {
-                let select_router = await Router_address.find(data => (data.chainId === chainState.chainId)).dexs;
-                let select_factory = await Factory_address.find(data => (data.chainId === chainState.chainId)).dexs;
-                console.log(select_router);
-                setRouterAddress(select_router);
-                setFactoryAddress(select_factory);
-                if(chainState.tokens[0].length>0) {
-                    axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[0].address}?network=${chainState.symbol}`).then(res => {
-                        if (res.data.data.length) {
-                            console.log(res.data.data[0]);
-                            setToken1(res.data.data[0]);
-                        } else {
-                            let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
-                            setToken1(pj1["data"][0]);
-                        };
-                    });   
+            let select_router = await Router_address.find(data => (data.chainId === chainState.chainId)).dexs;
+            let select_factory = await Factory_address.find(data => (data.chainId === chainState.chainId)).dexs;
+            console.log(select_router);
+            setRouterAddress(select_router);
+            setFactoryAddress(select_factory);
+            axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[0].address}?network=${chainState.symbol}`).then(res => {
+                if (res.data.data.length) {
+                    console.log(res.data.data[0]);
+                    setToken1(res.data.data[0]);
+                } else {
+                    let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
+                    setToken1(pj1.data[0]);
                 };
-            } catch(e) {
-                let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
-                setToken1(pj1["data"][0]);
-            };
-            try {
-                if(chainState.tokens[1].length>0) {
-                    axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[1].address}?network=${chainState.symbol}`).then(res => {
-                        if (res.data.data.length) {
-                            setToken2(res.data.data[0]);
-                        } else {
-                            let pj2 = {"total":1,"data":[{"id":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth","address":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a","symbol":"FREN","name":"FrenChain","description":"FrenChain/FREN","txns24h":2,"txns24hChange":-0.5,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":235.84081844012337,"volume24hETH":0.12303964262357231,"volumeChange24h":0.0,"liquidityUSD":31783.183491244,"liquidityETH":16.581487310242,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png","priceUSD":0.00021155709187981557,"priceETH":1.1037066929948508e-07,"priceUSDChange24h":-0.036307376632898423,"priceETHChange24h":-0.007719123029520966,"timestamp":1667493912,"blockNumber":1,"AMM":"all","network":"eth","tokenListsNames":["CoinGecko"],"marketCap":0.0,"marketCapChange24h":0.0,"liquidityUSDChange24h":-0.032555487289210386,"liquidityETHChange24h":-0.0038559326740329647,"volumeUSDChange24h":-0.9497107384650174,"volumeETHChange24h":-0.948233885660636}]};
-                            setToken2(pj2["data"][0]);
-                        };
-                    });
+            });
+            axios.get(`https://api.dex.guru/v2/tokens/search/${chainState.tokens[1].address}?network=${chainState.symbol}`).then(res => {
+                if (res.data.data.length) {
+                    setToken2(res.data.data[0]);
+                } else {
+                    let pj2 = {"total":1,"data":[{"id":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth","address":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a","symbol":"FREN","name":"FrenChain","description":"FrenChain/FREN","txns24h":2,"txns24hChange":-0.5,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":235.84081844012337,"volume24hETH":0.12303964262357231,"volumeChange24h":0.0,"liquidityUSD":31783.183491244,"liquidityETH":16.581487310242,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png","priceUSD":0.00021155709187981557,"priceETH":1.1037066929948508e-07,"priceUSDChange24h":-0.036307376632898423,"priceETHChange24h":-0.007719123029520966,"timestamp":1667493912,"blockNumber":1,"AMM":"all","network":"eth","tokenListsNames":["CoinGecko"],"marketCap":0.0,"marketCapChange24h":0.0,"liquidityUSDChange24h":-0.032555487289210386,"liquidityETHChange24h":-0.0038559326740329647,"volumeUSDChange24h":-0.9497107384650174,"volumeETHChange24h":-0.948233885660636}]};
+                    setToken2(pj2.data[0]);
                 };
-            } catch(e) {
-                let pj2 = {"total":1,"data":[{"id":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth","address":"0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a","symbol":"FREN","name":"FrenChain","description":"FrenChain/FREN","txns24h":2,"txns24hChange":-0.5,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":235.84081844012337,"volume24hETH":0.12303964262357231,"volumeChange24h":0.0,"liquidityUSD":31783.183491244,"liquidityETH":16.581487310242,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png","priceUSD":0.00021155709187981557,"priceETH":1.1037066929948508e-07,"priceUSDChange24h":-0.036307376632898423,"priceETHChange24h":-0.007719123029520966,"timestamp":1667493912,"blockNumber":1,"AMM":"all","network":"eth","tokenListsNames":["CoinGecko"],"marketCap":0.0,"marketCapChange24h":0.0,"liquidityUSDChange24h":-0.032555487289210386,"liquidityETHChange24h":-0.0038559326740329647,"volumeUSDChange24h":-0.9497107384650174,"volumeETHChange24h":-0.948233885660636}]};
-                setToken2(pj2["data"][0]);
-            };
+            });
         };
         ____SWAP_ENGINE(chainState);
     }, [chainState]);
@@ -150,21 +137,17 @@ export default function Bridge({ chainState, setChainState }) {
         async function ___SWAP_CORE(token1, token2, account) {
             if (maxAmount && maxAmount > 0) {
                 setSwapAmount(maxAmount);
-            };
-            let provider = await connector.getProvider();
-                console.log("network_ ",network_[network_dec_to_hex[chainId]], "token1 ",token1,"token2: ", token2);
-            let balance1_v2 = await fetch_Balance(provider, token1.address,account,network_[network_dec_to_hex[chainId]]);
-                console.log("balance: (token1) ",balance1_v2, token1.address, token1.name, token1.symbol, token1.decimals);
-            let balance2_v2 = await fetch_Balance(provider, token2.address,account,network_[network_dec_to_hex[chainId]]);
-                console.log("balance: (token2) ",balance2_v2, token2.address, token2.name, token2.symbol, token2.decimals);
+            }
+            let token1Inst = new web3.eth.Contract(TokenABI, token1.address);
+            let token2Inst = new web3.eth.Contract(TokenABI, token2.address);
+            let balance1_v1 = await token1Inst.methods.balanceOf(account).call();
+            let balance2_v1 = await token2Inst.methods.balanceOf(account).call();
+            let balance1_v2 = await getBalance(balance1_v1, token1.decimals);
+            let balance2_v2 = await getBalance(balance2_v1, token2.decimals);
             setToken1Balance(balance1_v2 ? balance1_v2 : 0);
             setToken2Balance(balance2_v2 ? balance2_v2 : 0);
         };
-        if(account) {
-            ___SWAP_CORE(token1, token2, account);   
-        } else {
-            return;
-        };
+        ___SWAP_CORE(token1, token2, account);
     }, [token1, token2, account])
 
     let num = 0;
@@ -194,7 +177,7 @@ export default function Bridge({ chainState, setChainState }) {
                         };
                     };
                     try {
-                        let token1Inst = new web3.eth.Contract(erc20Abi, token1.address);
+                        let token1Inst = new web3.eth.Contract(TokenABI, token1.address);
                         let balance = await token1Inst.methods.balanceOf(account).call();
                         let balance_v2 = await getBalance(balance, token1.decimals);
                         if (!balance_v2 || balance_v2 < maxAmount) {
@@ -223,7 +206,7 @@ export default function Bridge({ chainState, setChainState }) {
         } else {
             ___SWAP_ORDERS(token1, token2, dexsOrder, swapSelectData, routerAddress);
         };
-    }, [token1, token2, dexsOrder, swapSelectData, routerAddress, erc20Abi]);
+    }, [token1, token2, dexsOrder, swapSelectData, routerAddress]);
 
     const swapTabChange = (newValue) => {
         setSwapTabValue(newValue);
@@ -343,7 +326,7 @@ export default function Bridge({ chainState, setChainState }) {
     }
 
     const tokenApprove = async () => {
-        let tokenInst = new web3.eth.Contract(erc20Abi, token1.address);
+        let tokenInst = new web3.eth.Contract(TokenABI, token1.address);
         let approve_amount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
         setSwapBtnState(6);
         await tokenInst.methods.approve(routerAddress[dexsOrder[swapSelectData].num].address, approve_amount).send({
@@ -378,13 +361,18 @@ export default function Bridge({ chainState, setChainState }) {
         });
         setSwapBtnState(4);
     }
- 
+
     return (
-        <>
-             <ThemeProvider theme={theme}>
+        <Box sx={{ background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)" }}>
+            <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }}>
+                    <ActiveStack direction="column" alignItems="center" sx={{ p: "70px 0 0" }}>
+                        <Typography variant='h5' align="center" sx={{ p: "16px 0" }}>THE MOST EFFICIENT DEFI AGGREGATOR</Typography>
+                        <Typography align="center" sx={{ maxWidth: "761px", color: "#808080", fontSize: "18px" }}>Access the most liquidity, lowest slippage and best exchange rates across Ethereum,
+                            Binance Smart Chain, Polygon, Optimistic Ethereum (OΞ) and Arbitrum.</Typography>
+                    </ActiveStack>
                     {<Grid container justifyContent="space-between">
-                        <ActiveGrid item={true} xs={12} md={7} sx={{ margin: "80px 0 130px" }} className='responsive3'>
+                        <ActiveGrid xs={12} md={7} sx={{ margin: "80px 0 130px" }} className='responsive3'>
                             <Paper sx={{ width: "100%", height: "630px", background: "#191919" }}>
                                 <FormControl sx={{ width: "150px", margin: "20px 45px" }}>
                                     <InputLabel id="token-select-label3">Token</InputLabel>
@@ -403,7 +391,7 @@ export default function Bridge({ chainState, setChainState }) {
                                 </FormControl>
                             </Paper>
                         </ActiveGrid>
-                        <Grid xs={12} item={true} md={activeRate === 11 ? 12 : activeRate} container direction="column" alignItems="center">
+                        <Grid xs={12} md={activeRate === 11 ? 12 : activeRate} container direction="column" alignItems="center">
                             <Collapse in={importAlert.state1} sx={{ mb: "-50px", mt: "50px" }}>
                                 <Alert variant="filled" severity={importAlert.state2} sx={{ mb: 2 }}>{importAlert.data}</Alert>
                             </Collapse>
@@ -411,7 +399,7 @@ export default function Bridge({ chainState, setChainState }) {
                                 <Box sx={{ m: "0 8% 25px" }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Stack direction="row" justifyContent="space-between" sx={{ width: "45%", maxWidth: "200px" }} spacing={1}>
-                                            <CustomTab text={["Bridge"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
+                                            <CustomTab text={["Swap", "Limit"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
                                         </Stack>
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             {/* <CircularProgress variant="determinate" value={progress} size={20} /> */}
@@ -425,7 +413,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>From</Typography>
-                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
+                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
                                                         <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
@@ -467,7 +455,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
                                                                 <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
-                                                                <Typography gutterBottom>{maxAmount}</Typography>
+                                                                <Typography gutterBottom>{dexsOrder ? dexsOrder[0].amountOut : maxAmount}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
                                                                 <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}>Tx cost 41682.3131 FREN</Typography>
@@ -478,7 +466,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                     {dexsOrder && dexsOrder.length > 1 &&
                                                         <Box>
                                                             <Paper sx={{ margin: "0 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 1 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }}
-                                                                onClick={() => setDexsOrder(dexsOrder&&dexsOrder.length > 2 ? [dexsOrder[0], dexsOrder[1], dexsOrder[2]] : [dexsOrder[0], dexsOrder[1]], setSwapSelectData(1))}>
+                                                                onClick={() => setDexsOrder(dexsOrder.length > 2 ? [dexsOrder[0], dexsOrder[1], dexsOrder[2]] : [dexsOrder[0], dexsOrder[1]], setSwapSelectData(1))}>
                                                                 <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 1 && "#7E8B74"}` }}>
                                                                     <Stack direction="row" justifyContent="space-between">
                                                                         <Stack direction="row" spacing={1} onClick={() => setSwapSelectState(dexsOrder.length > 2 ? swapSelectState ? false : true : false)}>
@@ -627,12 +615,20 @@ export default function Bridge({ chainState, setChainState }) {
                                         <ExpandLessIcon />
                                     </Stack>
                                 </Stack>
+                                {/* <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                    <Typography sx={{ fontSize: "14px" }}>Liquidity Provider Fee</Typography>
+                                    <Typography sx={{ fontSize: "14px" }}>0.001 BNB</Typography>
+                                </Stack>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                    <Typography sx={{ fontSize: "14px" }}>Gas refund</Typography>
+                                    <Chip size='small' label='0% REFUND' sx={{ color: "white", background: "#37AF43", borderRadius: "6px" }} />
+                                </Stack> */}
                             </Stack>
                         </Grid>
                     </Grid>}
                 </Stack>
             </ThemeProvider>
             <Cwallet isOpen={isOpenDialog} setIsOpen={setIsOpenDialog} tokenDialogState={tokenDialogState} setTokenDialogState={setTokenDialogState} chain={chainState} setChain={setChainState} selectToken={selectToken} swapSettingDialogState={swapSettingDialogState} setSwapSettingDialogState={setSwapSettingDialogState} setImportAlert={setImportAlert} />
-            </>
+        </Box>
     );
 }

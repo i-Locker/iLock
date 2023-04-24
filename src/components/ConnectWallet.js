@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 // ** Web3 React
 import {
     NoEthereumProviderError,
@@ -45,10 +44,8 @@ import { explorer_ } from "../constants.js";
 const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const classes = useStyles.base();
     const triedEager = useEagerConnect();
-    const { activate, active, account, deactivate, connector, error, setError } =
-        useWeb3React();
-
-    const [activatingConnector, setActivatingConnector] = React.useState();
+    const { activate, active, account, deactivate, connector, error, setError } = useWeb3React();
+    const [activatingConnector, setActivatingConnector] = React.useState(undefined);
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
 
@@ -60,7 +57,6 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
             })
         };
     }, [account])
-    // ** Actions
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
     };
@@ -68,13 +64,11 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
         const { ethereum } = window;
         window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
     };
-    // ** Effects
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
         }
     }, [activatingConnector, connector]);
-    // log the walletconnect URI
     useEffect(() => {
         const logURI = (uri) => {
             console.log("WalletConnect URI", uri);
@@ -87,8 +81,6 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     }, []);
 
     useInactiveListener(!triedEager);
-
-    // ** Actions
     const retryConnect = () => {
         setError(false);
     };
@@ -98,6 +90,9 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     };
     const onDeactiveWallet = () => {
         deactivate();
+    };
+    const handleOpenWalletList = () => {
+        setIsOpen(true);
     };
     const handleCloseWalletList = () => {
         setIsOpen(false);
@@ -120,11 +115,12 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     };
     return (
         <Dialog
-            onClose={handleCloseWalletList}
+            open={isOpen}
+            onOpen={() => handleOpenWalletList()}
+            onClose={() => handleCloseWalletList()}
             classes={{
                 paper: classes.connectWallet,
             }}
-            open={isOpen}
             fullWidth={true}
         >
             {error && <Alert severity="error" action={
@@ -213,7 +209,7 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                                     {activating ? (
                                         <CircularProgress />
                                     ) : (
-                                        <img src={item.logo} alt={item.logo} />
+                                        <img style={{width:"500%",height:"500%"}} src={item.logo1} alt={item.logo1} />
                                     )}
                                 </ListItemIcon>
                                 <ListItemText

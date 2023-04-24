@@ -122,6 +122,9 @@ const LockUp = (props) => {
         _toggleOwnershipModal(modalInner, "Ownership Transfer", await getLockId(), await getNetwork());
     };
     useEffect(() => {
+        let lock_props;
+        let props_out;
+        let timer;
         if (claimed || doneForSure) {
             setDoneForSure(true);
             // eslint-disable-next-line
@@ -134,7 +137,6 @@ const LockUp = (props) => {
             } else {
                 alterLoaderText("Scanning Blockchain Index");
             };
-        };
         if (chainName) {
             changeNetwork(network_lower_to_proper[chainName]);
             console.log('network: ', network);
@@ -183,9 +185,6 @@ const LockUp = (props) => {
             };
         };
         if (lockId) {
-            let lock_props;
-            let props_out;
-            let timer;
             timer = setTimeout(async () => {
                 const iLock = {
                     "wallet": account,
@@ -378,6 +377,7 @@ const LockUp = (props) => {
                         console.log(e);
                     };
                 }, 2000);
+            };
             };
             if (account) {
                 __prepare(connector);
@@ -722,7 +722,7 @@ const LockUp = (props) => {
             </Box>
             <Typography component="span">
                 <TransferOwnershipModal />
-                <WithdrawModal />
+                <WithdrawModal _account={account}/>
             </Typography>
         </Container >
     )

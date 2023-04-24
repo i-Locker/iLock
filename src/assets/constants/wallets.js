@@ -3,18 +3,18 @@ import { injected, walletconnect } from "./connectors";
 import MetaMaskLogo from "../img/wallets/meta-mask.svg";
 import WalletConnect from "../img/wallets/wallet-connect.svg";
 
-import Frame293 from '../img/common/Frame 293.png';
-import Frame294 from '../img/common/Frame 294.png';
+import Frame293 from '../img/common/metamask.png';
+import Frame294 from '../img/common/bsc_wallet.png';
 import Frame295 from '../img/common/Frame 295.png';
 import Frame296 from '../img/common/Frame 296.png';
 import Frame297 from '../img/common/Frame 297.png';
 import Frame298 from '../img/common/Frame 298.png';
-import Frame299 from '../img/common/Frame 299.png';
+import Frame299 from '../img/common/mathwallet.png';
 import Frame300 from '../img/common/Frame 300.png';
 import Frame301 from '../img/common/Frame 301.png';
 import Frame302 from '../img/common/Frame 302.png';
 import image1 from '../img/common/image 1.png';
-import image1_1 from '../img/common/image (1) 1.png';
+import image1_1 from '../img/common/bsc.png';
 import image2_1 from '../img/common/image (2) 1.png';
 import image3_1 from '../img/common/image (3) 1.png';
 import image3_2 from '../img/common/image (3) 2.png';
@@ -81,18 +81,6 @@ const Wallets = [
         connector: injected,
     },
     {
-        name: "Avalanche",
-        logo1: Frame297,
-        logo2: image3_2,
-        connector: injected,
-    },
-    {
-        name: "BitKeep",
-        logo1: Frame298,
-        logo2: image3_3,
-        connector: injected,
-    },
-    {
         name: "MathWallet",
         logo1: Frame299,
         logo2: image3_4,
@@ -102,12 +90,6 @@ const Wallets = [
         name: "TrustWallet",
         logo1: Frame301,
         logo2: image3_6,
-        connector: injected,
-    },
-    {
-        name: "SafePal",
-        logo1: Frame302,
-        logo2: image3_7,
         connector: injected,
     },
     {
@@ -150,12 +132,6 @@ let Chains = [
         logo2: Frame281,
         wallets: [Wallets[0]],
         tokens: [],
-        // tokens: eth_tokens.tokens,
-        // [
-        //     {chainId:4,address:"0x985Be8bB9Bc3421CdfD6fA40e6c8Ebfd84286681",name:"TestETHToken1",symbol:"TET1",decimals:18,logoURI:null},
-        //     {chainId:4,address:"0x7F95D140E90de5ed610c2f67DCc12De18058B444",name:"TestETHToken2",symbol:"TET2",decimals:18,logoURI:null},
-        //     {chainId:4,address:"0xbaf6600fDF66114717867fCC9d8E87bbc2ffC818",name:"TestETHToken3",symbol:"TET3",decimals:18,logoURI:null},
-        // ],
         bridge_tokens: [
             { chainId: 1, address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", name: "WETH", symbol: "WETH", decimals: 18, logoURI: "https://assets.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png", _num: [0] },
             { chainId: 1, address: "0xdac17f958d2ee523a2206206994597c13d831ec7", name: "USDTethererc20", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xdac17f958d2ee523a2206206994597c13d831ec7-eth.png", _num: [3, 5, 6] },
@@ -173,7 +149,6 @@ let Chains = [
         logo2: Frame283,
         wallets: [Wallets[0]],
         tokens: [],
-        // tokens: polygon_tokens.tokens,
         test_tokens: [
             { chainId: 80001, address: "0x98666E35D13968a2cdbdf98Cf3E92fD2a1256Aee", name: "TestPolyToken1", symbol: "TPT1", decimals: 18, logoURI: null },
             { chainId: 80001, address: "0x4cB6b11C5a71cE6E2C0Dc76279F68B74dDac4287", name: "TestPolyToken2", symbol: "TPT2", decimals: 18, logoURI: null },
@@ -200,12 +175,10 @@ let Chains = [
         symbol: 'sol'
     },
     {
-        // chainId: 421611,
         chainId: 42161,
         logo1: Arbitrum,
         logo2: Frame285,
         wallets: [Wallets[0]],
-        // tokens: arbitrum_tokens.tokens,
         tokens: [],
         bridge_tokens: [
             { chainId: 42161, address: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", name: "Tether USD", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9-arbitrum.png", _num: [3, 5] },
@@ -216,13 +189,11 @@ let Chains = [
         symbol: 'arbitrum'
     },
     {
-        // chainId: 69,
         chainId: 10,
         logo1: optimism,
         logo2: Frame282_1,
         wallets: [Wallets[0]],
         tokens: [],
-        // tokens: optimism_tokens.tokens,
         bridge_tokens: [
             { chainId: 10, address: "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58", name: "Tether USD", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x94b008aa00579c1307b0ef2c499ad98a8ce58e58-optimism.png", _num: [3, 5] },
             { chainId: 10, address: "0x7f5c764cbc14f9669b88837ca1490cca17c31607", name: "USD Coin", symbol: "USDC", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x7f5c764cbc14f9669b88837ca1490cca17c31607-optimism.png", _num: [2, 4] }
@@ -232,18 +203,11 @@ let Chains = [
         symbol: 'optimism'
     },
     {
-        // chainId: 43113,
         chainId: 43114,
         logo1: avalanche,
         logo2: Frame281_1,
         wallets: [Wallets[0]],
         tokens: [],
-        // tokens: avalanche_tokens.tokens,
-        // [
-        //     {chainId:43113,address:"0xCB1deAB9A0a0B5e19BdC876bDb96542bACBb2367",name:"TestAvaxToken1",symbol:"TAVT1",decimals:18,logoURI:null},
-        //     {chainId:43113,address:"0x3E685E032260F76067635Da49811D648d6C4735f",name:"TestAvaxToken2",symbol:"TAVT2",decimals:18,logoURI:null},
-        //     {chainId:43113,address:"0x7977fb35253aeD9368fd90194881CaE8dcf44AF2",name:"TestAvaxToken3",symbol:"TAVT3",decimals:18,logoURI:null},
-        // ],
         bridge_tokens: [
             { chainId: 43114, address: "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664", name: "USD Coin", symbol: "USDC.e", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664-avalanche.png", _num: [2, 4] },
         ],
@@ -252,18 +216,11 @@ let Chains = [
         symbol: 'avalanche'
     },
     {
-        // chainId: 4002,
         chainId: 250,
         logo1: fantom,
         logo2: Frame283_1,
         wallets: [Wallets[0]],
         tokens: [],
-        // tokens: fantom_tokens.tokens,
-        // [
-        //     {chainId:4002,address:"0x8f86F66D7c5E7b73E6AcF2c4f82F37b0f533C0d9",name:"TestFTMToken1",symbol:"TFT1",decimals:18,logoURI:null},
-        //     {chainId:4002,address:"0x0F605D0064e4A3609Adee6fc7CC21226CF4A0dd2",name:"TestFTMToken2",symbol:"TFT2",decimals:18,logoURI:null},
-        //     {chainId:4002,address:"0x566c1295714141da69eAD53feE19B16B8Bc0A006",name:"TestFTMToken3",symbol:"TFT3",decimals:18,logoURI:null},
-        // ],]
         bridge_tokens: [
             { chainId: 250, address: "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664", name: "Frapped USDT", symbol: "fUSDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x049d68029688eabf473097a2fc38ef61633a3c7a-fantom.png", _num: [3, 5] },
         ],
@@ -272,7 +229,6 @@ let Chains = [
         symbol: 'fantom'
     },
     {
-        // chainId: 65,
         chainId: 66,
         logo1: okex,
         logo2: Frame285_1,

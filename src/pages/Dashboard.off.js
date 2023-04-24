@@ -39,11 +39,10 @@ import { useNavigate } from "react-router-dom";
 import { alterLoaderText } from '../components/Loader';
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
 export let handle_Date;
-const Bridge = (props) => {
+const Dashboard = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [receiveAmount, setReceiveAmount] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [lockerListEnabled, setLockerListEnabled] = useState(false);
     const [snackbar, setSnackbar] = React.useState(false);
@@ -54,7 +53,7 @@ const Bridge = (props) => {
     const [tokenContract, setTokenContract] = useState("");
     const [holder, setHolder] = useState("");
     const [subMethod, setSubMethod] = useState("Project Tokens");
-    const [bridgeAmount, setLockAmount] = useState(0);
+    const [lockAmount, setLockAmount] = useState(0);
     const [tokenDecimals, setTokenDecimals] = useState(0);
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [tokenName, setTokenName] = useState("");
@@ -65,7 +64,11 @@ const Bridge = (props) => {
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
-    const [isAllowed, setIsAllowed] = useState(0);
+    const [isAllowed, setIsAllowed] = useState(0); {
+        /*
+                // 0: checking, 1: not allowed, 2: allowed
+            */
+    }
     const [lockAmountMax, setLockAmountMax] = useState(false);
     const maxSteps = 4;
     const theme = useTheme();
@@ -124,6 +127,7 @@ const Bridge = (props) => {
                 let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
                 console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
                 if (NETWORK) {
+                    //
                     console.log("You are already on the proper network:  ", network);
                 } else {
                     await provider.request({
@@ -153,11 +157,17 @@ const Bridge = (props) => {
                     console.log("activeStep: ", activeStep);
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                        // 
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 2);
                     };
                 }
             } catch (switchError) {
+                {
+                    /*
+                    // This error code indicates that the chain has not been added to MetaMask.
+                    */
+                }
                 try {
                     const params_network_add = {
                         chainId: currentNetworkData[0].chainData.chainId,
@@ -204,6 +214,7 @@ const Bridge = (props) => {
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                                // 
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 2);
                             };
@@ -249,7 +260,7 @@ const Bridge = (props) => {
                 window.alert("Token not found, please try again...");
             } finally {
                 alterLoaderText("Deploy iLocker");
-                if (!bridgeAmount) {
+                if (!lockAmount) {
                     window.alert("Awesome! Let's continue to create your iLocker smart contract...");
                 };
             };
@@ -267,18 +278,18 @@ const Bridge = (props) => {
         } catch (e) {
             console.log(e);
         } finally {
-            if (!bridgeAmount) {
+            if (!lockAmount) {
                 //
             } else {
                 try {
                     let provider = await connector.getProvider();
                     const allowanceAmount = await getERC20allowance(provider, tokenContract, account, lockerAddress[network], network);
-                    console.log("allowanceAmount/bridgeAmount: ", parseFloat(allowanceAmount), bridgeAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(bridgeAmount * 10 ** tokenDecimals));
+                    console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                     setTokenAllowance(allowanceAmount);
                     let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
                     let allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount, parseFloat(tokenDecimals));
                     console.log("allowanceAmountFormatted: ", allowanceAmount, parseFloat(allowanceAmountFormatted).toFixed(0), parseFloat(allowanceAmountFormatted_UI).toFixed(0));
-                    if (parseFloat(allowanceAmount) < parseFloat(bridgeAmount * 10 ** tokenDecimals)) {
+                    if (parseFloat(allowanceAmount) < parseFloat(lockAmount * 10 ** tokenDecimals)) {
                         setIsAllowed(1);
                     } else {
                         setIsAllowed(2);
@@ -307,6 +318,7 @@ const Bridge = (props) => {
                 setTokenSymbol(contractData[0]["symbol"].toString());
                 setTokenName(contractData[0]["name"].toString());
             } catch (e) {
+                //
                 console.log("e: ", e);
             };
         } else {
@@ -340,7 +352,7 @@ const Bridge = (props) => {
     const selectLockAmountMax = () => {
         const _amount = addressDemand ? (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance;
         setLockAmount(_amount);
-        console.log("_amount: ", bridgeAmount);
+        console.log("_amount: ", lockAmount);
         setLockAmountMax(true);
     }
 
@@ -348,8 +360,7 @@ const Bridge = (props) => {
         setLockAmount(parseFloat(e.target.value));
         setLockAmountMax(false);
         handleAllowance(e);
-        handleReceiveAmount(bridgeAmount);
-        console.log("_amount: ", bridgeAmount);
+        console.log("_amount: ", lockAmount);
     }
     const handleLockAmount = (e) => {
         console.log("e.target.value: ", e.target.value);
@@ -420,10 +431,10 @@ const Bridge = (props) => {
             const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
             const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
             const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2)
-            const lockAmountFormatted = (bridgeAmount).toFixed(2).toString();
+            const lockAmountFormatted = (lockAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
             setTokenBalanceString(tokenBalanceFormatted);
-            console.log("allowanceAmount/bridgeAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), bridgeAmount * 10 ** tokenDecimals);
+            console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
             if (parseFloat(allowanceAmount) > 0) {
                 window.alert("Savings Token Selected");
                 setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
@@ -433,6 +444,7 @@ const Bridge = (props) => {
         } catch (e) {
             window.alert("Valued member, Web3 could not detect this token... Please try another token.");
             console.log("e: ", e);
+            //
         };
     };
 
@@ -456,9 +468,7 @@ const Bridge = (props) => {
             setDateUseful(false);
         };
     };
-    const handleReceiveAmount = async () => {
-        setReceiveAmount(bridgeAmount);
-    };
+
     const showLockup = async (network, lockId) => {
         navigate(`/lockers/${network.toLowerCase()}/${lockId}`);
     };
@@ -466,7 +476,7 @@ const Bridge = (props) => {
     const depositToken = async (e) => {
         try {
             let tokenAmount;
-            tokenAmount = bridgeAmount;
+            tokenAmount = lockAmount;
             let isEth = false;
             let __decimals = 18;
             let unlockDate = withdrawDate;
@@ -558,9 +568,9 @@ const Bridge = (props) => {
     };
 
     const approveToken = async () => {
-        let ap = bridgeAmount * 10 ** tokenDecimals;
-        let amountFormatted = await _getBN(bridgeAmount, tokenDecimals);
-        console.log("approving: ", bridgeAmount, tokenDecimals, ap, "\n ", amountFormatted);
+        let ap = lockAmount * 10 ** tokenDecimals;
+        let amountFormatted = await _getBN(lockAmount, tokenDecimals);
+        console.log("approving: ", lockAmount, tokenDecimals, ap, "\n ", amountFormatted);
         let provider = await connector.getProvider();
         approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
             if (status) setIsAllowed(2);
@@ -613,8 +623,39 @@ const Bridge = (props) => {
                     <TableCell align="right">
                         <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>View</Button>
                     </TableCell>
-                </TableRow> 
-            </>
+                </TableRow> {
+                /* <TableRow>
+                                    <TableCell colSpan={2}></TableCell>
+                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+                                    <Collapse in={open} timeout="auto" unmountOnExit>
+                                        <Box sx={{ margin: 1 }}>
+                                            <Typography variant="h6" gutterBottom component="div">
+                                                History
+                                            </Typography>
+                                            <Table size="small" aria-label="purchases">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Withdrawable Date</TableCell>
+                                                        <TableCell align="right">Amount</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                {row.vesting.map((vestingRow) => (
+                                                    <TableRow key={vestingRow[0]}>
+                                                        <TableCell component="th" scope="row">
+                                                            {new Date(vestingRow[0] * 1000).toDateString()}
+                                                        </TableCell>
+                                                        <TableCell align="right">{(vestingRow[1] / Math.pow(10, row.decimals)).toFixed(2)}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                                </TableBody>
+                                            </Table>
+                                        </Box>
+                                    </Collapse>
+                                    </TableCell>
+                                </TableRow> */
+            } <
+            />
         )
     }
     return (
@@ -623,8 +664,8 @@ const Bridge = (props) => {
                 <Grid container direction="row" justifyContent="space-evenly" alignItems="center" >
                     <Grid className={isMobile ? `${mobileClasses.root} grid text-center`  : "grid text-center"} style={{marginTop:40}} item xs={12} sm={12} md={6} >
                         <div style={{maxWidth:400, display:'inline-block', textAlign:'left'}}>
-                            <h1>Use your digital assets on an Interchained compatible chain instantly.</h1>
-                            <p>Transfer ERC20 or fungible coin cross-chain through interoperability enabled smart contracts.</p>
+                            <h1>Create your own custom TimeLock instantly.</h1>
+                            <p>All digital assets are locked into your very own TimeLock enabled smart contract which has been specially engineered by the top devs and tested to serve this purpose. TimeLock certified digital assets can only be withdrawn after the preset time lock expires.</p>
                             <Link
                                 href={`${websiteURI}`}
                                 target="_blank"
@@ -638,7 +679,7 @@ const Bridge = (props) => {
                         <Card className="card">
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
-                                title="CrossChain Bridge"
+                                title="Create New iLock"
                             />
                             <CardContent >
                                 <img src="/lock.png" />
@@ -697,7 +738,8 @@ const Bridge = (props) => {
                                         </div>
                                         <div key={2} style={{paddingLeft:1, paddingRight:1}}>
                                             <p style={{textAlign:'center'}} color="textSecondary">
-                                                Select the type of digital asset you would like to bridge.
+                                                Select the type of token you would like to create a lock for.
+                                                You can create multiple locks with different settings for each one.
                                             </p>
                                             {
                                                 network !="" && networkData.find((item)=>item.name==network).subData.map((each)=><Grid
@@ -828,7 +870,7 @@ const Bridge = (props) => {
                                                 <Grid item className={dashboardClasses.textLeft} xs={6} sm={6} md={6}>
                                                     <TextField
                                                         id="standard-number-amount"
-                                                        label="Bridge Amount"
+                                                        label="Lock Amount"
                                                         type="number"
                                                         InputLabelProps={{
                                                             shrink: true,
@@ -837,7 +879,7 @@ const Bridge = (props) => {
                                                         InputProps={{ inputprops: { min: 1 } }}
                                                         variant="standard"
                                                         onChange={handleLockAmount}
-                                                        value={bridgeAmount}
+                                                        value={lockAmount}
                                                     />
                                                 </Grid>
                                                 <Grid item className={dashboardClasses.textRight}  xs={6} sm={6} md={6}>
@@ -861,35 +903,39 @@ const Bridge = (props) => {
                                                 </Grid>
                                             </Grid>
                                             <br />
-                                            <Grid  style={{margin:'auto'}}
+                                             <Grid 
+                                                container
+                                                direction="row"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                className={dashboardClasses.balanceContainer}
+                                            >
+                                                <Grid item className={dashboardClasses.textLeft} xs={6} sm={6} md={6}>
+                                                    <TextField
+                                                        id="standard-holder"
+                                                        label="Holder"
+                                                        type="text"
+                                                        InputLabelProps={{
+                                                            shrink: true,
+                                                            inputprops: { min: 1 }
+                                                        }}
+                                                        InputProps={{ inputprops: { min: 1 } }}
+                                                        variant="standard"
+                                                        onChange={handleHolder}
+                                                        value={holder}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                            <br />
+                                            <Grid 
                                                 container
                                                 direction="row"
                                                 justifyContent="space-between"
                                                 alignItems="center"
                                                 className={!isMobile ? `${dashboardClasses.balanceContainer}` : `${mobileClasses.balanceContainer}`}
                                             >
-                                                <Grid item className={dashboardClasses.textLeft} xs={6} sm={6} md={6}>
-                                                    <p id="standard-number-amount-received" label="Receive Amount">
-                                                    {`${bridgeAmount}`}
-                                                    </p>
-                                                </Grid>
-                                                <Grid item className={dashboardClasses.textRight}  xs={6} sm={6} md={6}>
-                                                    <Grid 
-                                                        container
-                                                        direction="row"
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Grid item className={dashboardClasses.textRight} xs={12} sm={12} md={12}>
-                                                            <p  color="textSecondary" className={dashboardClasses.tokenTitle}>
-                                                                {token.symbol}
-                                                            </p>
-                                                        </Grid>
-                                                    </Grid>
-                                                </Grid>
-                                                <br />
+                                                    <DateTime />
                                                     <div>
-                                                    <br />
                                                     {
                                                         !addressDemand || isAllowed == 2 ? <Button variant="contained" color="secondary" sm={12} disabled={!dateUseful} value={addressDemand} onClick={depositToken} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button>
                                                         : (isAllowed == 1 ? <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button> : <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button>)
@@ -940,6 +986,20 @@ const Bridge = (props) => {
                                 title="Locked Token List"
                             />
                             <CardContent >
+                            {/* <TextField
+                                id="outlined-search"
+                                label="Search other wallet"
+                                type="search"
+                                variant="standard"
+                                fullWidth={true}
+                                color="primary"
+                                size="small"
+                                onKeyPress={searchOtherWallet}
+                                value={searchWallet}
+                                onChange={onChangeSearchWallet}
+                                error={searchOtherWalletError}
+                                helperText={searchHelperText}
+                            /> */}
                                 {data.length == 0 && 
                                 <div className="text-center" style={{width:'100%', padding:"20px 0px"}}>
                                     <img src="/mylock.png" alt="My Lock" style={{height:200}}/>
@@ -967,14 +1027,14 @@ const Bridge = (props) => {
                                 </TableContainer>}
                             </CardContent>
                         </Card>
+                        
                     </Grid> : <Loader value={loaderText} />
                     }
                 </Grid>
             </Box>
             <Modal
                 open={open}
-                onOpen={()=>handleOpen(true)}
-                onClose={()=>handleClose(true)}
+                onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -993,15 +1053,15 @@ const Bridge = (props) => {
                 open={snackbar}
                 autoHideDuration={600}
                 style={{width:100}}
-                onOpen={()=>handleSnackbarOpen(true)}
-                onClose={()=>handleSnackbarClose(true)}
+                onClose={handleSnackbarClose}
                 message="Successfully Copied to Clipboard"
+                // action={action}
             />
-        </Container>
+        </Container >
     )
 }
 const mapStateToProps = state => ({
     statistics: state.statistics,
 })
 
-export default connect(mapStateToProps)(Bridge);
+export default connect(mapStateToProps)(Dashboard);

@@ -134,12 +134,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     const connected = Connected();
     const listInnerRef = useRef();
     const { list, setList } = useFetch(page, chain.tokens);
-    {
-        /*
-          * const [token1, setToken1] = useState(chain.test_tokens[0]);
-          * const [token2, setToken2] = useState(chain.test_tokens[1]);
-        */
-    }
+
     async function logout(m) {
         return (m) => console.log(m);
     };
@@ -147,8 +142,8 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     const [token2, setToken2] = useState(chain.tokens[1]?chain.tokens[1]:"");
     const [poolBtnState, setPoolBtnState] = useState(false);
     const [approveBtnState, setApproveBtnState] = useState(false);
-    const [routerAddress, setRouterAddress] = useState();
-    const [factoryAddress, setFactoryAddress] = useState();
+    const [routerAddress, setRouterAddress] = useState("");
+    const [factoryAddress, setFactoryAddress] = useState("");
     const [LPAmount, setLPAmount] = useState();
     const [token1Max, setToken1Max] = useState();
     const [token2Max, setToken2Max] = useState();
@@ -228,11 +223,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 } finally {
                     try {
                         if(tokens__["chainData"]) {
-                            {
-                             /*
-                              * codee below this line runs while if statement does not throw
-                              */
-                            }
                             tokens__ = tokens__["chainData"]["tokens"][0];
                             handle_dispatch(tokens__);
                             chainHook(tokens__);
@@ -298,14 +288,13 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         };
     }, []);
     useInactiveListener(!triedEager);
-    // ** Actions
     const onConnectWallet = async (item, chain) => {
         setActivatingConnector(item.connector);
         setIsSelectingWallet(false);
         await activate(item.connector);
         window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: `0x${Number(chain.chainId).toString(16)}` }], // chainId must be in hexadecimal numbers
+            params: [{ chainId: `0x${Number(chain.chainId).toString(16)}` }], 
         })
     };
     const onDeactiveWallet = () => {
@@ -328,6 +317,8 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         setIsOpenDialog(newValue);
     };
     const tokenDialogClose = (event, data) => {
+        console.log("event: ",event);
+        console.log("data: ", data);
         setPage(1);
         setList(chain.tokens.slice(0, 19));
         setTokenDialogState(false);
@@ -342,6 +333,9 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     }
     const swapSettingDialogClose = () => {
         setSwapSettingDialogState(false);
+    }
+    const swapSettingDialogOpen = () => {
+        setSwapSettingDialogState(true);
     }
 
     const getErrorMessage = (error) => {
@@ -423,6 +417,9 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
     const tokenImportDialogClose = () => {
         setTokenImportDialogState(false);
+    }
+    const tokenImportDialogOpen = () => {
+        setTokenImportDialogState(true);
     }
 
     const importToken = () => {
@@ -766,11 +763,11 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
             {chain.tokens&&chain.tokens.length ?
                 <BootstrapDialog
-                    onClose={tokenDialogClose}
+                    onClose={(e) => tokenDialogClose(e,chain.tokens[0])}
                     aria-labelledby="customized-dialog-title1"
                     open={tokenDialogState}
                 >
-                    <BootstrapDialogTitle id="customized-dialog-title1" sx={{ maxWidth: "476px" }}>
+                    <BootstrapDialogTitle id="customized-dialog-title1" sx={{ maxWidth: "476px" }} onClose={(e) => tokenDialogClose(e,chain.tokens[0])}>
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ ml: "5px" }}>
                             <Typography>Select a Token</Typography>
                             <IconButton onClick={tokenDialogClose}><CloseIcon /></IconButton>
@@ -873,18 +870,19 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
             {customToken.length ?
                 <BootstrapDialog
-                    onClose={tokenImportDialogState!=false?tokenImportDialogClose:logout}
-                    aria-labelledby="customized-dialog-title1"
                     open={tokenImportDialogState}
+                    onOpen={()=>tokenImportDialogOpen()}
+                    onClose={()=>tokenImportDialogClose()}
+                    aria-labelledby="customized-dialog-title1"
                 >
-                    <BootstrapDialogTitle id="customized-dialog-title1" sx={{ maxWidth: "429px" }}>
+                    <BootstrapDialogTitle open={tokenImportDialogState} id="customized-dialog-title1" sx={{ maxWidth: "429px" }} onClose={(e) => tokenDialogClose(e,customToken[0])}>
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ ml: "5px" }}>
                             <Typography>Import Token</Typography>
                             <IconButton onClick={tokenImportDialogClose}><CloseIcon /></IconButton>
                         </Stack>
                         <Divider sx={{ margin: "15px 5px 5px" }} />
                     </BootstrapDialogTitle>
-                    <DialogContent sx={{ maxWidth: "429px" }}>
+                    <DialogContent open={tokenImportDialogState} sx={{ maxWidth: "429px" }} onOpen={()=>tokenImportDialogOpen()} onClose={()=>tokenImportDialogClose()}>
                         <Box sx={{ margin: "0 45px" }}>
                             <Paper variant="outlined" sx={{ padding: "23px 28px", borderRadius: "16px", background: "transparent" }}>
                                 <Stack direction="row" alignItems="center">
@@ -928,18 +926,19 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             }
 
             <BootstrapDialog
-                onClose={swapSettingDialogClose}
-                aria-labelledby="customized-dialog-title1"
                 open={swapSettingDialogState}
+                onClose={()=>swapSettingDialogClose()} 
+                onOpen={()=>swapSettingDialogOpen()}
+                aria-labelledby="customized-dialog-title1"
             >
-                <BootstrapDialogTitle id="customized-dialog-title1" sx={{ maxWidth: "476px" }}>
+                <BootstrapDialogTitle id="customized-dialog-title1" sx={{ maxWidth: "476px" }} onOpen={()=>swapSettingDialogOpen()} onClose={()=>swapSettingDialogClose()}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <IconButton onClick={swapSettingDialogClose}><ChevronLeftIcon /></IconButton>
                         <Typography>Advanced Settings</Typography>
                         <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
                     </Stack>
                 </BootstrapDialogTitle>
-                <DialogContent sx={{ maxWidth: "476px" }}>
+                <DialogContent open={swapSettingDialogState} sx={{ maxWidth: "476px" }} onOpen={()=>swapSettingDialogOpen(true)} onClose={()=>swapSettingDialogClose(true)}>
                     <CAccordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ background: "transparent" }}>
                         <CAccordionSummary
                             aria-controls="panel1bh-content"
@@ -1103,7 +1102,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 open={liquidityDialogState}
                 className="ls_dialog"
             >
-                <BootstrapDialogTitle id="customized-dialog-title2">
+                <BootstrapDialogTitle id="customized-dialog-title2" onClose={liquidityDialogClose}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <IconButton onClick={liquidityDialogClose}><ChevronLeftIcon /></IconButton>
                         <Typography>Liquidity Sources</Typography>
@@ -1152,7 +1151,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                     aria-labelledby="customized-dialog-title2"
                     open={poolCreateDialogState}
                 >
-                    <BootstrapDialogTitle id="customized-dialog-title2" sx={{ p: "20px 10px 10px 20px" }}>
+                    <BootstrapDialogTitle id="customized-dialog-title2" sx={{ p: "20px 10px 10px 20px" }} onClose={poolCreateDialogClose}>
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ ml: "5px" }}>
                             <Typography sx={{ fontSize: "20px" }}>{poolCreateDialogState.title}</Typography>
                             <IconButton onClick={poolCreateDialogClose}><CloseIcon /></IconButton>

@@ -198,7 +198,12 @@ export const updateProfile = async (provider, newLocker, token, account, network
 
 export const withdraw = async (provider, id, account, receiver, isETH, network, ownable, gasLimit) => {
     let result;
+    if(receiver==undefined||!receiver) {
+        receiver = account;
+    };
     console.log("withdraw: ", id, account, receiver, isETH, network, ownable, gasLimit);
+    console.log("account: ", account);
+    console.log("receiver: ", receiver);
     try {
         let web3 = new Web3(provider);
         if (ownable !== true) {

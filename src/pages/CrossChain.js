@@ -69,11 +69,7 @@ const CrossChain = (props) => {
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
-    const [isAllowed, setIsAllowed] = useState(0); {
-        /*
-                // 0: checking, 1: not allowed, 2: allowed
-            */
-    }
+    const [isAllowed, setIsAllowed] = useState(0); 
     const [lockAmountMax, setLockAmountMax] = useState(false);
     const maxSteps = 4;
     const theme = useTheme();
@@ -132,7 +128,6 @@ const CrossChain = (props) => {
                 let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
                 console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
                 if (NETWORK) {
-                    //
                     console.log("You are already on the proper network:  ", network);
                 } else {
                     await provider.request({
@@ -168,11 +163,6 @@ const CrossChain = (props) => {
                     };
                 }
             } catch (switchError) {
-                {
-                    /*
-                    // This error code indicates that the chain has not been added to MetaMask.
-                    */
-                }
                 try {
                     const params_network_add = {
                         chainId: currentNetworkData[0].chainData.chainId,
@@ -219,7 +209,6 @@ const CrossChain = (props) => {
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                                // 
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 2);
                             };
@@ -353,7 +342,6 @@ const CrossChain = (props) => {
                 setTokenSymbol(contractData[0]["symbol"].toString());
                 setTokenName(contractData[0]["name"].toString());
             } catch (e) {
-                //
                 console.log("e: ", e);
             };
         } else {
@@ -484,7 +472,6 @@ const CrossChain = (props) => {
         } catch (e) {
             window.alert("Valued member, Web3 could not detect this token... Please try another token.");
             console.log("e: ", e);
-            //
         };
     };
 
@@ -668,16 +655,15 @@ const CrossChain = (props) => {
     }
     return (
         <Container className={classes.root} maxWidth="fluid" style={{margin:'auto', backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)"}}>
-                    <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
+            <Bridge chainState={chainState?chainState:{"tokens":[{},{}]}} setChainState={setChainState} /> 
             <Snackbar
                 open={snackbar}
                 autoHideDuration={600}
                 style={{width:100}}
-                onClose={handleSnackbarClose}
+                onClose={()=>handleSnackbarClose(true)}
                 message="Successfully Copied to Clipboard"
-                // action={action}
             />
-        </Container >
+        </Container>
     )
 }
 const mapStateToProps = state => ({
