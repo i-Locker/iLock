@@ -24,7 +24,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // ** Import Material Icons
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
@@ -39,29 +39,56 @@ import { injected, walletconnect } from "../assets/constants/connectors";
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CHANGE_WALLET } from "../redux/constants";
-import { explorer_ } from "../constants.js";
+import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS } from "../constants.js";
 
 const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const classes = useStyles.base();
+    const dashboardClasses = useStyles.dashboard();
     const triedEager = useEagerConnect();
-    const { activate, active, account, deactivate, connector, error, setError } = useWeb3React();
+    const { activate, active, account, deactivate, connector, error, setError, chainId } = useWeb3React();
     const [activatingConnector, setActivatingConnector] = React.useState(undefined);
+    const [network, setNetwork] = React.useState("");
+    const [networkData, setNetworkData] = React.useState("");
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
-
+    let networks;
     useEffect(() => {
-        if(account) {
-          dispatch({
-                type:CHANGE_WALLET,
+        if (account) {
+            dispatch({
+                type: CHANGE_WALLET,
                 payload: account
             })
         };
-    }, [account])
+        const { ethereum } = window;
+        let __id;
+        if (chainId || ethereum.chainId) {
+            if (!chainId) {
+                __id = ethereum.chainId;
+            } else {
+                __id = network_dec_to_hex[chainId];
+            };
+            console.log("__id: ",__id);
+            if (account && __id) {
+                setNetwork(network_[__id]);
+                networks = network_[__id];
+                console.log("network: ",network,network_[__id],networks);
+                if(network) {
+                    let ran = false;
+                    __NETWORKS.find((item)=>item.name==network).chainData.map((each)=>{
+                        console.log("chainData: ",each["rpcUrls"]);
+                        setNetworkData(each);
+                        console.log("networkData: ",networkData);
+                    });
+                };
+            };
+        };
+    }, [account,network,networkData,networks,chainId])
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
     };
     const viewBlockUrl = (account) => {
         const { ethereum } = window;
+        console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
         window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
     };
     useEffect(() => {
@@ -209,7 +236,52 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                                     {activating ? (
                                         <CircularProgress />
                                     ) : (
-                                        <img style={{width:"500%",height:"500%"}} src={item.logo1} alt={item.logo1} />
+                                        <div style={{paddingLeft:1, paddingRight:1}}>
+                                            <p style={{textAlign:'center'}} color="textSecondary">
+                                                Select the type of token you would like to create a lock for.
+                                                You can create multiple locks with different settings for each one.
+                                            </p>
+                                            {
+                                                network && networkData.find((item)=>item.name==network).subData.map((each)=><Grid item
+                                                className={classes.networkSelector}
+                                                container
+                                                direction="row"
+                                                justifyContent="space-evenly"
+                                                alignItems="center"
+                                                style={{padding:"10px 0px", border:each.name==subMethod?"1px solid #fff":"1px solid transparent", borderRadius:'5px'}}
+                                                key={each.name}
+                                                onClick = {
+                                                    ()=>{
+                                                        setSubMethod(each.name)
+                                                        handleNativeTokenMismatch(each.name)
+                                                    }
+                                                }
+                                            >
+                                                <Grid item  xs={10} sm={11} md={11}>
+                                                    <Grid 
+                                                        container
+                                                        direction="row"
+                                                        alignItems="center"
+                                                    >
+                                                        <Grid item className="text-center" xs={3} sm={2} md={2}>
+                                                            <img className={dashboardClasses.networkImage} style={{width:"500%",height:"500%"}} src={item.logo1} alt={item.logo1} />
+                                                        </Grid>
+                                                        <Grid item   xs={9} sm={10} md={10}>
+                                                            <p  color="textSecondary" className={dashboardClasses.networkTitle}>
+                                                                {each.name}
+                                                            </p>
+                                                            <p  color="textSecondary" className={dashboardClasses.networkDes}>
+                                                                {each.subTitle}
+                                                            </p>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item  className="text-center" xs={2} sm={1} md={1}>
+                                                    {each.name==subMethod ? <div className={dashboardClasses.fillCircle} />: <div className={dashboardClasses.emptyCircle} />}
+                                                </Grid>
+                                            </Grid>)
+                                            }
+                                        </div>
                                     )}
                                 </ListItemIcon>
                                 <ListItemText

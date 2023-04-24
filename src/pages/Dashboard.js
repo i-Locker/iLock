@@ -64,11 +64,7 @@ const Dashboard = (props) => {
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
-    const [isAllowed, setIsAllowed] = useState(0); {
-        /*
-                // 0: checking, 1: not allowed, 2: allowed
-            */
-    }
+    const [isAllowed, setIsAllowed] = useState(0);
     const [lockAmountMax, setLockAmountMax] = useState(false);
     const maxSteps = 4;
     const theme = useTheme();
@@ -127,7 +123,6 @@ const Dashboard = (props) => {
                 let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
                 console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
                 if (NETWORK) {
-                    //
                     console.log("You are already on the proper network:  ", network);
                 } else {
                     await provider.request({
@@ -157,17 +152,11 @@ const Dashboard = (props) => {
                     console.log("activeStep: ", activeStep);
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                        // 
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 2);
                     };
                 }
             } catch (switchError) {
-                {
-                    /*
-                    // This error code indicates that the chain has not been added to MetaMask.
-                    */
-                }
                 try {
                     const params_network_add = {
                         chainId: currentNetworkData[0].chainData.chainId,
@@ -214,7 +203,6 @@ const Dashboard = (props) => {
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                                // 
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 2);
                             };
@@ -226,7 +214,7 @@ const Dashboard = (props) => {
             };
         };
     };
-    async function start_(tokenContract,tokenDecimals) {
+    async function start_(tokenContract, tokenDecimals) {
         let provider = await connector.getProvider();
         const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
         let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
@@ -252,8 +240,8 @@ const Dashboard = (props) => {
             alterLoaderText("Make a selection");
         } else {
             try {
-                if(tokenContract&&tokenDecimals) {
-                    start_(tokenContract,tokenDecimals);
+                if (tokenContract && tokenDecimals) {
+                    start_(tokenContract, tokenDecimals);
                 };
             } catch (e) {
                 console.log(e);
@@ -318,7 +306,6 @@ const Dashboard = (props) => {
                 setTokenSymbol(contractData[0]["symbol"].toString());
                 setTokenName(contractData[0]["name"].toString());
             } catch (e) {
-                //
                 console.log("e: ", e);
             };
         } else {
@@ -444,7 +431,6 @@ const Dashboard = (props) => {
         } catch (e) {
             window.alert("Valued member, Web3 could not detect this token... Please try another token.");
             console.log("e: ", e);
-            //
         };
     };
 
@@ -623,38 +609,7 @@ const Dashboard = (props) => {
                     <TableCell align="right">
                         <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>View</Button>
                     </TableCell>
-                </TableRow> {
-                /* <TableRow>
-                                    <TableCell colSpan={2}></TableCell>
-                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
-                                    <Collapse in={open} timeout="auto" unmountOnExit>
-                                        <Box sx={{ margin: 1 }}>
-                                            <Typography variant="h6" gutterBottom component="div">
-                                                History
-                                            </Typography>
-                                            <Table size="small" aria-label="purchases">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>Withdrawable Date</TableCell>
-                                                        <TableCell align="right">Amount</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                {row.vesting.map((vestingRow) => (
-                                                    <TableRow key={vestingRow[0]}>
-                                                        <TableCell component="th" scope="row">
-                                                            {new Date(vestingRow[0] * 1000).toDateString()}
-                                                        </TableCell>
-                                                        <TableCell align="right">{(vestingRow[1] / Math.pow(10, row.decimals)).toFixed(2)}</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                                </TableBody>
-                                            </Table>
-                                        </Box>
-                                    </Collapse>
-                                    </TableCell>
-                                </TableRow> */
-            } <
+                </TableRow> <
             />
         )
     }
