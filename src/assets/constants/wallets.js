@@ -13,6 +13,7 @@ import Frame299 from '../img/common/mathwallet.png';
 import Frame300 from '../img/common/Frame 300.png';
 import Frame301 from '../img/common/Frame 301.png';
 import Frame302 from '../img/common/Frame 302.png';
+import cronos___ from '../img/common/cronos.svg';
 import image1 from '../img/common/image 1.png';
 import image1_1 from '../img/common/bsc.png';
 import image2_1 from '../img/common/image (2) 1.png';
@@ -75,6 +76,12 @@ const Wallets = [
         connector: injected,
     },
     {
+        name: "TrustWallet",
+        logo1: Frame301,
+        logo2: image3_6,
+        connector: injected,
+    },
+    {
         name: "BSC WALLET",
         logo1: Frame294,
         logo2: image1_1,
@@ -84,18 +91,6 @@ const Wallets = [
         name: "MathWallet",
         logo1: Frame299,
         logo2: image3_4,
-        connector: injected,
-    },
-    {
-        name: "TrustWallet",
-        logo1: Frame301,
-        logo2: image3_6,
-        connector: injected,
-    },
-    {
-        name: "Cronos",
-        logo1: Frame302,
-        logo2: image3_7,
         connector: injected,
     }
 ];

@@ -11,6 +11,7 @@ import {
 } from "@web3-react/walletconnect-connector";
 import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3-react/frame-connector";
 // ** Import Material-Ui Components
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import Alert from "@mui/lab/Alert";
@@ -52,6 +53,8 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
     let networks;
+    let networks___ = [];
+    let subMethod = false;
     useEffect(() => {
         if (account) {
             dispatch({
@@ -67,22 +70,34 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
             } else {
                 __id = network_dec_to_hex[chainId];
             };
-            console.log("__id: ",__id);
+            console.log("__id: ", __id);
             if (account && __id) {
                 setNetwork(network_[__id]);
                 networks = network_[__id];
-                console.log("network: ",network,network_[__id],networks);
-                if(network) {
+                console.log("network: ", network, network_[__id], networks);
+                if (network) {
                     let ran = false;
-                    __NETWORKS.find((item)=>item.name==network).chainData.map((each)=>{
-                        console.log("chainData: ",each["rpcUrls"]);
-                        setNetworkData(each);
-                        console.log("networkData: ",networkData);
+                    let WROTE = false;
+                    __NETWORKS.find((item) => item.name == network).chainData.map((each) => {
+                        if (each["rpcUrls"].length > 0 && !WROTE) {
+                            WROTE = true;
+                            console.log("chainData: ", each, each["rpcUrls"]);
+                            ran = each;
+                            setNetworkData(ran);
+                            if (networkData) {
+                                console.log("networkData: ", networkData);
+                            };
+                        };
+                    });
+                    __NETWORKS.forEach((_network_) => {
+                        let _chainData_ = `${_network_.name}`;
+                        networks___.push(_network_);
+                        console.log("chainData (b): ", _chainData_, _network_);
                     });
                 };
             };
         };
-    }, [account,network,networkData,networks,chainId])
+    }, [account, network, networkData, networks, chainId])
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
     };
@@ -215,6 +230,9 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
             )}
             {!active ? (
                 <List className="wallet-list">
+                                            <p style={{textAlign:'center'}} color="textSecondary">
+                                                Connect via Web3
+                                            </p>
                     {Wallets.map((item, idx) => {
                         const activating =
                             item.connector === activatingConnector;
@@ -232,56 +250,31 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                                 disabled={disabled}
                                 onClick={() => onConnectWallet(item)}
                             >
-                                <ListItemIcon className="symbol">
-                                    {activating ? (
-                                        <CircularProgress />
-                                    ) : (
-                                        <div style={{paddingLeft:1, paddingRight:1}}>
-                                            <p style={{textAlign:'center'}} color="textSecondary">
-                                                Select the type of token you would like to create a lock for.
-                                                You can create multiple locks with different settings for each one.
-                                            </p>
-                                            {
-                                                network && networkData.find((item)=>item.name==network).subData.map((each)=><Grid item
+
+                                                <Grid item
                                                 className={classes.networkSelector}
                                                 container
                                                 direction="row"
                                                 justifyContent="space-evenly"
                                                 alignItems="center"
-                                                style={{padding:"10px 0px", border:each.name==subMethod?"1px solid #fff":"1px solid transparent", borderRadius:'5px'}}
-                                                key={each.name}
+                                                style={{padding:"10px 0px", border:"1px solid transparent", borderRadius:'5px'}}
                                                 onClick = {
                                                     ()=>{
-                                                        setSubMethod(each.name)
-                                                        handleNativeTokenMismatch(each.name)
+                                                        //
                                                     }
                                                 }
                                             >
-                                                <Grid item  xs={10} sm={11} md={11}>
-                                                    <Grid 
-                                                        container
-                                                        direction="row"
-                                                        alignItems="center"
-                                                    >
                                                         <Grid item className="text-center" xs={3} sm={2} md={2}>
-                                                            <img className={dashboardClasses.networkImage} style={{width:"500%",height:"500%"}} src={item.logo1} alt={item.logo1} />
+                                                            <img className={dashboardClasses.networkImage} style={{width:"150%",height:"150%"}} src={item.logo1} alt={item.logo1} />
                                                         </Grid>
-                                                        <Grid item   xs={9} sm={10} md={10}>
-                                                            <p  color="textSecondary" className={dashboardClasses.networkTitle}>
-                                                                {each.name}
-                                                            </p>
-                                                            <p  color="textSecondary" className={dashboardClasses.networkDes}>
-                                                                {each.subTitle}
-                                                            </p>
-                                                        </Grid>
-                                                    </Grid>
                                                 </Grid>
-                                                <Grid item  className="text-center" xs={2} sm={1} md={1}>
-                                                    {each.name==subMethod ? <div className={dashboardClasses.fillCircle} />: <div className={dashboardClasses.emptyCircle} />}
+                                <ListItemIcon className="symbol">
+                                    {activating ? (
+                                        <CircularProgress />
+                                    ) : (
+                                                <Grid item  className="text-center" xs={3} sm={2} md={2}>
+                                                    {subMethod ? <div className={dashboardClasses.fillCircle} />: <div className={dashboardClasses.emptyCircle} />}
                                                 </Grid>
-                                            </Grid>)
-                                            }
-                                        </div>
                                     )}
                                 </ListItemIcon>
                                 <ListItemText
