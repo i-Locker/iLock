@@ -1,0 +1,77 @@
+{
+	"compiler": {
+		"version": "0.8.13+commit.abaa5c0e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "deposit",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "dst",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transfer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/p2p/bridge/interfaces/INTERFACES.sol": "IWRAP"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 40
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/p2p/bridge/interfaces/INTERFACES.sol": {
+			"keccak256": "0x761fdbb84c5b19fe7923c8afb9a8c1142a3882c310cecbe7ea7a1fd143c036a2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://470a2e6b87388ba72471bb97209da04d0e2509410435d017b8c89bbdcde2fac4",
+				"dweb:/ipfs/QmV6iTYVVH8N4CnyY5FTMa5KXWoHp7GvkjA2PpZMGN2Q6Y"
+			]
+		}
+	},
+	"version": 1
+}

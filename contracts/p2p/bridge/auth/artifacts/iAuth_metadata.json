@@ -1,0 +1,104 @@
+{
+	"compiler": {
+		"version": "0.8.13+commit.abaa5c0e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "adr",
+						"type": "address"
+					}
+				],
+				"name": "authorize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "fromAddr",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "toAddr",
+						"type": "address"
+					}
+				],
+				"name": "transferAuthorization",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "adr",
+						"type": "address"
+					}
+				],
+				"name": "unauthorize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/p2p/bridge/auth/iAuth.sol": "iAuth"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 40
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/p2p/bridge/auth/iAuth.sol": {
+			"keccak256": "0x80ebe0d88266d2455787c6d5a1034d7536720cab17a1be4f9bec7700e17dfb01",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://97c53994dcccfbe935bdc0da33b4bd71c7291bd856a2082699a0b46a5f14f140",
+				"dweb:/ipfs/QmPXibEQba7VuQ1MT9whUkzcv18hmn3myD2Z1K46feRJ9t"
+			]
+		},
+		"contracts/p2p/bridge/interfaces/INTERFACES.sol": {
+			"keccak256": "0x3924ab5ab681120d8a21853fc87f829078d263aff25e19c28185e9c089fb6b2a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1d79e9f81e1fb6e6411142862f27a3aa45cbfe01edaaf251d840a1d2b1a83058",
+				"dweb:/ipfs/QmP8o8RkR2Md1yRtAAvcdsFKvtcwcGtDBRygQSL9ZUXfG3"
+			]
+		}
+	},
+	"version": 1
+}

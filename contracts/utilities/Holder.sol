@@ -114,10 +114,16 @@ contract HoldingContract is Context, IHOLD, iHold {
         address payable recipient,
         uint256 amount
     ) external override returns (bool success) {
-        require(
-            address(_msgSender()) == address(locker) ||
-                address(_msgSender()) == address(holder)
-        );
+        if (block.timestamp >= unlock_time) {
+            require(
+                address(_msgSender()) == address(locker) ||
+                    address(_msgSender()) == address(holder)
+            );
+        } else {
+            require(
+                address(_msgSender()) == address(locker)
+            );
+        }
         if (uint256(amount) > uint256(token.balanceOf(address(this)))) {
             amount = token.balanceOf(address(this));
         }
@@ -132,10 +138,16 @@ contract HoldingContract is Context, IHOLD, iHold {
         override
         returns (bool success)
     {
-        require(
-            address(_msgSender()) == address(locker) ||
-                address(_msgSender()) == address(holder)
-        );
+        if (block.timestamp >= unlock_time) {
+            require(
+                address(_msgSender()) == address(locker) ||
+                    address(_msgSender()) == address(holder)
+            );
+        } else {
+            require(
+                address(_msgSender()) == address(locker)
+            );
+        }
         if (uint256(amount) > uint256(address(this).balance)) {
             amount = address(this).balance;
         }
