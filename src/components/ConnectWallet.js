@@ -64,38 +64,50 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
         };
         const { ethereum } = window;
         let __id;
-        if (chainId || ethereum.chainId) {
-            if (!chainId) {
-                __id = ethereum.chainId;
-            } else {
-                __id = network_dec_to_hex[chainId];
-            };
-            console.log("__id: ", __id);
-            if (account && __id) {
-                setNetwork(network_[__id]);
-                networks = network_[__id];
-                console.log("network: ", network, network_[__id], networks);
-                if (network) {
-                    let ran = false;
-                    let WROTE = false;
-                    __NETWORKS.find((item) => item.name == network).chainData.map((each) => {
-                        if (each["rpcUrls"].length > 0 && !WROTE) {
-                            WROTE = true;
-                            console.log("chainData: ", each, each["rpcUrls"]);
-                            ran = each;
-                            setNetworkData(ran);
-                            if (networkData) {
-                                console.log("networkData: ", networkData);
+        try {
+            if (chainId || ethereum.chainId) {
+                if (!chainId) {
+                    try {
+                        __id = ethereum.chainId;
+                    } catch(e) {
+                        return;
+                    };
+                } else {
+                    try {
+                        __id = network_dec_to_hex[chainId];
+                    } catch(e) {
+                        return;
+                    };
+                };
+                console.log("__id: ", __id);
+                if (account && __id) {
+                    setNetwork(network_[__id]);
+                    networks = network_[__id];
+                    console.log("network: ", network, network_[__id], networks);
+                    if (network) {
+                        let ran = false;
+                        let WROTE = false;
+                        __NETWORKS.find((item) => item.name == network).chainData.map((each) => {
+                            if (each["rpcUrls"].length > 0 && !WROTE) {
+                                WROTE = true;
+                                console.log("chainData: ", each, each["rpcUrls"]);
+                                ran = each;
+                                setNetworkData(ran);
+                                if (networkData) {
+                                    console.log("networkData: ", networkData);
+                                };
                             };
-                        };
-                    });
-                    __NETWORKS.forEach((_network_) => {
-                        let _chainData_ = `${_network_.name}`;
-                        networks___.push(_network_);
-                        console.log("chainData (b): ", _chainData_, _network_);
-                    });
+                        });
+                        __NETWORKS.forEach((_network_) => {
+                            let _chainData_ = `${_network_.name}`;
+                            networks___.push(_network_);
+                            console.log("chainData (b): ", _chainData_, _network_);
+                        });
+                    };
                 };
             };
+        } catch(e) {
+            return;
         };
     }, [account, network, networkData, networks, chainId])
     const copyAddress = () => {
