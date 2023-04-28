@@ -392,7 +392,7 @@ const CrossChain = (props) => {
         setLockAmountMax(true);
     }
 
-    function handleLocker(e) {
+    async function handleLocker(e) {
         setLockAmount(parseFloat(e.target.value));
         setLockAmountMax(false);
         handleAllowance(e);

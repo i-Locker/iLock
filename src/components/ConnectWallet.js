@@ -107,6 +107,7 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                 };
             };
         } catch(e) {
+            window.alert("Web3 not detected. Are you connected?");
             return;
         };
     }, [account, network, networkData, networks, chainId])

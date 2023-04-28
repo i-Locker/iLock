@@ -3,7 +3,7 @@ import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableConta
 import useStyles from "../assets/styles";
 import { format, addDays, parseISO } from "date-fns";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { handle_Date } from "../pages/Dashboard";
 
@@ -13,22 +13,22 @@ export default function DateTime({ ...props }) {
     const [withdrawDate, setWithdrawDate] = React.useState("");
     const handleDate = async(value) => {
         try {
-            await handle_Date(value);
+            await handle_Date(value["$d"]);
         } catch (e) {
             console.log("date-err: ",e);
         };
         const currentDate = new Date();
         console.log("DATETIME: (component) ", value, value > currentDate)
-        if (value > currentDate) {
+        if (value["$d"] > currentDate) {
             setDateUseful(true);
-            setWithdrawDate(value);
         } else {
             setDateUseful(false);
         };
+        setWithdrawDate(value["$d"]);
     };
     return (
         <React.Fragment>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
             <MobileDateTimePicker
                 id="standard-number-date"
                 label="Unlock Date"

@@ -446,13 +446,13 @@ const Dashboard = (props) => {
 
     handle_Date = (value) => {
         const currentDate = new Date();
-        console.log("DATETIME (dashboard): ", value, value > currentDate)
+        console.log("DATETIME (dashboard): ", value, currentDate, value > currentDate)
         if (value > currentDate) {
             setDateUseful(true);
-            setWithdrawDate(value);
         } else {
             setDateUseful(false);
         };
+        setWithdrawDate(value);
     };
 
     const showLockup = async (network, lockId) => {
@@ -892,7 +892,7 @@ const Dashboard = (props) => {
                                                     <DateTime />
                                                     <div>
                                                     {
-                                                        !addressDemand || isAllowed == 2 ? <Button variant="contained" color="secondary" sm={12} disabled={!dateUseful} value={addressDemand} onClick={depositToken} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button>
+                                                        !addressDemand || isAllowed == 2 ? <Button variant="contained" color="secondary" sm={12} value={addressDemand} onClick={(e)=>depositToken(e)} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button>
                                                         : (isAllowed == 1 ? <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button> : <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button>)
                                                     }
                                                     </div>
