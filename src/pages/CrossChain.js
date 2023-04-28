@@ -275,13 +275,6 @@ const CrossChain = (props) => {
             console.log("tokens_data: ", [network_[network_dec_to_hex[chainId]]][0].address);
             setChainState(state_chain);
             alterLoaderText("Make a selection");
-            try {
-                console.log("iBridgeAddress: ", iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
-                setBridgeAddress(iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
-                console.log("bridgeAddress: ", bridgeAddress);
-            } catch (e) {
-                //
-            };
         } else {
             try {
                 if (tokenContract && tokenDecimals) {
@@ -392,7 +385,7 @@ const CrossChain = (props) => {
         setLockAmountMax(true);
     }
 
-    async function handleLocker(e) {
+    function handleLocker(e) {
         setLockAmount(parseFloat(e.target.value));
         setLockAmountMax(false);
         handleAllowance(e);

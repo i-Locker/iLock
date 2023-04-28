@@ -6,7 +6,7 @@ import {
 } from 'ethereum-multicall';
 import { ethers, formatUnits, parseUnits } from "ethers";
 import liquidityPoolAbi from "./liquidityPool_abi.json";
-import { maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain, network_lower_to_proper } from './constants';
+import { iBridgeAddress, iUniswapAbi, iBridgeAbi, iVaultAbi, maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain, network_lower_to_proper } from './constants';
 export const serverApi = 'http://localhost:5000/api';
 export const provider = {
     "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
@@ -158,20 +158,84 @@ export const transferOwnership_iLock = async (provider, lockId, account, to, net
         let web3 = new Web3(provider);
         console.log("myLocks_: ", account, to, lockId, network);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        result = await contract.methods["transferFrom"](account, to, lockId).send({ from: account });
+        result = await contract.methods["transferFrom"](account, to, lockId).call({ from: account });
         return result.status;
     } catch (e) {
         console.log("yo: ", e);
     };
 }
 
+export const get_iVault_byIndex = async (provider, index, account, network) => {
+    let result_iBridge;
+    try {
+        let web3 = new Web3(provider);
+        console.log("get_iVault_byIndex: ", account, index, network);
+        let contract_iBridge = new web3.eth.Contract(iBridgeAbi, iBridgeAddress[network]);
+        result_iBridge = await contract_iBridge.methods["get_iVault_byIndex"](index).call({ from: account });
+        return result_iBridge.toString();
+    } catch (e) {
+        console.log("yo: ", e);
+    };
+}
 
-export const bridgeToken = async (provider, token, amount, date, account, holder, network) => {
+export const get_iVault_Quote_EthToToken = async (provider, iVault, token, account, amount, network) => {
+    let result_iVault;
+    let result_iVault_iUniswap;
+    try {
+        let web3 = new Web3(provider);
+        let contract_iVault = new web3.eth.Contract(iVaultAbi, iVault.toString());
+            amount = 1 * 10**18;
+        result_iVault = await contract_iVault.methods["uniswap_handler"]().call({ from: account });
+        let contract_iVault_iUniswap = new web3.eth.Contract(iUniswapAbi, result_iVault.toString());
+        console.log("get_iVault_Quote_EthToToken: ", account, iVault, token, amount.toString(), network, result_iVault); 
+        result_iVault_iUniswap = await contract_iVault_iUniswap.methods["getEstimatedETHforToken"](token,amount.toString()).call({ from: account });
+        console.log("result_iVault_iUniswap: ",result_iVault_iUniswap); 
+        return result_iVault_iUniswap;
+    } catch (e) {
+        console.log("yo: ", e);
+    };
+}
+
+export const get_iVault_Quote_TokenToEth = async (provider, iVault, token, account, amount, network) => {
+    let result_iVault;
+    let result_iVault_iUniswap;
+    try {
+        let web3 = new Web3(provider);
+        console.log("get_iVault_Quote_EthToToken: ", account, iVault, network); 
+        let contract_iVault = new web3.eth.Contract(iVaultAbi, iVault);
+        result_iVault = await contract_iVault.methods["uniswap_handler"]().call({ from: account });
+        let contract_iVault_iUniswap = new web3.eth.Contract(iUniswapAbi, result_iVault.toString());
+        result_iVault_iUniswap = await contract_iVault_iUniswap.methods["getEstimatedTokenForETH"](token,amount).call({ from: account });
+        console.log("contract_iVault_iUniswap: ", result_iVault_iUniswap);
+        return result_iVault_iUniswap;
+    } catch (e) {
+        console.log("yo: ", e);
+    };
+}
+
+export const calculateSuggestedDonation = async (provider, amount, isEth, account, network) => {
+    let result_iBridge;
+    try {
+        let web3 = new Web3(provider);
+        console.log("calculateSuggestedDonation: ", amount, isEth, account);
+        let contract_iBridge = new web3.eth.Contract(iBridgeAbi, iBridgeAddress[network]);
+        result_iBridge = await contract_iBridge.methods["calculateSuggestedDonation"](amount, true).call({ from: account });
+        console.log("result_iBridge: ", result_iBridge);
+        return result_iBridge;
+    } catch (e) {
+        console.log("yo: ", e);
+    };
+}
+
+
+export const bridgeToken = async (provider, index, amount, isEth, account, network) => {
     let result;
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        let feeInETH = await contract.methods.iLocker_CORE(0).call();
+        console.log("get_iVault_byIndex: ", account, index, network);
+        let contract_iBridge = new web3.eth.Contract(iBridgeAbi, iBridgeAddress[network]);
+        result_iBridge = await contract_iBridge.methods["bridgeTOKEN"](amount,index,isEth).call({ from: account });
         feeInETH = feeInETH["donation_in_ETH"];
             console.log("feeInETH: ",feeInETH);
         feeInETH = feeInETH * 2;
@@ -304,8 +368,9 @@ export const fetch_Balance = async (provider, token, account, network) => {
     let result;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        let contract = new web3.eth.Contract(erc20Abi, token.toString(), account);
         result = await contract.methods["balanceOf"](account).call({ from: account });
+        console.log("fetch_Balance: ",result);
         return result;
     } catch (e) {
         console.log(e);
@@ -316,7 +381,7 @@ export const getTokenBalance = async (provider, token, account, network) => {
     let result;
     try {
         let web3 = new Web3(provider);
-        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        let contract = new web3.eth.Contract(erc20Abi, token.toString(), account);
         result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call({ from: account });
         return result;
     } catch (e) {

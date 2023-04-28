@@ -406,11 +406,6 @@ const LockUp = (props) => {
                 });
                 console.log("You have succefully switched to ", network)
             } catch (switchError) {
-                {
-                    /*
-                    // This error code indicates that the chain has not been added to MetaMask.
-                    */
-                }
                 try {
                     const params_network_add = {
                         chainId: currentNetworkData[0].chainData.chainId,

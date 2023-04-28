@@ -675,7 +675,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                         <Grid container>
                                             {Chains.map((data, index) => {
                                                 return (
-                                                    <Grid lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
+                                                    <Grid item lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
                                                         <Button className="netButton" sx={{ padding: "10px 20px", borderRadius: "12px" }} onClick={() => setChain(data)}>
                                                             {chain.chainId === data.chainId ?
                                                                 <Badge
@@ -699,7 +699,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                         <Grid container>
                                             {Wallets.map((data, index) => {
                                                 return (
-                                                    <Grid lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
+                                                    <Grid item lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
                                                         <Button className="netButton" onClick={() => onConnectWallet(data, chain)} sx={{ padding: "10px 20px", borderRadius: "12px" }}><Typography component="img" src={data.logo1}></Typography></Button>
                                                     </Grid>
                                                 )

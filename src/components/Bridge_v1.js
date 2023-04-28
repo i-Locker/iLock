@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { CustomTab } from '../config/style';
 import { erc20Abi, network_, network_dec_to_hex, iBridgeAddress, network_lower_to_proper } from "../constants";
-import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, get_iVault_byIndex, calculateSuggestedDonation, getEtherBalance } from "../web3";
+import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, get_iVault_byIndex } from "../web3";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -81,8 +81,7 @@ export default function Bridge({ chainState, setChainState }) {
     const [token2, setToken2] = useState(chainState["tokens"][1] && chainState["tokens"][1].length > 0 ? chainState["tokens"][1] : "");
     const [token1Balance, setToken1Balance] = useState(0);
     const [token2Balance, setToken2Balance] = useState(0);
-    const [etherBalance, setEtherBalance] = useState(0);
-    const [token3, setToken3] = useState('WETH');
+    const [token3, setToken3] = useState('WETH/DAI');
     const [swapSelectState, setSwapSelectState] = useState(false);
     const [dexsOrder, setDexsOrder] = useState("");
     const [swapSelectData, setSwapSelectData] = useState(0);
@@ -121,8 +120,8 @@ export default function Bridge({ chainState, setChainState }) {
                 console.log("Engine chainId ", chainId, network_dec_to_hex[chainId]);
                 console.log("Engine network_ ", network_[network_dec_to_hex[chainId]]);
                 console.log("Engine get_iVault_byIndex: ", await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]));
-                // console.log("Engine get_iVault_Quote_EthToToken: ", await get_iVault_Quote_EthToToken(provider, await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]), token, account, 0, network_[network_dec_to_hex[chainId]]));
-                // console.log("Engine get_iVault_Quote_TokenToEth: ", await get_iVault_Quote_TokenToEth(provider, await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]), token, account, 0, network_[network_dec_to_hex[chainId]]));
+                console.log("Engine get_iVault_Quote_EthToToken: ", await get_iVault_Quote_EthToToken(provider, await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]), token, account, 0, network_[network_dec_to_hex[chainId]]));
+                console.log("Engine get_iVault_Quote_TokenToEth: ", await get_iVault_Quote_TokenToEth(provider, await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]), token, account, 0, network_[network_dec_to_hex[chainId]]));
             };
             Engine(chainId, account, connector, token1.address);
             Engine(chainId, account, connector, token2.address);
@@ -182,28 +181,25 @@ export default function Bridge({ chainState, setChainState }) {
     }, [chainState]);
 
     useEffect(() => {
-        async function ___SWAP_CORE(token1, token2, account, chainId) {
+        async function ___SWAP_CORE(token1, token2, account) {
             if (maxAmount && maxAmount > 0) {
                 setSwapAmount(maxAmount);
             };
             let provider = await connector.getProvider();
             console.log("network_ ", network_[network_dec_to_hex[chainId]], "token1 ", token1, "token2: ", token2);
-            let balance_COIN = await getEtherBalance(provider, account, network_[network_dec_to_hex[chainId]]);
-            console.log("balance: (balance_COIN) ", balance_COIN[0]);
-            setEtherBalance(balance_COIN ? balance_COIN : 0);
             let balance1_v2 = await fetch_Balance(provider, token1.address, account, network_[network_dec_to_hex[chainId]]);
-            setToken1Balance(balance1_v2 ? balance1_v2 : 0);
             console.log("balance: (token1) ", balance1_v2, token1.address, token1.name, token1.symbol, token1.decimals);
             let balance2_v2 = await fetch_Balance(provider, token2.address, account, network_[network_dec_to_hex[chainId]]);
             console.log("balance: (token2) ", balance2_v2, token2.address, token2.name, token2.symbol, token2.decimals);
+            setToken1Balance(balance1_v2 ? balance1_v2 : 0);
             setToken2Balance(balance2_v2 ? balance2_v2 : 0);
         };
         if (account) {
-            ___SWAP_CORE(token1, token2, account, chainId);
+            ___SWAP_CORE(token1, token2, account);
         } else {
             return;
         };
-    }, [token1, token2, account,connector,chainId])
+    }, [token1, token2, account])
 
     let num = 0;
     useEffect(() => {
@@ -215,22 +211,24 @@ export default function Bridge({ chainState, setChainState }) {
 
     useEffect(() => {
         async function ___SWAP_ORDERS(token1, token2, dexsOrder, swapSelectData, routerAddress) {
+                            setSwapBtnState(5);
             if (!maxAmount || maxAmount === '' || Number(maxAmount) <= 0) {
                 setSwapBtnState(0);
                 return;
             } else {
-                let factoryInst = new web3.eth.Contract(factoryAddress[Number(dexsOrder[swapSelectData].num)].abi, factoryAddress[Number(dexsOrder[swapSelectData].num)].address);
-                let pair = await factoryInst.methods.getPair(token1.address, token2.address).call();
-                if (pair === '0x0000000000000000000000000000000000000000' || !pair) {
+                // let factoryInst = new web3.eth.Contract(factoryAddress[Number(dexsOrder[swapSelectData].num)].abi, factoryAddress[Number(dexsOrder[swapSelectData].num)].address);
+                // let pair = await factoryInst.methods.getPair(token1.address, token2.address).call();
+                // if (pair === '0x0000000000000000000000000000000000000000' || !pair) {
+                //     setSwapBtnState(1);
+                //     return;
+                // } else {
+                let eth_balance = await web3.eth.getBalance(account);
                     setSwapBtnState(1);
+                if (eth_balance === '0') {
+                    setSwapBtnState(2);
                     return;
-                } else {
-                    let eth_balance = await web3.eth.getBalance(account);
-                    if (eth_balance === '0') {
-                        setSwapBtnState(2);
-                        return;
-                    };
                 };
+                // };
                 try {
                     let token1Inst = new web3.eth.Contract(erc20Abi, token1.address);
                     let balance = await token1Inst.methods.balanceOf(account).call();
@@ -353,20 +351,10 @@ export default function Bridge({ chainState, setChainState }) {
 
     const setSwapAmount = async (newValue) => {
         if (!newValue || newValue <= 0) {
-            setSwapBtnState(5);
-            console.log("swapBtnState: ",swapBtnState);
             setDexsOrder();
             return false;
         }
         newValue = (new BN(newValue).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
-        
-        let provider = await connector.getProvider();
-        let isEth = true;
-            console.log("res: ",newValue, isEth, account, network_[network_dec_to_hex[chainId]]);
-        calculateSuggestedDonation(provider, newValue, isEth, account, network_[network_dec_to_hex[chainId]]).then((res)=>{
-            console.log("res: ",res);
-        });
-
         let dexs_amountOuts = [];
         for (let i = 0; i < routerAddress.length; i++) {
             let dexs_amountOut = { amountOut: "0", num: i };
@@ -481,7 +469,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                         <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
-                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} endIcon={<ExpandMoreIcon />} sx={{ fontSize: "16px", color: "white" }} onClick={() => setTokenDialogState(1)}>{token1.symbol}</Button>
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px" }} />
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
@@ -503,7 +491,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                         <Button startIcon={token2.logoURI&&token2.logoURI !== null ?
                                                             <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
-                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
+                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} endIcon={<ExpandMoreIcon />} sx={{ fontSize: "16px", color: "white" }} onClick={() => setTokenDialogState(2)}>{token2.symbol}</Button>
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px" }} />
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
