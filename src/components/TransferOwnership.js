@@ -21,7 +21,7 @@ const style = {
 };
 export let _toggleOwnershipModal;
 const TransferOwnershipModal = ({ isOpen, setIsOpen }) => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [headerText, setHeaderText] = useState("Loading...");
     const [toggleText, setToggleText] = useState("Loading...");
     const [lockId, setLockId] = useState("");
@@ -70,10 +70,11 @@ const TransferOwnershipModal = ({ isOpen, setIsOpen }) => {
     return (
       <Typography component="span">
       <Modal
-        open={open}
-        onClose={closeModal}
+        onOpen={()=>setOpen(true)}
+        onClose={()=>setOpen(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        open={open}
       >
         <Box sx={style}>
 

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import * as React from 'react';
+import { useState } from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -26,7 +26,7 @@ const style = {
 
 export let _toggleWithdrawalModal; // replicated internal function
 export default function WithdrawModal({ _account }) {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [headerText, setHeaderText] = useState("Loading...");
     const [toggleText, setToggleText] = useState("Loading...");
     const [lockId, setLockId] = useState("");
@@ -72,23 +72,24 @@ export default function WithdrawModal({ _account }) {
     const iLock_transfer_helper = async (e) => {
         console.log("_account: ", _account);
         let ___delegate;
-        if(!receiver||receiver==undefined) {
+        if (!receiver || receiver == undefined) {
             ___delegate = account;
         } else {
             ___delegate = receiver;
         };
-        console.log("isEth: ",await getChecked(), ___delegate);
-        _transfer(lockId,___delegate,await getChecked()).then(async (transferred) => {
+        console.log("isEth: ", await getChecked(), ___delegate);
+        _transfer(lockId, ___delegate, await getChecked()).then(async (transferred) => {
             console.log("transferred: ", transferred);
         });
     };
     return (
         <Typography component="span">
       <Modal
-        open={open}
-        onClose={closeModal}
+        onOpen={()=>setOpen(true)}
+        onClose={()=>setOpen(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        open={open}
       >
         <Box sx={style}>
 

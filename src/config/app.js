@@ -1,5 +1,5 @@
 import abi from "./abi";
-import WRAPPED_TOKENS_ABI from "./wrappers.js";
+import wrapped_abi from "./wrappers.js";
 export const getBalance = (balance, decimal) => {
     if (balance.length < decimal+1) {
         for (let i = 0; i < decimal + 3 - balance.length; i++) {
@@ -12,7 +12,7 @@ export const getBalance = (balance, decimal) => {
 };
 export default {
     // netId: 1,
-    wrapped_tokens: [WRAPPED_TOKENS_ABI.wrapped.tokens],
+    wrapped_tokens: [wrapped_abi.WRAPPED_TOKENS_ABI.wrapped.tokens],
     networks: {   
     1: {
             chainId: 1,

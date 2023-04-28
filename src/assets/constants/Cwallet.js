@@ -468,6 +468,10 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         setPoolCreateDialogState(false);
     }
 
+    const poolCreateDialogOpen = () => {
+        setPoolCreateDialogState(true);
+    }
+
     const tokenSelect1 = (event) => {
         setToken1(event.target.value);
     };
@@ -620,14 +624,15 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     return (
         <Box>
             <BootstrapDialog
-                onClose={() => walletDialog(false)}
+                onClose={() => setIsOpenDialog(false)}
+                onOpen={() => setIsOpenDialog(true)}
                 aria-labelledby="customized-dialog-title"
                 open={isOpenDialog}
             >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={() => walletDialog(false)}>
+                <BootstrapDialogTitle onClose={() => setIsOpenDialog(false)} id="customized-dialog-title">
                     {!active ? "Select Wallet" : "Your Account"}
                 </BootstrapDialogTitle>
-                <DialogContent open={isOpenDialog} dividers={scroll === 'body'}>
+                <DialogContent dividers={scroll === 'body'}>
                     {active && (
                         <List>
                             <ListItem className="item">
@@ -793,9 +798,10 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 <BootstrapDialog
                     onClose={(e) => tokenDialogClose(e,chain.tokens[0])}
                     aria-labelledby="customized-dialog-title1"
-                    open={bumpDialog}
+                    onOpen={() => bumpDialog()}
+                    open={tokenDialogState}
                 >
-                    <BootstrapDialogTitle id="customized-dialog-title1" sx={{ maxWidth: "476px" }} onClose={(e) => tokenDialogClose(e,chain.tokens[0])}>
+                    <BootstrapDialogTitle  onClose={(e) => tokenDialogClose(e,chain.tokens[0])}id="customized-dialog-title1" sx={{ maxWidth: "476px" }} >
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ ml: "5px" }}>
                             <Typography>Select a Token</Typography>
                             <IconButton onClick={tokenDialogClose}><CloseIcon /></IconButton>
@@ -898,19 +904,19 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
             {customToken.length ?
                 <BootstrapDialog
-                    open={tokenImportDialogState}
-                    onOpen={()=>tokenImportDialogOpen()}
-                    onClose={()=>tokenImportDialogClose()}
+                    onOpen={() => setTokenImportDialogState(true)}
+                    onClose={() => setTokenImportDialogState(false)}
                     aria-labelledby="customized-dialog-title1"
+                    open={tokenImportDialogState}
                 >
-                    <BootstrapDialogTitle open={tokenImportDialogState} id="customized-dialog-title1" sx={{ maxWidth: "429px" }} onClose={(e) => tokenDialogClose(e,customToken[0])}>
+                    <BootstrapDialogTitle onClose={() => setTokenImportDialogState(false)} id="customized-dialog-title1" sx={{ maxWidth: "429px" }} >
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ ml: "5px" }}>
                             <Typography>Import Token</Typography>
                             <IconButton onClick={tokenImportDialogClose}><CloseIcon /></IconButton>
                         </Stack>
                         <Divider sx={{ margin: "15px 5px 5px" }} />
                     </BootstrapDialogTitle>
-                    <DialogContent open={tokenImportDialogState} sx={{ maxWidth: "429px" }} onOpen={()=>tokenImportDialogOpen()} onClose={()=>tokenImportDialogClose()}>
+                    <DialogContent sx={{ maxWidth: "429px" }} >
                         <Box sx={{ margin: "0 45px" }}>
                             <Paper variant="outlined" sx={{ padding: "23px 28px", borderRadius: "16px", background: "transparent" }}>
                                 <Stack direction="row" alignItems="center">
@@ -954,19 +960,19 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             }
 
             <BootstrapDialog
-                open={swapSettingDialogState}
-                onClose={()=>swapSettingDialogClose()} 
-                onOpen={()=>swapSettingDialogOpen()}
+                onClose={()=>setSwapSettingDialogState(false)} 
+                onOpen={()=>setSwapSettingDialogState(true)}
                 aria-labelledby="customized-dialog-title1"
+                open={swapSettingDialogState}
             >
-                <BootstrapDialogTitle open={swapSettingDialogState} id="customized-dialog-title1" sx={{ maxWidth: "476px" }} onOpen={()=>swapSettingDialogOpen()} onClose={()=>swapSettingDialogClose()}>
+                <BootstrapDialogTitle onClose={()=>setSwapSettingDialogState(false)} id="customized-dialog-title1" sx={{ maxWidth: "476px" }}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <IconButton onClick={swapSettingDialogClose}><ChevronLeftIcon /></IconButton>
                         <Typography>Advanced Settings</Typography>
                         <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
                     </Stack>
                 </BootstrapDialogTitle>
-                <DialogContent open={swapSettingDialogState} sx={{ maxWidth: "476px" }} onOpen={()=>swapSettingDialogOpen(true)} onClose={()=>swapSettingDialogClose(true)}>
+                <DialogContent sx={{ maxWidth: "476px" }}>
                     <CAccordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ background: "transparent" }}>
                         <CAccordionSummary
                             aria-controls="panel1bh-content"
@@ -1126,18 +1132,19 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             </BootstrapDialog>
 
             <BootstrapDialog
-                onClose={liquidityDialogClose}
-                open={liquidityDialogState}
+                onOpen={() => setLiquidityDialogState(true)}
+                onClose={() => setLiquidityDialogState(false)}
                 className="ls_dialog"
+                open={liquidityDialogState}
             >
-                <BootstrapDialogTitle open={liquidityDialogState} id="customized-dialog-title2" onClose={liquidityDialogClose}>
+                <BootstrapDialogTitle onClose={() => setLiquidityDialogState(false)} id="customized-dialog-title2">
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <IconButton onClick={liquidityDialogClose}><ChevronLeftIcon /></IconButton>
+                        <IconButton onClick={() => liquidityDialogClose()}><ChevronLeftIcon /></IconButton>
                         <Typography>Liquidity Sources</Typography>
                         <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
                     </Stack>
                 </BootstrapDialogTitle>
-                <DialogContent open={liquidityDialogState} className="ls_dialog_content" sx={{ margin: "10px" }}>
+                <DialogContent className="ls_dialog_content" sx={{ margin: "10px" }}>
                     <TextField
                         id="input-with-icon-textfield"
                         InputProps={{
@@ -1175,17 +1182,18 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
             {poolCreateDialogState &&
                 <BootstrapDialog
-                    onClose={poolCreateDialogClose}
+                    onOpen={()=>setPoolCreateDialogState(true)}
+                    onClose={()=>setPoolCreateDialogState(false)}
                     aria-labelledby="customized-dialog-title2"
                     open={poolCreateDialogState}
                 >
-                    <BootstrapDialogTitle open={poolCreateDialogState} id="customized-dialog-title2" sx={{ p: "20px 10px 10px 20px" }} onClose={poolCreateDialogClose}>
+                    <BootstrapDialogTitle onClose={()=>setPoolCreateDialogState(false)} id="customized-dialog-title2" sx={{ p: "20px 10px 10px 20px" }}>
                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ ml: "5px" }}>
                             <Typography sx={{ fontSize: "20px" }}>{poolCreateDialogState.title}</Typography>
                             <IconButton onClick={poolCreateDialogClose}><CloseIcon /></IconButton>
                         </Stack>
                     </BootstrapDialogTitle>
-                    <DialogContent open={poolCreateDialogState} sx={{ m: "5px" }}>
+                    <DialogContent sx={{ m: "5px" }}>
                         <Grid container>
                             <Grid xs={10}>
                                 <Select

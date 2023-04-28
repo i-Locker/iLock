@@ -18,27 +18,26 @@ import {
     Collapse,
     Link
 } from '@mui/material';
+import { useWeb3React } from "@web3-react/core";
+import Web3 from 'web3';
+import Cwallet from "../assets/constants/Cwallet";
 import { CustomTab } from '../config/style';
 import { erc20Abi, network_, network_dec_to_hex, iBridgeAddress, network_lower_to_proper } from "../constants";
 import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, get_iVault_byIndex, calculateSuggestedDonation, getEtherBalance } from "../web3";
+import { getBalance } from "../config/app";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import fren from '../assets/img/common/fren.svg';
-import Filter from '../assets/img/common/filter.png';
-import Refresh from '../assets/img/common/refresh.png';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import { styled, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
-import { useWeb3React } from "@web3-react/core";
-import Cwallet from "../assets/constants/Cwallet";
-import { getBalance } from "../config/app";
 import './swap.css';
+import axios from 'axios';
 import { Router_address } from "../config/abi/router/dexRouter";
 import { Factory_address } from "../config/abi/router/dexFactory";
-import Web3 from 'web3';
-import axios from 'axios';
-
+import fren from '../assets/img/common/fren.svg';
+import Filter from '../assets/img/common/filter.png';
+import Refresh from '../assets/img/common/refresh.png';
 const theme = createTheme({
     palette: {
         primary: {
@@ -76,7 +75,9 @@ export default function Bridge({ chainState, setChainState }) {
     const [bridgeAddress, setBridgeAddress] = React.useState("");
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [tokenDialogState, setTokenDialogState] = useState(false);
+    const [poolCreateDialogState, setPoolCreateDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
+    const [pools, setPools] = useState([]);
     const [token1, setToken1] = useState(chainState["tokens"][0] && chainState["tokens"][0].length > 0 ? chainState["tokens"][0] : "");
     const [token2, setToken2] = useState(chainState["tokens"][1] && chainState["tokens"][1].length > 0 ? chainState["tokens"][1] : "");
     const [token1Balance, setToken1Balance] = useState(0);
@@ -466,7 +467,7 @@ export default function Bridge({ chainState, setChainState }) {
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             {/* <CircularProgress variant="determinate" value={progress} size={20} /> */}
                                             <IconButton sx={{ color: "white" }}><Typography component="img" src={Refresh}></Typography></IconButton>
-                                            <IconButton sx={{ color: "white" }} onClick={swapSettingDialogOpen}><Typography component="img" src={Filter}></Typography></IconButton>
+                                            <IconButton sx={{ color: "white" }} onClick={()=>swapSettingDialogOpen()}><Typography component="img" src={Filter}></Typography></IconButton>
                                         </Stack>
                                     </Stack>
                                     {swapTabValue === 0 &&
@@ -681,9 +682,8 @@ export default function Bridge({ chainState, setChainState }) {
                         </Grid>
                     </Grid>}
                 </Stack>
-            </ThemeProvider> <
-        Cwallet isOpen = { isOpenDialog } setIsOpen = { setIsOpenDialog } tokenDialogState = { tokenDialogState } setTokenDialogState = { setTokenDialogState } chain = { chainState } setChain = { setChainState } selectToken = { selectToken } swapSettingDialogState = { swapSettingDialogState } setSwapSettingDialogState = { setSwapSettingDialogState } setImportAlert = { setImportAlert }
-        /> <
-        />
+            </ThemeProvider> 
+        <Cwallet isOpenDialog = { isOpenDialog } setIsOpenDialog = { setIsOpenDialog } chain = { chainState } setChain = { setChainState } tokenDialogState = { tokenDialogState } setTokenDialogState = { setTokenDialogState } selectToken = { selectToken } swapSettingDialogState = { swapSettingDialogState } setSwapSettingDialogState = { setSwapSettingDialogState } poolCreateDialogState = { poolCreateDialogState } setPoolCreateDialogState = { setPoolCreateDialogState } setPools = { setPools } setImportAlert = { setImportAlert } />
+    </>
     );
 }

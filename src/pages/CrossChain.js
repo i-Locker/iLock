@@ -11,7 +11,6 @@ import Container from "@mui/material/Container";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Modal from '@mui/material/Modal';
 import { RadioGroup } from "@mui/material";
 import MobileStepper from '@mui/material/MobileStepper';
 import Button from '@mui/material/Button';

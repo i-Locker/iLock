@@ -171,8 +171,8 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     return (
         <Dialog
             open={isOpen}
-            onOpen={() => handleOpenWalletList()}
-            onClose={() => handleCloseWalletList()}
+            onOpen={() => setIsOpen(true)}
+            onClose={() => setIsOpen(false)}
             classes={{
                 paper: classes.connectWallet,
             }}
@@ -183,7 +183,7 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                     <ReplayIcon />
                 </Button>
             }>{getErrorMessage(error)}</Alert>}
-            <DialogTitle className="action">
+            <DialogTitle open={isOpen} onClose={() => setIsOpen(false)} className="action">
                 <Typography>{active && "Account"}</Typography>
             </DialogTitle>
             {active && (
