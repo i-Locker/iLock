@@ -32,7 +32,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, tokens_data } from "../constants";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, tokens_data, iBridgeAddress } from "../constants";
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
@@ -50,6 +50,7 @@ const CrossChain = (props) => {
     const [open, setOpen] = React.useState(false);
     const [lockerListEnabled, setLockerListEnabled] = useState(false);
     const [snackbar, setSnackbar] = React.useState(false);
+    const [bridgeAddress, setBridgeAddress] = React.useState("");
     const [chainState, setChainState] = React.useState("");
     const [loaderText, setLoaderText] = React.useState("");
     const [network, setNetwork] = useState("");
@@ -69,7 +70,7 @@ const CrossChain = (props) => {
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
-    const [isAllowed, setIsAllowed] = useState(0); 
+    const [isAllowed, setIsAllowed] = useState(0);
     const [lockAmountMax, setLockAmountMax] = useState(false);
     const maxSteps = 4;
     const theme = useTheme();
@@ -274,6 +275,13 @@ const CrossChain = (props) => {
             console.log("tokens_data: ", [network_[network_dec_to_hex[chainId]]][0].address);
             setChainState(state_chain);
             alterLoaderText("Make a selection");
+            try {
+                console.log("iBridgeAddress: ", iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
+                setBridgeAddress(iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
+                console.log("bridgeAddress: ", bridgeAddress);
+            } catch (e) {
+                //
+            };
         } else {
             try {
                 if (tokenContract && tokenDecimals) {
