@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 // ** Import Providers
 import MaterialThemeProvider from "./providers/theme";
 import MuiSnackbarProvider from "./providers/snackbar";
@@ -17,6 +17,9 @@ window.Buffer = window.Buffer || Buffer;
 
 const store = configureStore();
 
+const container = document.getElementById('app-root');
+const root = createRoot(container);
+
 {/*
 const container = document.getElementById('app-root');
 import { createRoot } from 'react-dom/client';
@@ -24,7 +27,7 @@ const root = createRoot(container);
 root.render();
 */}
 
-ReactDOM.render(
+root.render(
   <React.StrictMode>
     <ReduxProvider store={store}>
         <MaterialThemeProvider>
@@ -37,6 +40,5 @@ ReactDOM.render(
             </MuiSnackbarProvider>
         </MaterialThemeProvider>
     </ReduxProvider>
-  </React.StrictMode>,
- document.getElementById('app-root')
+  </React.StrictMode>
 );
