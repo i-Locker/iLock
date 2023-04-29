@@ -4,16 +4,63 @@ pragma solidity ^0.8.5;
 import "../token/ERC20.sol";
 
 interface IHOLD {
+    event HolderTransferred(
+        address indexed prev_holder,
+        address indexed new_holder
+    );
+    event WithdrawalTokenFrom(
+        address caller,
+        address[] indexed destination,
+        address indexed origin,
+        address token,
+        uint256 liquidity,
+        uint256 id
+    );
+    event WithdrawalCoinFrom(
+        address caller,
+        address[] indexed destination,
+        address indexed origin,
+        uint256 liquidity,
+        uint256 id
+    );
+    event SwapTokenToETH(
+        address caller,
+        address indexed destination,
+        address indexed origin,
+        uint256 liquidity
+    );
+
+    event SwapETHToToken(
+        address caller,
+        address indexed destination,
+        address indexed origin,
+        uint256 liquidity
+    );
+
+    function swapETH_to_TOKEN(
+        address payable recipient,
+        address payable token,
+        uint256 amount
+    ) external payable returns (bool success);
+
+    function swapTOKEN_to_ETH(
+        address payable recipient,
+        address payable token,
+        uint256 amount
+    ) external payable returns (bool success);
+
     function transferTo(
         IERC20 token,
         address payable recipient,
-        uint256 amount
+        uint256 amount,
+        uint256 id
     ) external returns (bool success);
 
-    function ETH_transferTo(address payable recipient, uint256 amount)
-        external
-        payable
-        returns (bool success);
+    function ETH_transferTo(
+        address payable recipient,
+        uint256 amount,
+        uint256 id
+    ) external payable returns (bool success);
 
     function transferHolder(address payable new_holder) external returns (bool);
 }

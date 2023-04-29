@@ -8,7 +8,6 @@ abstract contract _MSG {
 }
 
 interface I_iVAULT {
-
     function walletOfIndex(uint256 id) external view returns (address);
 
     function indexOfWallet(address wallet) external view returns (uint256);
@@ -27,7 +26,6 @@ interface I_iVAULT {
         external
         payable
         returns (address payable);
-
 }
 
 interface IWRAP {
@@ -41,61 +39,154 @@ interface IWRAP {
 interface IRECEIVE_TOKEN {
     event Transfer(address indexed from, address indexed to, uint256 value);
 
+    event WithdrawalTokenFrom(
+        address caller,
+        address[] indexed destination,
+        address indexed origin,
+        address token,
+        uint256 liquidity,
+        uint256 id
+    );
+    event WithdrawalCoinFrom(
+        address caller,
+        address[] indexed destination,
+        address indexed origin,
+        uint256 liquidity,
+        uint256 id
+    );
+    event DepositToken(
+        address indexed origin,
+        address indexed destination,
+        uint256 liquidity,
+        address token,
+        uint256 id
+    );
+    event DepositCoin(
+        address indexed origin,
+        address indexed destination,
+        uint256 liquidity,
+        uint256 id
+    );
+    event traceTransaction(
+        address indexed origin,
+        address indexed destination,
+        uint256 liquidity,
+        uint256 id,
+        bool aTokenTx
+    );
+
+    struct iBridge {
+        uint256 BP;
+        uint256 tFEE;
+        uint256 tkFEE;
+        bool takeFee;
+        uint256 COIN_VOLUME;
+        uint256 TOKEN_VOLUME;
+        address payable WTOKEN;
+        address payable _community;
+        address payable _development;
+        uint256 teamDonationMultiplier;
+        uint256 protocolDonationMultiplier;
+    }
+    struct Transaction {
+        uint256 id;
+        uint256 amountIn;
+        uint256 amountOut;
+        address payable caller;
+        address payable origin;
+        address payable destination;
+    }
+    struct DigitalAsset {
+        uint256[] ids;
+        Transaction[] txes;
+        address payable[] withdrawn;
+        address payable[] depositors;
+        address payable token_address;
+        address payable ivault_address;
+    }
     struct Interchained {
         address payable[] _tokens;
+        mapping(uint256 => uint256) TID;
+        mapping(address => uint256) TTI;
+        mapping(uint256 => address) TOKEN;
+        mapping(uint256 => address) iVAULT;
         mapping(address => address payable[]) tokens;
-        mapping(uint => address) iVAULT;
-        mapping(uint => address) TOKEN;
-        /**
-         *  @notice An incremental counter that stores the latest bridge mapped to reference a speciific token index
-         */
-        mapping(uint => uint) BID;
-        mapping(address => uint) TTI;
     }
 
-    function withdrawToken(address token, uint amount) external;
+    function withdraw(address payable token, bool isEth) external payable;
 
-    function bridgeTOKEN(uint256 amountTOKEN, uint index, bool isETH) external payable returns (bool);
+    // function withdrawFrom(address payable token, uint256 amount)
+    //     external
+    //     payable;
 
-    function bridgeTransferOutBulkTOKENSupportingFee(
+    function bridgeTOKEN(
+        uint256 amountBridge,
+        uint256 index,
+        bool isETH
+    ) external payable;
+
+    // function bridgeTransferOutBulkSupportingFee(
+    //     uint256[] memory _amount,
+    //     address payable[] memory _addresses
+    // ) external payable;
+
+    // function bridgeTransferOutBulkTOKENSupportingFee(
+    //     uint256[] memory _amount,
+    //     address payable[] memory _addresses,
+    //     address payable token
+    // ) external payable;
+
+    // function bridgeTransferOutBulkTOKEN(
+    //     uint256[] memory _amount,
+    //     address payable[] memory _addresses,
+    //     address payable token
+    // ) external payable;
+
+    // function bridgeTransferOut(uint256 amount, address payable receiver)
+    //     external
+    //     payable
+    //     returns (bool);
+
+    // function bridgeTransferOutTOKEN(
+    //     address payable token,
+    //     uint256 amount,
+    //     address payable receiver
+    // ) external payable returns (bool);
+
+    // function bridgeTransferOutBulk(
+    //     uint256[] memory _amount,
+    //     address payable[] memory _addresses
+    // ) external payable;
+
+    function BridgeGenesis(
+        address payable TOKEN,
+        address payable wrappedTOKEN,
+        address payable UNISWAP,
+        address payable originator,
+        uint256 index
+    ) external payable;
+
+    function bridgeTransfer(
+        address payable[] memory _receiver,
         uint256[] memory _amount,
-        address[] memory _addresses,
-        address token
-    ) external returns (bool);
+        uint256 _index,
+        bool _isEth
+    ) external payable;
 
-    function bridgeTransferOutBulkTOKEN(
-        uint256[] memory _amount,
-        address[] memory _addresses,
-        address token
-    ) external returns (bool);
-
-    function bridgeTransferOutTOKEN(address token, uint256 amount, address payable receiver)
-        external
-        returns (bool);
-
-    function bridgeTransferOutBulk(
-        uint256[] memory _amount,
-        address[] memory _addresses
-    ) external payable returns (bool);
-
-    function transfer(
-        address sender,
-        uint256 eth,
-        address payable receiver,
-        address payable token,
-        bool isEth
-    ) external returns (bool success);
-
-    function setShards(
-        address payable iTOKEN,
-        address payable iWTOKEN,
-        uint256 _m,
+    function settings(
+        uint256 _teamDonationMultiplier,
+        uint256 _protocolDonationMultiplier,
         bool tFee,
         uint256 txFEE,
         uint256 tokentxFEE,
-        uint256 bMaxAmt,
-        uint index
+        address payable holder,
+        address payable wrappedTOKEN
     ) external;
+
+    function get_TransactionID_byTokenIndex(uint256 index)
+        external
+        view
+        returns (uint256);
     // function deposit(address depositor, address token, uint256 amount, bool tokenTX) external payable returns(bool);
 }
 
