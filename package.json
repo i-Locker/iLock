@@ -33,6 +33,7 @@
     "url": "https://github.com/i-Lockers/iLock/issues"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.6.0",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@ethersproject/providers": "^5.3.1",
