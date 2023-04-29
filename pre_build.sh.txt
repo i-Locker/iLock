@@ -1,0 +1,2 @@
+export GENERATE_SOURCEMAP=false
+export DISABLE_ESLINT_PLUGIN=true

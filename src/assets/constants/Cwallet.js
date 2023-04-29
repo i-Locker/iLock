@@ -95,7 +95,8 @@ const MenuProps = {
     },
 };
 
-const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogState, setTokenDialogState, selectToken, swapSettingDialogState, setSwapSettingDialogState, poolCreateDialogState, setPoolCreateDialogState, setPools, setImportAlert }) => {
+const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogState, setTokenDialogState, selectToken, swapSettingDialogState, setSwapSettingDialogState, poolCreateDialogState,
+ setPoolCreateDialogState, setPools, setImportAlert }) => {
     const triedEager = useEagerConnect();
     const {
         activate,
@@ -756,7 +757,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                                     ) : <CircularProgress />}
                                                 </ListItemIcon>
                                                 <ListItemText className="description">
-                                                    {error ? getErrorMessage(error) : "Initializing..."}
+                                                    {error ? getErrorMessage(error) : <CircularProgress /> }
                                                 </ListItemText>
                                                 {
                                                     error && (

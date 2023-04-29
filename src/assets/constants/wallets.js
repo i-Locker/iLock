@@ -92,6 +92,12 @@ const Wallets = [
         logo1: Frame299,
         logo2: image3_4,
         connector: injected,
+    },
+    {
+        name: "WalletConnect",
+        logo1: WalletConnect,
+        logo2: WalletConnect,
+        connector: walletconnect,
     }
 ];
 let Chains = [

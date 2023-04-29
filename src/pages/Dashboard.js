@@ -114,8 +114,9 @@ const Dashboard = (props) => {
             fetchEtherBalance(ebf[2]);
         });
     };
-    const handleNext = async () => {
+    const handleNext = async (events) => {
         if (account) {
+            console.log("events: ",events);
             console.log("activeStep: ",activeStep);
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
@@ -330,7 +331,7 @@ const Dashboard = (props) => {
     };
 
     const handleStepChange = (step) => {
-        setActiveStep(step);
+        handleNext(step);
     };
 
     const fetchEtherBalance = (eb) => {
