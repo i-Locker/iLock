@@ -150,11 +150,19 @@ const Dashboard = (props) => {
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setModalTitle("Please select Token");
                         setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+                        if (activeStep == 2) {
+                            setActiveStep((prevActiveStep) => prevActiveStep - 1);
+                        } else if (activeStep == 3) {
+                            return true;
+                        };
                         handleOpen();
                     } else {
-                        console.log(activeStep);
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                        console.log("activeStep: ", activeStep);
+                        if (activeStep == 2) {
+                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                        } else if (activeStep == 3) {
+                            return true;
+                        };
                     };
                 } else if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
                     return;
@@ -205,7 +213,12 @@ const Dashboard = (props) => {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setModalTitle("Please select Token");
                                 setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                                setActiveStep((prevActiveStep) => prevActiveStep - 1);
+                                console.log("activeStep: ", activeStep);
+                                if (activeStep == 2) {
+                                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                                } else if (activeStep == 3) {
+                                    return true;
+                                };
                                 handleOpen();
                             } else {
                                 console.log(activeStep);
@@ -347,7 +360,9 @@ const Dashboard = (props) => {
         } else if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
             return true;
         } else {
-            setActiveStep((prevActiveStep) => prevActiveStep - 1);
+            if (addressDemand&&activeStep < 4 || !addressDemand&&activeStep < 3) {
+                setActiveStep((prevActiveStep) => prevActiveStep - 1);
+            };
         };
     };
 
@@ -359,7 +374,9 @@ const Dashboard = (props) => {
             if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
                 return true;
             } else {
-                handleNext(step);
+                if (addressDemand&&activeStep < 4 || !addressDemand&&activeStep < 3) {
+                    handleNext(step);
+                };
             };
         };
     };
@@ -678,7 +695,7 @@ const Dashboard = (props) => {
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        disabled={web3Enabled}
+                                        disabled={web3Enabled||addressDemand&&activeStep == 4||!addressDemand&&activeStep == 3}
                                         onChangeIndex={(e)=>handleStepChange(e)}
                                     >
                                        
@@ -938,10 +955,10 @@ const Dashboard = (props) => {
                                         position="static"
                                         activeStep={activeStep}
                                         nextButton={
-                                        <Button
+                                        addressDemand&&activeStep < 4?<Button
                                             size="small"
                                             onClick={(e)=>handleStepChange(e)}
-                                            disabled={activeStep === maxSteps - 1}
+                                            disabled={activeStep === addressDemand?maxSteps - 1:!addressDemand?maxSteps - 2:maxSteps - 1}
                                         >
                                             Next
                                             {theme.direction === 'rtl' ? (
@@ -949,10 +966,23 @@ const Dashboard = (props) => {
                                             ) : (
                                             <KeyboardArrowRight />
                                             )}
-                                        </Button>
+                                        </Button> :
+                                        !addressDemand&&activeStep < 3?<Button
+                                            size="small"
+                                            onClick={(e)=>handleStepChange(e)}
+                                            disabled={activeStep === addressDemand?maxSteps - 1:!addressDemand?maxSteps - 2:maxSteps - 1}
+                                        >
+                                            Next
+                                            {theme.direction === 'rtl' ? (
+                                            <KeyboardArrowLeft />
+                                            ) : (
+                                            <KeyboardArrowRight />
+                                            )}
+                                        </Button> :
+                                        <></>
                                         }
                                         backButton={
-                                        addressDemand&&activeStep < 4?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0}>
+                                        addressDemand&&activeStep < 4?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0 || addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3}>
                                             {theme.direction === 'rtl' ? (
                                             <KeyboardArrowRight />
                                             ) : (
@@ -960,7 +990,7 @@ const Dashboard = (props) => {
                                             )}
                                             Back
                                         </Button> :
-                                        !addressDemand&&activeStep < 3?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0}>
+                                        !addressDemand&&activeStep < 3?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0 || addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3}>
                                             {theme.direction === 'rtl' ? (
                                             <KeyboardArrowRight />
                                             ) : (
