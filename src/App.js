@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {useDispatch} from 'react-redux';
 import Router from "./Router";
+import './index.css';
 import './app.css';
 import { STATISTICS } from "./redux/constants";
 
