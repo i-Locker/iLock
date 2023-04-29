@@ -63,7 +63,6 @@ const Dashboard = (props) => {
     const [tokenAllowance, setTokenAllowance] = useState(0);
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
-    const [web3Enabled, setWeb3Enabled] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
     const [isAllowed, setIsAllowed] = useState(0);
     const [lockAmountMax, setLockAmountMax] = useState(false);
@@ -151,20 +150,14 @@ const Dashboard = (props) => {
                         console.log(activeStep);
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     }
-                } else if (activeStep == 4) {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                handleOpen();
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep - 1);
-                            }
-                        }  else {
+                } else {
                     console.log("activeStep: ", activeStep);
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 2);
                     };
-                };
+                }
             } catch (switchError) {
                 try {
                     const params_network_add = {
@@ -209,12 +202,6 @@ const Dashboard = (props) => {
                                 console.log(activeStep);
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
                             }
-                        } else if (activeStep == 4) {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                handleOpen();
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep - 1);
-                            }
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -246,18 +233,14 @@ const Dashboard = (props) => {
             alterLoaderText(loaderText);
             toggleDrawer();
             setIsAllowed(0);
-            setWeb3Enabled(true);
             alterLoaderText("Connect Wallet");
         } else if (account && !network && !tokenContract) {
-            setWeb3Enabled(false);
             setIsAllowed(0);
             alterLoaderText("Select Network");
         } else if (account && network && !tokenContract) {
-            setWeb3Enabled(false);
             setIsAllowed(0);
             alterLoaderText("Make a selection");
         } else {
-            setWeb3Enabled(false);
             try {
                 if (tokenContract && tokenDecimals) {
                     start_(tokenContract, tokenDecimals);
@@ -272,7 +255,7 @@ const Dashboard = (props) => {
                 };
             };
         };
-    }, [account, tokenContract, tokenDecimals, connector, network, web3Enabled, setWeb3Enabled]);
+    }, [account, tokenContract, tokenDecimals, connector, network]);
 
     const handleAllowance = async (e) => {
         if (!account || !tokenContract) return;
@@ -348,12 +331,7 @@ const Dashboard = (props) => {
     };
 
     const handleStepChange = (step) => {
-        if(!account || !chainId) {
-            event.preventDefault();
-            return;
-        } else {
-            handleNext(step);
-        };
+        handleNext(step);
     };
 
     const fetchEtherBalance = (eb) => {
@@ -365,14 +343,14 @@ const Dashboard = (props) => {
         setLockAmount(_amount);
         console.log("_amount: ", lockAmount);
         setLockAmountMax(true);
-    };
+    }
 
     function handleLocker(e) {
         setLockAmount(parseFloat(e.target.value));
         setLockAmountMax(false);
         handleAllowance(e);
         console.log("_amount: ", lockAmount);
-    };
+    }
     const handleLockAmount = (e) => {
         console.log("e.target.value: ", e.target.value);
         handleLocker(e);
@@ -670,7 +648,6 @@ const Dashboard = (props) => {
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        disabled={web3Enabled}
                                         onChangeIndex={(e)=>handleStepChange(e)}
                                     >
                                        
