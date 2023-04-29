@@ -145,7 +145,7 @@ const Dashboard = (props) => {
                         handleOpen();
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
+                    };
                 } else if (activeStep >= 2) {
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setModalTitle("Please select Token");
@@ -155,13 +155,9 @@ const Dashboard = (props) => {
                         console.log(activeStep);
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     };
-                } else if (activeStep == 4) {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                handleOpen();
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep - 1);
-                            }
-                        }  else {
+                } else if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
+                    return;
+                }  else {
                     console.log("activeStep: ", activeStep);
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -213,12 +209,8 @@ const Dashboard = (props) => {
                                 console.log(activeStep);
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
                             }
-                        } else if (activeStep == 4) {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                handleOpen();
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep - 1);
-                            };
+                        } else if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
+                            return;
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -347,16 +339,26 @@ const Dashboard = (props) => {
         event.preventDefault();
     };
 
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const handleBack = (activeStep) => {
+        if(!account) {
+            return true;
+        } else if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
+            return true;
+        } else {
+            setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        };
     };
 
     const handleStepChange = (step) => {
         if(!account || !chainId) {
             event.preventDefault();
-            return;
+            return true;
         } else {
-            handleNext(step);
+            if (addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3) {
+                return true;
+            } else {
+                handleNext(step);
+            };
         };
     };
 
@@ -936,7 +938,7 @@ const Dashboard = (props) => {
                                         nextButton={
                                         <Button
                                             size="small"
-                                            onClick={handleNext}
+                                            onClick={(e)=>handleStepChange(e)}
                                             disabled={activeStep === maxSteps - 1}
                                         >
                                             Next
@@ -948,15 +950,23 @@ const Dashboard = (props) => {
                                         </Button>
                                         }
                                         backButton={
-                                        <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                                        addressDemand&&activeStep < 4?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0}>
                                             {theme.direction === 'rtl' ? (
                                             <KeyboardArrowRight />
                                             ) : (
                                             <KeyboardArrowLeft />
                                             )}
                                             Back
-                                        </Button>
-                                        }
+                                        </Button> :
+                                        !addressDemand&&activeStep < 3?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0}>
+                                            {theme.direction === 'rtl' ? (
+                                            <KeyboardArrowRight />
+                                            ) : (
+                                            <KeyboardArrowLeft />
+                                            )}
+                                            Back
+                                        </Button> :
+                                        <></>}
                                     />
                                 </RadioGroup>
                             </CardContent>
