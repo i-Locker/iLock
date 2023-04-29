@@ -17,13 +17,13 @@ import lpfarm from "./LPFarm/reducer";
 import newFarming from "./newFarming/reducer";
 import chainId from "./chainId/reducer";
 const PERSISTED_KEYS = ["user", "lists", "gas", "newfarm"];
+// Exchange
 const store = configureStore({
     reducer: {
         toast: toastReducers,
         block: blockReducer,
         application,
         transactions,
-        // Exchange
         swap,
         user,
         mint,

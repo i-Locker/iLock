@@ -1,7 +1,5 @@
-// import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 export var SupportedChainId;
 (function (SupportedChainId) {
-    // SupportedChainId[SupportedChainId["MAINNET"] = 1] = "MAINNET";
     SupportedChainId[SupportedChainId["ETHEREUM"] = 1] = "ETHEREUM";
     SupportedChainId[SupportedChainId["GOERLI"] = 5] = "GOERLI";
     SupportedChainId[SupportedChainId["CRONOS"] = 25] = "CRONOS";
@@ -18,9 +16,6 @@ export var SupportedChainId;
     SupportedChainId[SupportedChainId["AVALANCHETEST"] = 43113] = "AVALANCHETEST";
 })(SupportedChainId || (SupportedChainId = {}));
 export const ALL_SUPPORTED_CHAIN_IDS = [
-    // SupportedChainId.MAINNET,
-    // SupportedChainId.OASISTEST,
-    // SupportedChainId.OASISMAINNET,
     SupportedChainId.ETHEREUM,
     SupportedChainId.GOERLI,
     SupportedChainId.POLYGON,
@@ -37,9 +32,6 @@ export const ALL_SUPPORTED_CHAIN_IDS = [
     SupportedChainId.FRENCHAINTEST,
 ];
 export const L1_CHAIN_IDS = [
-    // SupportedChainId.MAINNET,
-    // SupportedChainId.OASISTEST,
-    // SupportedChainId.OASISMAINNET,
     SupportedChainId.ETHEREUM,
     SupportedChainId.GOERLI,
     SupportedChainId.POLYGON,
@@ -161,19 +153,4 @@ export const CHAIN_INFO = {
         label: "Cronos",
         nativeCurrency: { name: "Cronos", symbol: "CRO", decimals: 18 },
     },
-    /*[SupportedChainId.OASISTEST]: {
-        docs: "",
-        explorer: "https://explorer.emerald.oasis.dev/",
-        infoLink: "",
-        label: "Oasis Emerald Testnet",
-        nativeCurrency: { name: "ROSE", symbol: "ROSE", decimals: 18 },
-    },
-    [SupportedChainId.OASISMAINNET]: {
-        docs: "",
-        explorer: "https://testnet.explorer.emerald.oasis.dev/",
-        infoLink: "",
-        label: "Oasis Emerald Mainnet",
-        nativeCurrency: { name: "ROSE", symbol: "ROSE", decimals: 18 },
-    },
-    */
 };

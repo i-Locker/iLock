@@ -1,13 +1,13 @@
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import detectEthereumProvider from "@metamask/detect-provider";
 import { Contract } from "@ethersproject/contracts";
 import ERC20Token from "./abis/erc20.json";
 import { SupportedChainSymbols, WrappedSymbols } from "./constants/chains";
-import detectEthereumProvider from "@metamask/detect-provider";
-import { ethers } from "ethers";
 import { escapeRegExp } from ".";
 import { inputRegex } from "../components/Farming/Modals/Filter";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { RPC } from "../config/connectors";
 export const removeSideTab = (sideBarName) => {
     localStorage.setItem(sideBarName, "removed");
@@ -370,7 +370,7 @@ export const ISNATIVE = (symbol, chainId) => {
     }
 };
 export const formatAmountIn = (amount, decimals) => {
-    return ethers.utils.parseUnits(truncate(amount, decimals), decimals);
+    return ethers.parseUnits(truncate(amount, decimals), decimals);
 };
 export function truncate(str, maxDecimalDigits) {
     if (str && str.toString()?.includes(".")) {
@@ -378,7 +378,7 @@ export function truncate(str, maxDecimalDigits) {
         return parts[0] + "." + parts[1].slice(0, maxDecimalDigits);
     }
     return str;
-}
+};
 export const formatAmount = (value) => parseFloat(value).toLocaleString();
 export const getOutPutDataFromEvent = async (tokenAddress, eventsArray, decimal) => {
     const duplicateArray = [];

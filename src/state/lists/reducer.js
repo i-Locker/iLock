@@ -9,16 +9,22 @@ const NEW_LIST_STATE = {
     loadingRequestId: null,
     pendingUpdate: null,
 };
-const initialState = {
-    lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
-    byUrl: {
-        ...DEFAULT_LIST_OF_LISTS.concat(...UNSUPPORTED_LIST_URLS).reduce((memo, listUrl) => {
-            memo[listUrl] = NEW_LIST_STATE;
-            return memo;
-        }, {}),
-    },
-    activeListUrls: DEFAULT_ACTIVE_LIST_URLS,
-    importedToken: undefined
+let initialState;
+try {
+    initialState = {
+        lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
+        byUrl: {
+            ...DEFAULT_LIST_OF_LISTS.concat(...UNSUPPORTED_LIST_URLS).reduce((memo, listUrl) => {
+                memo[listUrl] = NEW_LIST_STATE;
+                return memo;
+            }, {}),
+        },
+        activeListUrls: DEFAULT_ACTIVE_LIST_URLS,
+        importedToken: null
+    };
+} catch(e) {
+    //
+    initialState = null;
 };
 export default createReducer(initialState, (builder) => builder
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
