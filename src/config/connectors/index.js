@@ -2,60 +2,60 @@ import { Web3Provider } from "@ethersproject/providers";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { BscConnector } from "@binance-chain/bsc-connector";
-import { DEFAULT_CHAIN_ID, REACT_APP_NETWORK_URL, network_,network_dec_to_hex } from "../../constants";
+import { DEFAULT_CHAIN_ID, REACT_APP_NETWORK_URL, network_, network_dec_to_hex } from "../../constants";
 import { NetworkConnector } from "./NetworkConnector";
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from "../constants/chains";
 let NETWORK_URL = process.env.REACT_APP_NETWORK_URL ? process.env.REACT_APP_NETWORK_URL : REACT_APP_NETWORK_URL[network_[network_dec_to_hex[DEFAULT_CHAIN_ID]]];
 export const setNetwork = (chainId) => {
     NETWORK_URL = REACT_APP_NETWORK_URL[network_[chainId]];
 };
-console.log("REACT_APP_NETWORK_URL[DEFAULT_CHAIN_ID]: ",REACT_APP_NETWORK_URL[network_[network_dec_to_hex[DEFAULT_CHAIN_ID]]], network_[network_dec_to_hex[DEFAULT_CHAIN_ID]], DEFAULT_CHAIN_ID);
-export const RPC = {
-    [SupportedChainId.BINANCE]: `https://bsc-dataseed4.binance.org`,
+console.log("REACT_APP_NETWORK_URL[DEFAULT_CHAIN_ID]: ", DEFAULT_CHAIN_ID, REACT_APP_NETWORK_URL[network_[network_dec_to_hex[DEFAULT_CHAIN_ID]]], network_[network_dec_to_hex[DEFAULT_CHAIN_ID]], DEFAULT_CHAIN_ID);
+// [SupportedChainId.OASISTEST]: "https://testnet.emerald.oasis.dev",
+// [SupportedChainId.OASISMAINNET]: "https://emerald.oasis.dev",
+export const RPC = {    
+    [SupportedChainId.BINANCE]: "https://bsc-dataseed4.binance.org",
     [SupportedChainId.BINANCETEST]: "https://data-seed-prebsc-2-s3.binance.org:8545",
-    [SupportedChainId.BINANCETESTNET]: "https://data-seed-prebsc-2-s3.binance.org:8545",
     [SupportedChainId.ETHEREUM]: "https://endpoints.omniatech.io/v1/eth/mainnet/public",
     [SupportedChainId.GOERLI]: "https://rpc.ankr.com/eth_goerli",
-    [SupportedChainId.POLYGON]: `https://rpc-mainnet.maticvigil.com`,
+    [SupportedChainId.POLYGON]: "https://rpc-mainnet.maticvigil.com",
     [SupportedChainId.POLYGONTEST]: "https://rpc-mumbai.matic.today",
-    [SupportedChainId.POLYGONTESTNET]: "https://rpc-mumbai.matic.today",
-    [SupportedChainId.OASISTEST]: "https://testnet.emerald.oasis.dev",
-    [SupportedChainId.OASISMAINNET]: "https://emerald.oasis.dev",
     [SupportedChainId.FRENCHAIN]: "https://rpc-02.frenscan.io",
     [SupportedChainId.FRENCHAINTEST]: "https://rpc-01tn.frenchain.app",
-    [SupportedChainId.FRENCHAINTESTNET]: "https://rpc-01tn.frenchain.app",
-    [SupportedChainId.CRONOS]: "https://evm.cronos.org/",
+    [SupportedChainId.CRONOS]: "https://evm.cronos.org",
     [SupportedChainId.CRONOSTEST]: "https://evm-t3.cronos.org",
-    [SupportedChainId.CRONOSTESNET]: "https://evm-t3.cronos.org",
     [SupportedChainId.KEKCHAIN]: "https://mainnet.kekchain.com",
     [SupportedChainId.KEKCHAINTEST]: "https://testnet.kekchain.com",
-    [SupportedChainId.KEKCHAINTESTNET]: "https://testnet.kekchain.com",
     [SupportedChainId.AVALANCHE]: "https://api.avax.network/ext/bc/C/rpc",
-    [SupportedChainId.AVALANCHE_FUJI]: "https://api.avax-test.network/ext/bc/C/rpc",
     [SupportedChainId.AVALANCHETEST]: "https://api.avax-test.network/ext/bc/C/rpc",
-    [SupportedChainId.AVALANCHETESTNET]: "https://api.avax-test.network/ext/bc/C/rpc",
 };
 export var ConnectorNames;
-(function (ConnectorNames) {
+(function(ConnectorNames) {
     ConnectorNames["Injected"] = "injected";
     ConnectorNames["WalletConnect"] = "walletconnect";
     ConnectorNames["BSC"] = "bsc";
 })(ConnectorNames || (ConnectorNames = {}));
-export const NETWORK_CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? DEFAULT_CHAIN_ID.toString());
-if (typeof NETWORK_URL === "undefined") {
-    {/* // REACT_APP_NETWORK_URL must be a defined environment variable */}
+export const NETWORK_CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ? process.env.REACT_APP_CHAIN_ID : DEFAULT_CHAIN_ID);
+if (typeof NETWORK_URL === "undefined") { { /* // REACT_APP_NETWORK_URL must be a defined environment variable */ }
     throw new Error(`Maintenance`);
-}
+};
+console.log("RPC:",RPC);
 export const network = new NetworkConnector({
     urls: RPC,
-    defaultChainId: parseFloat(DEFAULT_CHAIN_ID),
+    defaultChainId: DEFAULT_CHAIN_ID,
 });
+export default function getLibrary(provider) {
+    const library = new Web3Provider(provider);
+    library.pollingInterval = 15000;
+    return library;
+};
 let networkLibrary;
 export function getNetworkLibrary() {
     // eslint-disable-next-line no-return-assign
-    return (networkLibrary =
-        networkLibrary ?? new Web3Provider(network.provider));
-}
+    const library = new Web3Provider(network ? network.provider : provider);
+    library.pollingInterval = 15000;
+    networkLibrary = library;
+    return library;
+};
 export const injected = new InjectedConnector({
     supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
 });
@@ -68,14 +68,15 @@ export const walletconnect = new WalletConnectConnector({
     supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
     rpc: RPC,
     qrcode: true,
-});
-{/*
-// export const walletlink = new WalletLinkConnector({
-//     url: NETWORK_URL,
-//     appName: 'Smartswap',
-//     appLogoUrl: SMARTSWAP_LOGO
-// })
-*/}
+}); {
+    /*
+    // export const walletlink = new WalletLinkConnector({
+    //     url: NETWORK_URL,
+    //     appName: 'Smartswap',
+    //     appLogoUrl: SMARTSWAP_LOGO
+    // })
+    */
+}
 export const connectorKey = "connectv2";
 export const connectorsByName = {
     [ConnectorNames.Injected]: injected,
