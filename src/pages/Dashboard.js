@@ -150,6 +150,7 @@ const Dashboard = (props) => {
                     if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                         setModalTitle("Please select Token");
                         setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
+                        setActiveStep((prevActiveStep) => prevActiveStep - 1);
                         handleOpen();
                     } else {
                         console.log(activeStep);
@@ -204,6 +205,7 @@ const Dashboard = (props) => {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setModalTitle("Please select Token");
                                 setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
+                                setActiveStep((prevActiveStep) => prevActiveStep - 1);
                                 handleOpen();
                             } else {
                                 console.log(activeStep);
