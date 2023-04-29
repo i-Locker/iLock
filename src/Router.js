@@ -34,7 +34,7 @@ const AppRouter = () => {
                         <Route path="/locks/:chainName/:lockId" exact element={<iLocks />} />
                         <Route path="/lockers/:chainName/:lockId" exact element={<LockUp />} />
                         <Route path="/lockup/:chainName/:lockId" exact element={<LockUp />} />
-                        <Route path="/bridge" exact element={<Bridge />} />
+                        <Route path="/bridge" element={<Navigate to="/iBridge" replace />} />
                         <Route path="/iBridge" exact element={<CrossChain />} />
                     </Routes>
                     </BaseLayout>

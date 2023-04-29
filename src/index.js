@@ -20,13 +20,6 @@ const store = configureStore();
 const container = document.getElementById('app-root');
 const root = createRoot(container);
 
-{/*
-const container = document.getElementById('app-root');
-import { createRoot } from 'react-dom/client';
-const root = createRoot(container);
-root.render();
-*/}
-
 root.render(
   <React.StrictMode>
     <ReduxProvider store={store}>

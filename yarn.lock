@@ -10955,6 +10955,10 @@ react-swipeable-views-utils@^0.14.0:
     react-swipeable-views-core "^0.14.0"
     shallow-equal "^1.2.1"
 
+"react-swipeable-views-workspace@github:oliviertassinari/react-swipeable-views#pull/654/head":
+  version "0.13.9"
+  resolved "git+ssh://git@github.com/oliviertassinari/react-swipeable-views.git#edf1e98210a20a5dab80aa96fc16cf5acfb850eb"
+
 react-swipeable-views@^0.14.0:
   version "0.14.0"
   resolved "https://registry.npmjs.org/react-swipeable-views/-/react-swipeable-views-0.14.0.tgz"

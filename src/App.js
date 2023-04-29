@@ -4,7 +4,6 @@ import Router from "./Router";
 import './app.css';
 import { STATISTICS } from "./redux/constants";
 
-
 const App = () => {
   	
     const dispatch = useDispatch();

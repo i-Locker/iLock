@@ -171,7 +171,6 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     return (
         <Dialog
             open={isOpen}
-            onOpen={() => setIsOpen(true)}
             onClose={() => setIsOpen(false)}
             classes={{
                 paper: classes.connectWallet,

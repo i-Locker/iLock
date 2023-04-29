@@ -116,6 +116,7 @@ const Dashboard = (props) => {
     };
     const handleNext = async () => {
         if (account) {
+            console.log("activeStep: ",activeStep);
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
             const currentNetworkData = networkData.filter((each) => each.name === network);
@@ -646,7 +647,7 @@ const Dashboard = (props) => {
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        onChangeIndex={handleStepChange}
+                                        onChangeIndex={(e)=>handleStepChange(e)}
                                     >
                                        
                                         <div key={1} style={{paddingLeft:1, paddingRight:1}}>
@@ -737,7 +738,7 @@ const Dashboard = (props) => {
                                             </Grid>)
                                             }
                                         </div>
-                                        { addressDemand ? <div key={3} style={{paddingLeft:1, paddingRight:1}}>
+                                        { <div key={3} style={{paddingLeft:1, paddingRight:1}}>
                                             <p className="text-center" color="textSecondary">
                                                 Enter the token address you would like to lock for
                                             </p>
@@ -788,7 +789,7 @@ const Dashboard = (props) => {
                                                 </div> : <></>
                                             }
                                             
-                                        </div> : handleNext && <></> }
+                                        </div> }
                                         <div id="iLockerDeploy" key={4} style={{paddingLeft:1, paddingRight:1}}>
                                             <br />
                                             { addressDemand ? <Grid 

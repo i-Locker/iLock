@@ -1,6 +1,6 @@
 {
   "name": "iLockers-DApp-FOSS-Interchained",
-  "version": "2.1.9",
+  "version": "2.2.3",
   "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
   "main": "index.js",
   "homepage": "https://ilocks.interchained.org",
@@ -108,6 +108,7 @@
     "lint-staged": "^11.0.0",
     "node-sass": "^6.0.0",
     "prettier": "^2.3.1",
-    "react-scripts": "latest"
+    "react-scripts": "latest",
+    "react-swipeable-views-workspace": "github:oliviertassinari/react-swipeable-views#pull/654/head"
   }
 }
