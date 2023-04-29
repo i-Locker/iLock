@@ -25,13 +25,13 @@ function Updaters() {
     </>);
 };
 root.render(
-   <Buffer>
   <StrictMode>
     <ReduxProvider store={store}>
         <MaterialThemeProvider>
             <MuiSnackbarProvider>
                 <NotificationProvider>
                     <Web3Provider>
+                     <Buffer />
                      <Updaters />
                       <ColorModeScript />
                        <App />
@@ -41,5 +41,4 @@ root.render(
         </MaterialThemeProvider>
     </ReduxProvider>
   </StrictMode>
-   </Buffer>
 );
