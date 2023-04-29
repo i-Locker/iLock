@@ -3,14 +3,15 @@ import { getERC20Token } from "../utilsFunctions";
 import { ethers } from "ethers";
 import { SupportedChainSymbols, SupportedChainLogo, SupportedChainName, } from "../constants/chains";
 import { RGPADDRESSES } from "../addresses";
+import { DEFAULT_CHAIN_ID } from "../../constants";
 import { useSelector } from "react-redux";
 import { useActiveWeb3React } from "./useActiveWeb3React";
 export const useNativeBalance = () => {
     const { account, chainId, library } = useActiveWeb3React();
     const [Balance, setBalance] = useState("");
-    const [Symbol, setSymbol] = useState(SupportedChainSymbols[56]);
-    const [Name, setName] = useState(SupportedChainName[56]);
-    const [Logo, setLogo] = useState(SupportedChainLogo[56]);
+    const [Symbol, setSymbol] = useState(SupportedChainSymbols[chainId>0?chainId:DEFAULT_CHAIN_ID]);
+    const [Name, setName] = useState(SupportedChainName[chainId>0?chainId:DEFAULT_CHAIN_ID]);
+    const [Logo, setLogo] = useState(SupportedChainLogo[chainId>0?chainId:DEFAULT_CHAIN_ID]);
     const reloadBalance = localStorage.getItem("reload");
     const trxState = useSelector((state) => state.application.modal?.trxState);
     const refresh = useSelector((state) => state.application.refresh);
@@ -22,9 +23,9 @@ export const useNativeBalance = () => {
                     console.log("refresh");
                     const balance = await library?.getBalance(account);
                     setBalance(parseFloat(ethers.utils.formatEther(balance)).toFixed(4));
-                    setSymbol(SupportedChainSymbols[chainId]);
-                    setName(SupportedChainName[chainId]);
-                    setLogo(SupportedChainLogo[chainId]);
+                    setSymbol(SupportedChainSymbols[chainId>0?chainId:DEFAULT_CHAIN_ID]);
+                    setName(SupportedChainName[chainId>0?chainId:DEFAULT_CHAIN_ID]);
+                    setLogo(SupportedChainLogo[chainId>0?chainId:DEFAULT_CHAIN_ID]);
                 }
                 catch (err) {
                     console.log(err);
@@ -36,7 +37,7 @@ export const useNativeBalance = () => {
             }
         };
         getBalance();
-    }, [account, library, chainId, stateChanged, refresh]);
+    }, [account, library, chainId, stateChanged, refresh, DEFAULT_CHAIN_ID]);
     return [Balance, Symbol, Name, Logo];
 };
 export const useRGPBalance = () => {
