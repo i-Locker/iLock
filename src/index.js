@@ -31,8 +31,6 @@ root.render(
             <MuiSnackbarProvider>
                 <NotificationProvider>
                     <Web3Provider>
-                     <Buffer />
-                     <Updaters />
                       <ColorModeScript />
                        <App />
                     </Web3Provider>
