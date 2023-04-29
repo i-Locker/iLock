@@ -33,6 +33,8 @@
     "url": "https://github.com/i-Lockers/iLock/issues"
   },
   "dependencies": {
+    "@binance-chain/bsc-connector": "^1.0.0",
+    "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.0",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
@@ -61,12 +63,14 @@
     "dexscreener-api": "^0.0.7",
     "ethereum-multicall": "^2.9.0",
     "ethers": "^6.0.0",
+    "ga-gtag": "^1.1.7",
     "history": "^5.3.0",
     "notistack": "^2.0.2",
     "parent-module": "^2.0.0",
     "react": "^18.1.0",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^18.1.0",
+    "react-icons": "^4.8.0",
     "react-redux": "^8.0.0",
     "react-router-dom": "^6.0.0",
     "react-swipeable-views": "^0.14.0",

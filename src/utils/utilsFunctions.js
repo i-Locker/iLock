@@ -8,7 +8,7 @@ import { escapeRegExp } from ".";
 import { inputRegex } from "../components/Farming/Modals/Filter";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { RPC } from "../connectors";
+import { RPC } from "../config/connectors";
 export const removeSideTab = (sideBarName) => {
     localStorage.setItem(sideBarName, "removed");
 };

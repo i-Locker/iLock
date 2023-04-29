@@ -91,6 +91,7 @@ export const network_to_chain = {
     "Cronos": '0x19',
     "Cronos_testnet": '0x152',
     "Binance Smart Chain": '0x38',
+    "Binance": '0x38',
     "Binance_testnet": '0x61',
     "Avalanche": '0xa86a',
     "Avalanche_testnet": '0xa869',
@@ -100,6 +101,23 @@ export const network_to_chain = {
     "Frenchain": '0xAD9C',
     "Kekchain": '0x66A44',
     "Kekchain_testnet": '0x66B3A'
+};
+export const REACT_APP_NETWORK_URL = {
+    "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
+    "Goerli": "https://rpc.ankr.com/eth_goerli",
+    "Cronos": "https://evm.cronos.org/",
+    "Cronos_testnet": "https://evm-t3.cronos.org/",
+    "Polygon_testnet": "https://rpc-mumbai.maticvigil.com",
+    "Polygon": "https://polygon-rpc.com",
+    "Binance Smart Chain": "https://bsc-dataseed.binance.org",
+    "Binance": "https://bsc-dataseed.binance.org",
+    "Binance_testnet": "https://data-seed-prebsc-2-s3.binance.org:8545",
+    "Avalanche": "https://api.avax.network/ext/bc/C/rpc",
+    "Avalanche_testnet": "https://api.avax-test.network/ext/bc/C/rpc",
+    "Kekchain_testnet": "https://testnet.kekchain.com",
+    "Kekchain": "https://mainnet.kekchain.com",
+    "Frenchain_testnet": "https://rpc-01tn.frenchain.app",
+    "Frenchain": "https://rpc-02.frenscan.io"
 };
 export let __TOKENLIST = [
     { name: "Interchained", symbol: "INT", decimals: 18, contract: "0x" },
@@ -213,6 +231,7 @@ export const networking = [
     { name: "Kekchain_testnet", currency: "tKEK", subtitle: "Choose if your project is deployed to tKEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: [{ chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } }] }
 ];
 export const __NETWORKS = networking;
+export const DEFAULT_CHAIN_ID = 338;
 export const DEVNAME = 'interchained';
 export const DEVNAMEMED = DEVNAME;
 export const DEVNAMELG = 'Interchained';
