@@ -97,22 +97,27 @@ Traditional banking is based on a system that's called "Fractional Reserve Banki
 iLockers put the user in control of their savings! Functional use cases for individuals and enterprise, anyone could lock up LP, ERC20, fungible coins to display sovereignty and sustainability, or as part of a savings plan. Use iLockers to lock up tokens or fungible coins in what is basically a "deep freezer", compared to cold storage, where as no one could unlock stored digital assets unless and until the block timestamp passes the expiration timestamp which is preset by the creator of the iLock upon deployment... Beat that paper wallet....
 
 ## Implementations
-[PHASE 1] ---- TESTNET RELEASES (in order of chainId)
-
+[PHASE 1] ---- TESTNET RELEASE v1
+```
 Ethereum [Goerli] (5) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
-
 Binance Smart Chain [testnet] (97): 0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c
-
 Cronos Smart Chain [testnet] (338): 0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c
-
 FrenChain [testnet] (444) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
-
 Avalanche [Fuji] (43113) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
-
 Polygon [Mumbai] (80001) : 0x7d2A16Eb08361cDA68C183a6e92f08e618B73c7F
-
 KekChain [testnet] (420666) : 0xCC8748Cb40575e42649d9652573eb8233CC30dEC
+```
 
+[PHASE 2] ---- TESTNET RELEASE V2
+```
+Ethereum [Goerli] (5) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+Binance Smart Chain [testnet] (97): 0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c
+Cronos [testnet] (338): 0x8C70E29F98697366E956F3E7f0db678B70faE149
+FrenChain [testnet] (444) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+Avalanche [Fuji] (43113) : 0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c
+Polygon [Mumbai] (80001) : 0x7d2A16Eb08361cDA68C183a6e92f08e618B73c7F
+KekChain [testnet] (420666) : 0xCC8748Cb40575e42649d9652573eb8233CC30dEC
+```
 
 ## Some Proposed Use Cases
 
