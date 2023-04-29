@@ -99,9 +99,6 @@ const Dashboard = (props) => {
         tokenAddress: "",
     });
 
-    const selectToken = async () => {
-        console.log("activeStep: ", activeStep);
-    };
     const checkAllowance = async (token, account, network) => {
         allowance(token, account, network).then(results => {
             if(results) {
@@ -151,7 +148,7 @@ const Dashboard = (props) => {
                         setModalTitle("Please select Token");
                         setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
                         if (activeStep == 2) {
-                            setActiveStep((prevActiveStep) => prevActiveStep - 1);
+                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
                         } else if (activeStep == 3) {
                             return true;
                         };
@@ -287,7 +284,7 @@ const Dashboard = (props) => {
 
     const handleAllowance = async (e) => {
         if (!account || !tokenContract) return;
-        setIsAllowed(0);
+            setIsAllowed(0);
         try {
             let provider = await connector.getProvider();
             const tokenBalance = await getERC20balance(provider, tokenContract, account, network);
@@ -296,18 +293,22 @@ const Dashboard = (props) => {
         } catch (e) {
             console.log(e);
         } finally {
-            if (!lockAmount) {
-                //
+            if (!lockAmount||isNaN(e.target.value)) {
+                console.log("Allowance: ",parseFloat(e.target.value),isNaN(e.target.value));
+                return true;
             } else {
+                console.log("Allowance: ",parseFloat(e.target.value),isNaN(e.target.value));
                 try {
                     let provider = await connector.getProvider();
+                    const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2)
                     const allowanceAmount = await getERC20allowance(provider, tokenContract, account, lockerAddress[network], network);
-                    console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                     setTokenAllowance(allowanceAmount);
+                    const lockAmountFormatted = (e.target.value).toFixed(2).toString();
+                    console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmountFormatted, lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                     let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
-                    let allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount, parseFloat(tokenDecimals));
-                    console.log("allowanceAmountFormatted: ", allowanceAmount, parseFloat(allowanceAmountFormatted).toFixed(0), parseFloat(allowanceAmountFormatted_UI).toFixed(0));
-                    if (parseFloat(allowanceAmount) < parseFloat(lockAmount * 10 ** tokenDecimals)) {
+                    const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
+                    console.log("allowanceAmountFormatted: ", parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted), allowanceAmount, parseFloat(allowanceAmountFormatted).toFixed(0), parseFloat(allowanceAmountFormatted_UI).toFixed(0));
+                    if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted)) {
                         setIsAllowed(1);
                     } else {
                         setIsAllowed(2);
@@ -378,6 +379,22 @@ const Dashboard = (props) => {
                     handleNext(step);
                 };
             };
+        };
+    };
+    const selectToken = async (step) => {
+        if(step) {
+            handleNext(step);
+            console.log("activeStep: ", activeStep,"\n step: ",step);
+        };
+    };
+
+    const handleRestart = (step) => {
+        console.log("step: ",step);
+        if(!account || !chainId) {
+            event.preventDefault();
+            return true;
+        } else {
+            setActiveStep(0);
         };
     };
 
@@ -832,7 +849,7 @@ const Dashboard = (props) => {
                                                             </p>
                                                         </Grid>
                                                         <Grid item className={dashboardClasses.textRight}  xs={6} sm={6} md={6}>
-                                                            <Button variant="contained" color="error" sm={12} onClick={selectToken}>Select</Button>
+                                                            <Button variant="contained" color="error" sm={12} onClick={(e) => selectToken(e)}>Select</Button>
                                                         </Grid>
                                                     </Grid>
                                                 </div> : <></>
@@ -883,12 +900,14 @@ const Dashboard = (props) => {
                                                         }}
                                                         InputProps={{ inputprops: { min: 1 } }}
                                                         variant="standard"
-                                                        onChange={handleLockAmount}
+                                                        onChange={(e)=>handleLockAmount(e)}
                                                         value={lockAmount}
                                                     />
                                                 </Grid>
                                                 <Grid item className={dashboardClasses.textRight}  xs={6} sm={6} md={6}>
-                                                    <p style={{marginBottom:2, marginTop:0, fontSize: "10px"}}>Balance: {addressDemand ? (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance}</p>
+                                                    <p style={{marginBottom:2, marginTop:0, fontSize: "10px"}}>
+                                                        Balance: {addressDemand ? (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance}
+                                                    </p>
                                                     <Grid 
                                                         container
                                                         direction="row"
@@ -939,13 +958,15 @@ const Dashboard = (props) => {
                                                 alignItems="center"
                                                 className={!isMobile ? `${dashboardClasses.balanceContainer}` : `${mobileClasses.balanceContainer}`}
                                             >
+                                                <Grid item className={dashboardClasses.textLeft} xs={12} sm={12} md={12}>
                                                     <DateTime />
                                                     <div>
                                                     {
-                                                        !addressDemand || isAllowed == 2 ? <Button variant="contained" color="secondary" sm={12} value={addressDemand} onClick={(e)=>depositToken(e)} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button>
+                                                        !addressDemand || isAllowed == 2 ? <></>
                                                         : (isAllowed == 1 ? <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button> : <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button>)
                                                     }
                                                     </div>
+                                                </Grid>
                                             </Grid>
                                         </div>
                                     </SwipeableViews>
@@ -958,7 +979,7 @@ const Dashboard = (props) => {
                                         addressDemand&&activeStep < 4?<Button
                                             size="small"
                                             onClick={(e)=>handleStepChange(e)}
-                                            disabled={activeStep === addressDemand?maxSteps - 1:!addressDemand?maxSteps - 2:maxSteps - 1}
+                                            disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}
                                         >
                                             Next
                                             {theme.direction === 'rtl' ? (
@@ -970,7 +991,7 @@ const Dashboard = (props) => {
                                         !addressDemand&&activeStep < 3?<Button
                                             size="small"
                                             onClick={(e)=>handleStepChange(e)}
-                                            disabled={activeStep === addressDemand?maxSteps - 1:!addressDemand?maxSteps - 2:maxSteps - 1}
+                                            disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}
                                         >
                                             Next
                                             {theme.direction === 'rtl' ? (
@@ -979,10 +1000,21 @@ const Dashboard = (props) => {
                                             <KeyboardArrowRight />
                                             )}
                                         </Button> :
-                                        <></>
+                                        <Button
+                                            size="small"
+                                            onClick={(e)=>handleRestart(e)}
+                                            disabled={addressDemand?activeStep != 4:!addressDemand?activeStep != 3:activeStep==0}
+                                        >
+                                            Start Over
+                                            {theme.direction === 'rtl' ? (
+                                            <KeyboardArrowLeft />
+                                            ) : (
+                                            <KeyboardArrowRight />
+                                            )}
+                                        </Button>
                                         }
                                         backButton={
-                                        addressDemand&&activeStep < 4?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0 || addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3}>
+                                        addressDemand&&activeStep < 4?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}>
                                             {theme.direction === 'rtl' ? (
                                             <KeyboardArrowRight />
                                             ) : (
@@ -990,7 +1022,7 @@ const Dashboard = (props) => {
                                             )}
                                             Back
                                         </Button> :
-                                        !addressDemand&&activeStep < 3?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={activeStep === 0 || addressDemand&&activeStep == 4 || !addressDemand&&activeStep == 3}>
+                                        !addressDemand&&activeStep < 3?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}>
                                             {theme.direction === 'rtl' ? (
                                             <KeyboardArrowRight />
                                             ) : (
@@ -998,7 +1030,9 @@ const Dashboard = (props) => {
                                             )}
                                             Back
                                         </Button> :
-                                        <></>}
+                                        activeStep == 4 ? <Button variant="contained" color="secondary" sm={12} style={{maxWidth: '30em', maxHeight: '40em', minWidth: '30em', minHeight: '40em'}} value={addressDemand} onClick={(e)=>depositToken(e)} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button> :
+                                        <></>
+                                    }
                                     />
                                 </RadioGroup>
                             </CardContent>
