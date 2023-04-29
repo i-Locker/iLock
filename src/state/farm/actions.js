@@ -1,0 +1,11 @@
+import { createAction } from '@reduxjs/toolkit';
+export const changeFarmingContent = createAction('farm/changeFarmingContent');
+export const updateTotalLiquidity = createAction('farm/updateTotalLiquidity');
+export const updateFarmProductLiquidity = createAction('farm/updateFarmProductLiquidity');
+export const updateTokenStaked = createAction('farm/updateTokenStaked');
+export const updateProductStaked = createAction('farm/updateProductStaked');
+export const updateFarmAllowances = createAction('farm/updateFarmAllowances');
+export const updateFarmProductAllowances = createAction('farm/updateFarmProductAllowances');
+export const updateFarmBalances = createAction('farm/updateFarmBalances');
+export const updatePoolId = createAction('farm/updatePoolId');
+export const setLoadingState = createAction('farm/setLoadingState');

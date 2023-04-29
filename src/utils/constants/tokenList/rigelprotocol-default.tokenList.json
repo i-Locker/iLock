@@ -1,0 +1,542 @@
+{
+    "name": "RGP Default List",
+    "timestamp": "2021-05-06T00:00:00Z",
+    "version": {
+        "major": 3,
+        "minor": 0,
+        "patch": 0
+    },
+    "tags": {},
+    "logoURI": "https://assets.coingecko.com/coins/images/15837/small/A_qRYvB2_400x400.png",
+    "keywords": ["rigel", "default", "protocol"],
+    "tokens": [
+        {
+            "symbol": "RGP",
+            "name": "Rigel Protocol",
+            "chainId": 56,
+            "decimals": 18,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png",
+            "address": "0xFA262F303Aa244f9CC66f312F0755d89C3793192"
+        },
+        {
+            "symbol": "RGP",
+            "name": "Rigel Protocol",
+            "chainId": 137,
+            "decimals": 18,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png",
+            "address": "0x4AF5ff1A60a6eF6C7c8f9C4E304cD9051fCa3Ec0"
+        },
+        {
+            "name": "WBNB Token",
+            "symbol": "WBNB",
+            "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+            "chainId": 56,
+            "decimals": 18,
+            "logoURI": "https://pancakeswap.finance/images/tokens/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c.png"
+        },
+        {
+            "name": "BUSD Token",
+            "symbol": "BUSD",
+            "address": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+            "chainId": 56,
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png"
+        },
+        {
+            "name": "Axie Infinity Shard",
+            "symbol": "AXS",
+            "chainId": 56,
+            "decimals": 18,
+            "logoURI": "https://www.bscscan.com/token/images/axieinfinity_32.png",
+            "address": "0x715D400F88C167884bbCc41C5FeA407ed4D2f8A0"
+        },
+        {
+            "name": "Tether USD",
+            "symbol": "USDT",
+            "address": "0x55d398326f99059fF775485246999027B3197955",
+            "chainId": 56,
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "name": "AXSToken",
+            "symbol": "AXS",
+            "address": "0x6b9A9df1e6a29F17BFC79040A8f505Aaa8866b6e",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "https://www.bscscan.com/token/images/axieinfinity_32.png"
+        },
+        {
+            "name": "BUSD Token",
+            "symbol": "BUSD",
+            "address": "0x10249E900B919FDEe9e2ED38b4cd83C4df857254",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png"
+        },
+        {
+            "name": "RigelToken",
+            "symbol": "RGP",
+            "address": "0x9f0227A21987c1fFab1785BA3eBa60578eC1501B",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png"
+        },
+        {
+            "name": "USDT Token",
+            "symbol": "USDT",
+            "address": "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "name": "WBNB Token",
+            "symbol": "WBNB",
+            "address": "0x23967E68bB6FeA03fcc3676F8E55272106F44A4A",
+            "chainId": 97,
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png"
+        },
+        {
+            "name": "WAVAX Token",
+            "symbol": "WAVAX",
+            "address": "0x9F34cca17962be33DEDDF0FD9EB6409744535e9b",
+            "chainId": 43113,
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png"
+        },
+        {
+            "chainId": 43114,
+            "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            "decimals": 18,
+            "name": "Wrapped AVAX",
+            "symbol": "WAVAX",
+            "logoURI": "https://snowtrace.io/token/images/avax_32.png"
+        },
+        {
+            "name": "Wrapped Matic",
+            "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+            "symbol": "WMATIC",
+            "decimals": 18,
+            "chainId": 137,
+            "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/token-logos/token/polygon.jpg"
+        },
+        {
+            "name": "Tether USD",
+            "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+            "symbol": "USDT",
+            "decimals": 6,
+            "chainId": 137,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "name": "USD Coin",
+            "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+            "symbol": "USDC",
+            "decimals": 6,
+            "chainId": 137,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "Wrapped Matic",
+            "address": "0x9d91d1f8Ac4CF6C698a1a15c738323E2ad6F23E4",
+            "symbol": "WMATIC",
+            "decimals": 18,
+            "chainId": 80001,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png"
+        },
+        {
+            "name": "Dreamr Platform Token",
+            "address": "0x955CE23f20217a6Aa205620b40EdE4C9E83d325f",
+            "symbol": "DMR",
+            "decimals": 18,
+            "chainId": 137,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/11897.png"
+        },
+        {
+            "name": "Dreamr Platform Token",
+            "address": "0x4DDE4C82c47325d18A79309d0ac0d23a3e831867",
+            "symbol": "DMR",
+            "decimals": 18,
+            "chainId": 80001,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/11897.png"
+        },
+        {
+            "name": "Rigel Token",
+            "address": "0x8E62F88FD28F95cE0dD0557c8419215b5599CE64",
+            "symbol": "RGP",
+            "decimals": 18,
+            "chainId": 80001,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png"
+        },
+        {
+            "name": "USDCToken",
+            "address": "0xd22c5DbE967C2f9ac302729354fE32eB88b6B645",
+            "symbol": "USDC",
+            "decimals": 18,
+            "chainId": 80001,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "USDTToken",
+            "address": "0x7E1cF971de65eB065A72595B3Ac9e1b9Cc630564",
+            "symbol": "USDT",
+            "decimals": 18,
+            "chainId": 80001,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "address": "0x4AF5ff1A60a6eF6C7c8f9C4E304cD9051fCa3Ec0",
+            "chainId": 1,
+            "name": "RigelToken",
+            "symbol": "RGP",
+            "decimals": 18,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png"
+        },
+        {
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "chainId": 1,
+            "name": "Wrapped Ether",
+            "symbol": "WETH",
+            "decimals": 18,
+            "logoURI": "https://raw.githubusercontent.com/sushiswap/list/master/logos/token-logos/token/eth.jpg"
+        },
+        {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "chainId": 1,
+            "name": "Tether USD",
+            "symbol": "USDT",
+            "decimals": 6,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "name": "RigelToken",
+            "address": "0x80278a0Cf536e568A76425B67Fb3931Dca21535c",
+            "symbol": "RGP",
+            "decimals": 18,
+            "chainId": 3,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png"
+        },
+        {
+            "name": "USD Coin",
+            "address": "0x0D9C8723B343A8368BebE0B5E89273fF8D712e3C",
+            "symbol": "USDC",
+            "decimals": 6,
+            "chainId": 3,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "Tether",
+            "address": "0x66F56B882364b2E36E837A1Acf964104cA19124F",
+            "symbol": "USDT",
+            "decimals": 6,
+            "chainId": 3,
+            "logoURI": "https://etherscan.io/token/images/tether_32.png"
+        },
+        {
+            "name": "Wrapped Ether",
+            "address": "0x492Df17f202e36525151Ce7BcD49d5637Dc10659",
+            "symbol": "WETH",
+            "decimals": 18,
+            "chainId": 3,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc778417E063141139Fce010982780140Aa0cD5Ab/logo.png"
+        },
+        {
+            "name": "Wrapped Ether",
+            "address": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+            "symbol": "WETH",
+            "decimals": 18,
+            "chainId": 4,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc778417E063141139Fce010982780140Aa0cD5Ab/logo.png"
+        },
+        {
+            "name": "RigelToken",
+            "address": "0x2d2cd8ED2ec05A55162308332C40C3eF1994F59D",
+            "symbol": "RGP",
+            "decimals": 18,
+            "chainId": 42261,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc778417E063141139Fce010982780140Aa0cD5Ab/logo.png"
+        },
+        {
+            "name": "Tether USD",
+            "address": "0xa30b641533D2509089CeF6F097a5BFB62dF7BC8b",
+            "symbol": "USDT",
+            "decimals": 6,
+            "chainId": 42261,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "name": "Wrapped ROSE",
+            "address": "0x8E62F88FD28F95cE0dD0557c8419215b5599CE64",
+            "symbol": "WROSE",
+            "decimals": 18,
+            "chainId": 42261,
+            "logoURI": "https://assets.coingecko.com/coins/images/13162/small/rose.png?1605772906"
+        },
+        {
+            "name": "Wrapped ROSE",
+            "address": "0x21C718C22D52d0F3a789b752D4c2fD5908a8A733",
+            "symbol": "WROSE",
+            "decimals": 18,
+            "chainId": 42262,
+            "logoURI": "https://assets.coingecko.com/coins/images/13162/small/rose.png?1605772906"
+        },
+        {
+            "name": "RigelToken",
+            "address": "0x4AF5ff1A60a6eF6C7c8f9C4E304cD9051fCa3Ec0",
+            "symbol": "RGP",
+            "decimals": 18,
+            "chainId": 42262,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc778417E063141139Fce010982780140Aa0cD5Ab/logo.png"
+        },
+        {
+            "name": "Tether USD",
+            "address": "0xdC19A122e268128B5eE20366299fc7b5b199C8e3",
+            "symbol": "USDT",
+            "decimals": 6,
+            "chainId": 42262,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDT.svg"
+        },
+        {
+            "name": "PlaceWar Governance Token",
+            "address": "0xb718b10be3215a729b65f350d020a9f2f14024a4",
+            "symbol": "PLACE",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/13420.png"
+        },
+        {
+            "name": "Mouse Haunt Token",
+            "address": "0x4431b43775fe287807ca5a199ee1aa88b9d14f4b",
+            "symbol": "MHT",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/15043.png"
+        },
+        {
+            "name": "PlaceWar Governance Token",
+            "address": "0x07728696eE70A28c9C032926577AF1D524Df30f9",
+            "symbol": "PLACE",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/13420.png"
+        },
+        {
+            "name": "Mouse Haunt Token",
+            "address": "0x5Cb2C3Ed882E37DA610f9eF5b0FA25514d7bc85B",
+            "symbol": "MHT",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/15043.png"
+        },
+        {
+            "name": "SHIBA INU",
+            "address": "0x2859e4544c4bb03966803b044a93563bd2d0dd4d",
+            "symbol": "SHIB",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://bscscan.com/token/images/shibatoken_32.png"
+        },
+        {
+            "name": "SHIBA INU",
+            "address": "0x30deec86644b16c3f61d8dd5571e88179289445b",
+            "symbol": "SHIB",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://bscscan.com/token/images/shibatoken_32.png"
+        },
+        {
+            "name": "Mobox",
+            "address": "0x3203c9e46ca618c8c1ce5dc67e7e9d75f5da2377",
+            "symbol": "MBOX",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://bscscan.com/token/images/mobox_32.png"
+        },
+        {
+            "name": "Mobox",
+            "address": "0x46be9c07d1100f7a1259d20398a40deb43e3527c",
+            "symbol": "MBOX",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://bscscan.com/token/images/mobox_32.png"
+        },
+        {
+            "name": "Metafluence",
+            "address": "0xa78775bba7a542F291e5ef7f13C6204E704A90Ba",
+            "symbol": "METO",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://bscscan.com/token/images/metafluence_32.png"
+        },
+        {
+            "name": "Metafluence",
+            "address": "0x9677dBccA4D654f225fdC13acc332e96704B2Bcf",
+            "symbol": "METO",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://bscscan.com/token/images/metafluence_32.png"
+        },
+        {
+            "name": "MetaWars",
+            "address": "0x7F188b5daD1e9DAEd17133f0D409ff64b4A21430",
+            "symbol": "WARS",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/13105.png"
+        },
+        {
+            "name": "Rigel Protocol",
+            "address": "0x59F48ce93eb317f4628C68BbcF6CB7937a25662D",
+            "symbol": "RGP",
+            "decimals": 18,
+            "chainId": 43113,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/13105.png"
+        },
+        {
+            "name": "USD Coin",
+            "address": "0x1Ad483798422423E3471d2fa8a7eF6EB83BD4926",
+            "symbol": "USDC",
+            "decimals": 6,
+            "chainId": 43113,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "Rigel Protocol",
+            "address": "0x4AF5ff1A60a6eF6C7c8f9C4E304cD9051fCa3Ec0",
+            "symbol": "RGP",
+            "decimals": 18,
+            "chainId": 43114,
+            "logoURI": "https://bscscan.com/token/images/rigelprotocol_32.png"
+        },
+        {
+            "name": "TetherToken",
+            "address": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+            "symbol": "USDT",
+            "decimals": 6,
+            "chainId": 43114,
+            "logoURI": "https://snowtrace.io/token/images/tether_32.png"
+        },
+        {
+            "name": "TetherToken",
+            "address": "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+            "symbol": "USDT.e",
+            "decimals": 6,
+            "chainId": 43114,
+            "logoURI": "https://snowtrace.io/token/images/tether_32.png"
+        },
+        {
+            "name": "USD Coin",
+            "address": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            "symbol": "USDC",
+            "decimals": 6,
+            "chainId": 43114,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "USD Coin",
+            "address": "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+            "symbol": "USDC.e",
+            "decimals": 6,
+            "chainId": 43114,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "wETHUSDC 14th-october-2022 1350Call wETH Colateral",
+            "address": "0x35B0ba83B69776acB02935bA3268A6116685C2aC",
+            "symbol": "wETHUSDC",
+            "decimals": 8,
+            "chainId": 43113,
+            "logoURI": "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_USDC.svg"
+        },
+        {
+            "name": "WAVAXUSDC 30-September-2022 12Put USDC Collateral",
+            "address": "0x4e6915bF261fc99C73575e616AE8766ecd36b9ad",
+            "symbol": "wAvAXUSDC",
+            "decimals": 8,
+            "chainId": 43113,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/13105.png"
+        },
+        {
+            "name": "MetaWars",
+            "address": "0x50e756a22ff5cEE3559D18B9D9576bc38F09Fa7c",
+            "symbol": "WARS",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/13105.png"
+        },
+        {
+            "name": "BabySwap Token",
+            "address": "0x53E562b9B7E5E94b81f10e96Ee70Ad06df3D2657",
+            "symbol": "BABY",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://bscscan.com/token/images/babyswap_32.png"
+        },
+        {
+            "name": "BabySwap Token",
+            "address": "0xeAD5D41E481ca8014C68d52f571FE36E75449060",
+            "symbol": "BABY",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://bscscan.com/token/images/babyswap_32.png"
+        },
+        {
+            "name": "Project Galaxy",
+            "address": "0xe4Cc45Bb5DBDA06dB6183E8bf016569f40497Aa5",
+            "symbol": "GAL",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/11877.png"
+        },
+        {
+            "name": "Project Galaxy",
+            "address": "0x04f5c8591a799a5cc9490e159d36506769e4ebaf",
+            "symbol": "GAL",
+            "decimals": 18,
+            "chainId": 97,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/11877.png"
+        },
+        {
+            "name": "Pitbull",
+            "address": "0xA57ac35CE91Ee92CaEfAA8dc04140C8e232c2E50",
+            "symbol": "PIT",
+            "decimals": 9,
+            "chainId": 56,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/9177.png"
+        },
+        {
+            "name": "Pitbull",
+            "address": "0xa56fc8b7dd67dbd58326ffef745a98febc2c3f7c",
+            "symbol": "PIT",
+            "decimals": 9,
+            "chainId": 97,
+            "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/9177.png"
+        },
+        {
+            "name": "RocketFi",
+            "address": "0x6e61579c22F9a6dA63a33e819f29B6697d2a126E",
+            "symbol": "ROCKETFI",
+            "decimals": 9,
+            "chainId": 56,
+            "logoURI": "https://bscscan.com/token/images/rocketfi_32.png"
+        },
+        {
+            "name": "DAI Token",
+            "address": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
+            "symbol": "DAI",
+            "decimals": 18,
+            "chainId": 56,
+            "logoURI": "https://bscscan.com/token/images/dai_32.png"
+        },
+        {
+            "name": "DAI StableCoin",
+            "address": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+            "symbol": "DAI",
+            "decimals": 18,
+            "chainId": 137,
+            "logoURI": "https://polygonscan.com/token/images/mcdDai_32.png"
+        }
+    ]
+}
