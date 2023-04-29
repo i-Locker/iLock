@@ -104,15 +104,19 @@ const Dashboard = (props) => {
     };
     const checkAllowance = async (token, account, network) => {
         allowance(token, account, network).then(results => {
-            setTokenAllowance(results);
-            console.log("allowance: ", results, tokenAllowance);
+            if(results) {
+                setTokenAllowance(results);
+                console.log("allowance: ", results, tokenAllowance);
+            };
             return results;
         });
     };
     const checkEtherBalance = async (provider, account) => {
         getEtherBalance(provider, account, network).then(async (ebf) => {
-            console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
-            fetchEtherBalance(ebf[2]);
+            if(ebf) {
+                console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
+                fetchEtherBalance(ebf[2]);
+            };
         });
     };
     const handleNext = async (events) => {
@@ -133,7 +137,7 @@ const Dashboard = (props) => {
                         params: [{ chainId: currentNetworkData[0].chainData.chainId }],
                     });
                     console.log("You have successfully switched to ", network);
-                }
+                };
                 if (activeStep == 0) {
                     if (account === undefined) {
                         setModalTitle("Please connect Wallet");
@@ -150,7 +154,7 @@ const Dashboard = (props) => {
                     } else {
                         console.log(activeStep);
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
+                    };
                 } else if (activeStep == 4) {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 handleOpen();
@@ -214,7 +218,7 @@ const Dashboard = (props) => {
                                 handleOpen();
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep - 1);
-                            }
+                            };
                         } else {
                             if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -418,7 +422,7 @@ const Dashboard = (props) => {
                     break;
                 default:
                     break;
-            }
+            };
         };
         nextMsg(0);
         async function nextCount(ctr, tb, ta) {
