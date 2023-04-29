@@ -1,8 +1,9 @@
 {
   "name": "iLockers-DApp-FOSS-Interchained",
-  "version": "2.2.3",
+  "version": "2.2.6-experimental",
   "description": "Lockers for personal, or enterprise. iLocker Protocol && Dapp; FrenChain Open Source Software. ",
   "main": "index.js",
+  "private": true,
   "homepage": "https://ilocks.interchained.org",
   "scripts": {
     "test": "cd srv/test/ && node serve.js",
