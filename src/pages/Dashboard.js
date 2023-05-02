@@ -297,17 +297,17 @@ const Dashboard = (props) => {
                 console.log("Allowance: ",parseFloat(e.target.value),isNaN(e.target.value));
                 return true;
             } else {
+                console.log("tokenContract: ",tokenContract);
                 console.log("Allowance: ",parseFloat(e.target.value),isNaN(e.target.value));
                 try {
                     let provider = await connector.getProvider();
-                    const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2)
-                    const allowanceAmount = await getERC20allowance(provider, tokenContract, account, lockerAddress[network], network);
+                    const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2);
+                    const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
                     setTokenAllowance(allowanceAmount);
                     const lockAmountFormatted = (e.target.value).toFixed(2).toString();
-                    console.log("allowanceAmount/lockAmount: ", parseFloat(allowanceAmount), lockAmountFormatted, lockAmount * 10 ** tokenDecimals, parseFloat(allowanceAmount) >= parseFloat(lockAmount * 10 ** tokenDecimals));
                     let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
                     const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
-                    console.log("allowanceAmountFormatted: ", parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted), allowanceAmount, parseFloat(allowanceAmountFormatted).toFixed(0), parseFloat(allowanceAmountFormatted_UI).toFixed(0));
+                    console.log("Allowance: ",allowanceAmountFormatted_UI,lockAmountFormatted,parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted));
                     if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted)) {
                         setIsAllowed(1);
                     } else {
@@ -424,6 +424,7 @@ const Dashboard = (props) => {
         setTokenDecimals(parseFloat(e.target.value).toFixed(0));
     };
     const handleLockToken = async (e) => {
+        console.log("handleLockToken: ",e);
         async function nextMsg(ctr, lb, la) {
             // eslint-disable-next-line
             let string_to_add = lb == true ? "there is no balance " : "there is a balance ";
@@ -483,7 +484,7 @@ const Dashboard = (props) => {
             let tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, network);
             const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
             const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
-            const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2)
+            const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2);
             const lockAmountFormatted = (lockAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
             setTokenBalanceString(tokenBalanceFormatted);
