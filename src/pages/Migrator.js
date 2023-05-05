@@ -528,34 +528,59 @@ const Migrations = (props) => {
                 };
                 if (allSet) {
                     let provider = await connector.getProvider();
-                    w3(provider, network).then(async (W3) => {
+                      w3(provider, network).then(async (W3) => {
                         let block = await W3.eth.getBlock("latest");
                         console.log("(w3) block: ", block);
                         console.log("(w3) gasLimit: ", block.gasLimit);
                         gasLimit = block.gasLimit;
+                        let status_;
                         let results = await migrate_v1_to_v2(provider, depositCreator, amountFormatted.toString(), depositNetwork);
                             if(results) {
                                 try {
-                                    console.log("events (Migrated): ", parseFloat(results["events"]));
+                                    if(results["status"]) {
+                                        console.log("events (Migrated): ", results["status"]); 
+                                        status_ = results["status"];
+                                        setActiveStep(0); 
+                                        dispatch({
+                                            type: TOKENDATA,
+                                            payload: {}
+                                        });
+                                        window.alert("Processed! Status: ",status_);
+                                    };
                                 } catch (e) {
-                                    dispatch({
-                                        type: TOKENDATA,
-                                        payload: {}
-                                    })
-                                    setActiveStep(0);
-                                    window.alert("Transaction error, check block explorer for more intel.");
                                     console.log("err: ", e);
+                                    try {
+                                        if(results.status) {
+                                            console.log("events (Migrated): ", results.status); 
+                                            status_ = results.status;
+                                            dispatch({
+                                                type: TOKENDATA,
+                                                payload: {}
+                                            });
+                                            setActiveStep(0);
+                                            window.alert("Processed! Status: ",status_);
+                                        };
+                                     } catch (e) {
+                                        console.log("err: ", e);
+                                        status_ = false;
+                                        dispatch({
+                                            type: TOKENDATA,
+                                            payload: {}
+                                        });
+                                        setActiveStep(0);
+                                        window.alert("Processing error");
+                                    };
                                 };
                             };
-                    });
+                      });
                 };
             } else {
                 try {
                     window.alert("ERC20 insufficient balance. Reduce amount or fund balance to process specified token amount.");
-                    document.getElementById("iLockerDeploy").blur();
+                    document.getElementById("iMigratorChange").blur();
                     document.getElementById("standard-number-amount").focus({ focusVisible: true });
                     const restore = async () => {
-                        document.getElementById("iLockerDeploy").focus();
+                        document.getElementById("iMigratorChange").focus();
                     };
                     setTimeout(restore, 7777);
                 } catch (e) {
@@ -719,7 +744,7 @@ const Migrations = (props) => {
                                                 )
                                             : <></> }
                                         </div>
-                                        <div id="iLockerDeploy" key={2} style={{paddingLeft:1, paddingRight:1}}>
+                                        <div id="iMigratorChange" key={2} style={{paddingLeft:1, paddingRight:1}}>
                                             <br />
                                              <Grid 
                                                 container

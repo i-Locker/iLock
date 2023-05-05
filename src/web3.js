@@ -345,7 +345,7 @@ export const approve_iMigrator = async (provider, token, account, migrateAmount,
         let contract = new web3.eth.Contract(erc20Abi, token); 
         result = await contract.methods["approve"](iMigratorAddress[network], migrateAmount).send({ from: account });
         if (result.status) {
-            return result.status;
+            return result;
         } else {
         };
     } catch (e) {
