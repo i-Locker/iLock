@@ -104,6 +104,13 @@ const Header = () => {
                                         Bridge
                                     </span>
                                 </Link>
+                                <Link underline="none" href="/migrator">
+                                    <span
+                                       className={classes.btnHeader}
+                                    >
+                                        Migrator
+                                    </span>
+                                </Link>
                                 {/*
                                     <Link underline="none" href="/deployer">
                                     <span
