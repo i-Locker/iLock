@@ -117,14 +117,14 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     const [liquidityDialogState, setLiquidityDialogState] = useState(false);
     const [liquiditySources, setLiquiditySources] = useState([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
     const [baseToken, setBaseToken] = useState([0]);
-    const [gusMenu, setGusMenu] = useState([
+    const [gasMenu, setgasMenu] = useState([
         { min: 44.05, max: 63.91, name: "Instant", time: "< 10 sec" },
         { min: 44.05, max: 63.91, name: "High", time: "~ 12 sec" },
         { min: 44.05, max: 63.91, name: "Medium", time: "~ 30 sec" },
         { min: 44.05, max: 63.91, name: "Low", time: ">= 1 min" },
     ]);
-    const [gusState, setGusState] = useState(gusMenu[1]);
-    const [maxFee, setMaxFee] = useState(Math.ceil(gusState.max));
+    const [gasState, setgasState] = useState(gasMenu[1]);
+    const [maxFee, setMaxFee] = useState(Math.ceil(gasState.max));
     const [errorState, setErrorState] = useState(false);
     const [checked, setChecked] = useState([1]);
     const [customToken, setCustomToken] = useState([]);
@@ -163,8 +163,8 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
             if (scrollTop + clientHeight === scrollHeight) {
                 setPage((prev) => prev + 1);
-            }
-        }
+            };
+        };
     };
 
     useEffect(() => {
@@ -178,7 +178,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             setFactoryAddress(Factory_address.find(data => (data.chainId === chain.chainId)).dexs);
         } catch (e) {
             //
-        }
+        };
     }, [chain]);
 
     async function ___HISTORY(poolCreateDialogState) {
@@ -206,7 +206,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 console.log("balance: (t2) ", await fetch_Balance(provider, poolCreateDialogState.token2.address, account, network_[network_dec_to_hex[chainId]]));
                 setToken1Max(balance1_v2);
                 setToken2Max(balance2_v2);
-            }
+            }; 
         };
     };
     useEffect(() => {
@@ -271,8 +271,8 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     };
 
     useEffect(() => {
-        setGusState(gusMenu[1]);
-    }, [gusMenu]);
+        setgasState(gasMenu[1]);
+    }, [gasMenu]);
 
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
@@ -354,18 +354,17 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                     });
                 };
                 setCustomToken([]);
-        dx_uri = ``;
             } finally {
                 () => setTokenDialogState(0);
             };
         };
-    }
+    };
     const swapSettingDialogClose = () => {
         setSwapSettingDialogState(false);
-    }
+    };
     const swapSettingDialogOpen = () => {
         setSwapSettingDialogState(true);
-    }
+    };
 
     const getErrorMessage = (error) => {
         if (error instanceof NoEthereumProviderError) {
@@ -386,16 +385,16 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
     const buttonState = (data) => {
         setButton(data);
-    }
+    };
 
     const liquidityDialogOpen = () => {
         setLiquidityDialogState(true);
-    }
+    };
 
     const liquidityDialogClose = () => {
         setLiquidityDialogState(false);
         handleChange('panel3')
-    }
+    };
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -410,13 +409,13 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     };
 
     const changeMaxFee = (value) => {
-        if (value && value >= gusState.min) {
+        if (value && value >= gasState.min) {
             setMaxFee(value);
             setErrorState(false);
         } else {
             setErrorState(true);
         }
-    }
+    };
 
     const changeCustomToken = (value) => {
         if (value) {
@@ -442,14 +441,14 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         } else {
             setCustomToken([]);
         }
-    }
+    };
 
     const tokenImportDialogClose = () => {
         setTokenImportDialogState(false);
-    }
+    };
     const tokenImportDialogOpen = () => {
         setTokenImportDialogState(true);
-    }
+    };
 
     const importToken = () => {
         let token_data = customToken[0];
@@ -463,15 +462,15 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         });
         tokenImportDialogClose();
         setCustomToken([]);
-    }
+    };
 
     const poolCreateDialogClose = () => {
         setPoolCreateDialogState(false);
-    }
+    };
 
     const poolCreateDialogOpen = () => {
         setPoolCreateDialogState(true);
-    }
+    };
 
     const tokenSelect1 = (event) => {
         setToken1(event.target.value);
@@ -521,7 +520,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
 
         setPoolBtnState(true);
         setApproveBtnState(false);
-    }
+    };
 
     const addLiquidity = async () => {
         const eth_balance = await web3.eth.getBalance(account)
@@ -580,7 +579,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             ).send({
                 from: account
             });
-        }
+        };
         setApproveBtnState(false);
         setPoolBtnState(false);
 
@@ -589,7 +588,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         for (let i = 0; i < tokenInsts.length; i++) {
             const balances = await tokenInsts[i].methods.balanceOf(pair).call();
             token_amounts1[i] = balances;
-        }
+        };
         let token1_address;
         let token2_address;
         let token_amount_var;
@@ -602,8 +601,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         } else {
             token1_address = token1.address;
             token2_address = token2.address;
-        }
-
+        };
         create_pool(chain.chainId, pair, token1_address, token2_address, token_amounts1[0], token_amounts1[1]).then((data) => {
             get_pools(chain.chainId)
                 .then((data) => {
@@ -620,7 +618,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                     setPools(data);
                 });
         });
-    }
+    };
 
     return (
         <Box>
@@ -959,7 +957,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 :
                 <></>
             }
-
             <BootstrapDialog
                 onClose={()=>setSwapSettingDialogState(false)} 
                 onOpen={()=>setSwapSettingDialogState(true)}
@@ -974,161 +971,148 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                     </Stack>
                 </BootstrapDialogTitle>
                 <DialogContent sx={{ maxWidth: "476px" }}>
-                    <CAccordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ background: "transparent" }}>
-                        <CAccordionSummary
-                            aria-controls="panel1bh-content"
-                            id="panel1bh-header"
-                        >
-                            <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                <Typography>Gas Price</Typography>
-                                <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{`${gusState.name} (${gusState.min} - ${gusState.max} Gwei)`}&nbsp;</Typography>
-                            </Stack>
-                        </CAccordionSummary>
-                        <CAccordionDetails>
-                            <Stack direction="row" justifyContent="space-between" sx={{ padding: "0 30px" }}>
-                                <Button sx={{ borderRadius: "29px", color: "white" }} variant={button === 1 ? "contained" : "inherit"} onClick={() => buttonState(1)}>Basic</Button>
-                                <Button sx={{ borderRadius: "29px", color: "white" }} variant={button === 2 ? "contained" : "inherit"} onClick={() => buttonState(2)}>Advanced</Button>
-                            </Stack>
-                            <Box sx={{ mt: "25px" }}>
-                                {button === 1 &&
-                                    <RadioGroup sx={{ width: "100%" }} defaultValue={gusState.name} >
-                                        <Paper sx={{ borderRadius: "14px", background: "#101010 !important" }}>
-                                            {gusMenu.map((data, index) => (
-                                                <Stack key={index}>
-                                                    <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ padding: "8px 16px" }}>
-                                                        <Stack direction="row" alignItems="center">
-                                                            <FormControlLabel value={data.name} control={<Radio />} label={data.name} onChange={() => setGusState(data)} />
-                                                            <Typography align="left" sx={{ color: "#7E8B74", fontSize: "14px" }}>{data.time}</Typography>
-                                                        </Stack>
-                                                        <Typography align="right" sx={{ fontSize: "14px" }}>{`${data.min}-${data.max}`} Gwei</Typography>
-                                                    </Stack>
-                                                    {index < gusMenu.length - 1 &&
-                                                        <Divider />
-                                                    }
-                                                </Stack>
-                                            ))
-                                            }
-                                        </Paper>
-                                    </RadioGroup>
-                                }
-                                {button === 2 &&
-                                    <Box>
-                                        <Alert sx={{ background: "rgba(55, 175, 67, 0.1) !important" }} severity="info">
-                                            <Typography align="right">Current base fee is {gusState.min} Gwei</Typography>
-                                        </Alert>
-                                        <Stack direction="row" justifyContent="space-between" sx={{ mt: "24px" }}>
-                                            <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>MAX priority fee</Typography>
-                                            <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>Estimated high: {Math.floor(gusState.max - gusState.min)} Gwei</Typography>
-                                        </Stack>
-                                        <Paper sx={{ background: "#101010 !important", borderRadius: "12px" }}>
-                                            <InputBase
-                                                type="number"
-                                                sx={{ flex: 1, color: "white", width: "100%", padding: "15px 20px" }}
-                                                defaultValue={5.00}
-                                                endAdornment={<InputAdornment position="end">Gwei</InputAdornment>}
-                                            />
-                                        </Paper>
-                                        <Stack direction="row" justifyContent="space-between" sx={{ mt: "24px" }}>
-                                            <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>MAX fee</Typography>
-                                            <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>Estimated high: {Math.ceil(gusState.max)}Gwei</Typography>
-                                        </Stack>
-                                        <Paper sx={{ background: "#101010 !important", borderRadius: "12px", border: `${errorState ? "2px solid #ff8078" : "none"}` }}>
-                                            <InputBase
-                                                type="number"
-                                                sx={{ flex: 1, color: "white", width: "100%", padding: "15px 20px" }}
-                                                defaultValue={maxFee}
-                                                endAdornment={<InputAdornment position="end">Gwei</InputAdornment>}
-                                                onChange={(e) => changeMaxFee(e.target.value)}
-                                            />
-                                        </Paper>
-                                        {errorState &&
-                                            <Typography sx={{ fontSize: "14px", color: "#ff8078", margin: "5px" }}>{`Max price can't be lower than base fee`}</Typography>
-                                        }
-                                        <Paper variant="outlined" sx={{ padding: "23px", background: "transparent", mt: "24px", borderRadius: "14px", borderColor: "#FFFFFF" }}>
-                                            <Stack direction="row" justifyContent="space-between" sx={{ mb: "15px" }}>
-                                                <Typography>Wait time</Typography>
-                                                <Typography>~12 sec</Typography>
-                                            </Stack>
-                                            <Stack direction="row" justifyContent="space-between">
-                                                <Typography>Fee range</Typography>
-                                                <Typography>{(maxFee <= Math.ceil(gusState.max) && maxFee >= gusState.min) ? maxFee : `${gusState.max}–${maxFee}`} Gwei</Typography>
-                                            </Stack>
-                                        </Paper>
-                                    </Box>
-                                }
-                            </Box>
-                        </CAccordionDetails>
-                    </CAccordion>
-                    <CAccordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ background: "transparent" }}>
-                        <CAccordionSummary
-                            aria-controls="panel2bh-content"
-                            id="panel2bh-header"
-                        >
-                            <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                <Typography>Slippage tolerance</Typography>
-                                <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{activeSlipageButton}%&nbsp;</Typography>
-                            </Stack>
-                        </CAccordionSummary>
-                        <CAccordionDetails>
-                            <Paper sx={{ padding: "4px", margin: "0 30px", background: "#101010 !important" }}>
-                                <Stack direction="row" justifyContent="space-between">
-                                    {[0.1, 0.5, 1, 3].map((data, index) => (
-                                        <Button key={index} onClick={() => setActiveSlipageButton(data)} sx={{ padding: "8px", borderRadius: "5px", color: "white", background: `${data === activeSlipageButton && "#7E8B74"}` }}>{data}%</Button>
-                                    ))}
-                                    <Stack>
-                                        <TextField
-                                            id="outlined-textarea"
-                                            placeholder="Custom"
-                                            size="small"
-                                            type="number"
-                                            onChange={(e) => setActiveSlipageButton(e.target.value ? e.target.value : 0.1)}
-                                            sx={{ color: "white", width: "85px" }}
-                                        />
-                                    </Stack>
+                    {/*
+                        <CAccordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ background: "transparent" }}>
+                            <CAccordionSummary
+                                aria-controls="panel1bh-content"
+                                id="panel1bh-header"
+                            >
+                                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
+                                    <Typography>Gas Price</Typography>
+                                    <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{`${gasState.name} (${gasState.min} - ${gasState.max} Gwei)`}&nbsp;</Typography>
                                 </Stack>
-                            </Paper>
-                        </CAccordionDetails>
-                    </CAccordion>
-                    <Stack direction="row" justifyContent="space-between" sx={{ margin: "20px 0 0 16px" }}>
-                        <Typography>Partial fill</Typography>
-                        <IOSSwitch />
-                    </Stack>
-                    <Stack direction="row" justifyContent="space-between" sx={{ margin: "20px 0 0 16px" }}>
-                        <Typography>Compatiblility Mode</Typography>
-                        <IOSSwitch />
-                    </Stack>
-                    <Stack direction="row" justifyContent="space-between" sx={{ margin: "20px 0 16px 16px" }}>
-                        <Typography>Use legacy transaction type</Typography>
-                        <IOSSwitch />
-                    </Stack>
-                    <CAccordion expanded={expanded === 'panel3'} onChange={liquidityDialogOpen} sx={{ background: "transparent" }}>
-                        <CAccordionSummary
-                            aria-controls="panel3bh-content"
-                            id="panel3bh-header"
-                        >
-                            <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                <Typography>Liquidity Sources</Typography>
-                                <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{liquiditySources.length}&nbsp;</Typography>
-                            </Stack>
-                        </CAccordionSummary>
-                    </CAccordion>
-                    <CAccordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} sx={{ background: "transparent" }}>
-                        <CAccordionSummary
-                            aria-controls="panel4bh-content"
-                            id="panel4bh-header"
-                        >
-                            <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                <Typography>Custom Tokens</Typography>
-                                <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>0&nbsp;</Typography>
-                            </Stack>
-                        </CAccordionSummary>
-                        <CAccordionDetails>
-                            <Typography>
-                                Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit
-                                amet egestas eros, vitae egestas augue. Duis vel est augue.
-                            </Typography>
-                        </CAccordionDetails>
-                    </CAccordion>
+                            </CAccordionSummary>
+                            <CAccordionDetails>
+                                <Stack direction="row" justifyContent="space-between" sx={{ padding: "0 30px" }}>
+                                    <Button sx={{ borderRadius: "29px", color: "white" }} variant={button === 1 ? "contained" : "inherit"} onClick={() => buttonState(1)}>Basic</Button>
+                                    <Button sx={{ borderRadius: "29px", color: "white" }} variant={button === 2 ? "contained" : "inherit"} onClick={() => buttonState(2)}>Advanced</Button>
+                                </Stack>
+                                <Box sx={{ mt: "25px" }}>
+                                    {button === 1 &&
+                                        <RadioGroup sx={{ width: "100%" }} defaultValue={gasState.name} >
+                                            <Paper sx={{ borderRadius: "14px", background: "#101010 !important" }}>
+                                                {gasMenu.map((data, index) => (
+                                                    <Stack key={index}>
+                                                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ padding: "8px 16px" }}>
+                                                            <Stack direction="row" alignItems="center">
+                                                                <FormControlLabel value={data.name} control={<Radio />} label={data.name} onChange={() => setgasState(data)} />
+                                                                <Typography align="left" sx={{ color: "#7E8B74", fontSize: "14px" }}>{data.time}</Typography>
+                                                            </Stack>
+                                                            <Typography align="right" sx={{ fontSize: "14px" }}>{`${data.min}-${data.max}`} Gwei</Typography>
+                                                        </Stack>
+                                                        {index < gasMenu.length - 1 &&
+                                                            <Divider />
+                                                        }
+                                                    </Stack>
+                                                ))
+                                                }
+                                            </Paper>
+                                        </RadioGroup>
+                                    }
+                                    {button === 2 &&
+                                        <Box>
+                                            <Alert sx={{ background: "rgba(55, 175, 67, 0.1) !important" }} severity="info">
+                                                <Typography align="right">Current base fee is {gasState.min} Gwei</Typography>
+                                            </Alert>
+                                            <Stack direction="row" justifyContent="space-between" sx={{ mt: "24px" }}>
+                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>MAX priority fee</Typography>
+                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>Estimated high: {Math.floor(gasState.max - gasState.min)} Gwei</Typography>
+                                            </Stack>
+                                            <Paper sx={{ background: "#101010 !important", borderRadius: "12px" }}>
+                                                <InputBase
+                                                    type="number"
+                                                    sx={{ flex: 1, color: "white", width: "100%", padding: "15px 20px" }}
+                                                    defaultValue={5.00}
+                                                    endAdornment={<InputAdornment position="end">Gwei</InputAdornment>}
+                                                />
+                                            </Paper>
+                                            <Stack direction="row" justifyContent="space-between" sx={{ mt: "24px" }}>
+                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>MAX fee</Typography>
+                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>Estimated high: {Math.ceil(gasState.max)}Gwei</Typography>
+                                            </Stack>
+                                            <Paper sx={{ background: "#101010 !important", borderRadius: "12px", border: `${errorState ? "2px solid #ff8078" : "none"}` }}>
+                                                <InputBase
+                                                    type="number"
+                                                    sx={{ flex: 1, color: "white", width: "100%", padding: "15px 20px" }}
+                                                    defaultValue={maxFee}
+                                                    endAdornment={<InputAdornment position="end">Gwei</InputAdornment>}
+                                                    onChange={(e) => changeMaxFee(e.target.value)}
+                                                />
+                                            </Paper>
+                                            {errorState &&
+                                                <Typography sx={{ fontSize: "14px", color: "#ff8078", margin: "5px" }}>{`Max price can't be lower than base fee`}</Typography>
+                                            }
+                                            <Paper variant="outlined" sx={{ padding: "23px", background: "transparent", mt: "24px", borderRadius: "14px", borderColor: "#FFFFFF" }}>
+                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: "15px" }}>
+                                                    <Typography>Wait time</Typography>
+                                                    <Typography>~12 sec</Typography>
+                                                </Stack>
+                                                <Stack direction="row" justifyContent="space-between">
+                                                    <Typography>Fee range</Typography>
+                                                    <Typography>{(maxFee <= Math.ceil(gasState.max) && maxFee >= gasState.min) ? maxFee : `${gasState.max}–${maxFee}`} Gwei</Typography>
+                                                </Stack>
+                                            </Paper>
+                                        </Box>
+                                    }
+                                </Box>
+                            </CAccordionDetails>
+                        </CAccordion>
+                    */}
+                    {/*
+                        <CAccordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ background: "transparent" }}>
+                            <CAccordionSummary
+                                aria-controls="panel2bh-content"
+                                id="panel2bh-header"
+                            >
+                                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
+                                    <Typography>Slippage tolerance</Typography>
+                                    <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{activeSlipageButton}%&nbsp;</Typography>
+                                </Stack>
+                            </CAccordionSummary>
+                            <CAccordionDetails>
+                                <Paper sx={{ padding: "4px", margin: "0 30px", background: "#101010 !important" }}>
+                                    <Stack direction="row" justifyContent="space-between">
+                                        {[0.1, 0.5, 1, 3].map((data, index) => (
+                                            <Button key={index} onClick={() => setActiveSlipageButton(data)} sx={{ padding: "8px", borderRadius: "5px", color: "white", background: `${data === activeSlipageButton && "#7E8B74"}` }}>{data}%</Button>
+                                        ))}
+                                        <Stack>
+                                            <TextField
+                                                id="outlined-textarea"
+                                                placeholder="Custom"
+                                                size="small"
+                                                type="number"
+                                                onChange={(e) => setActiveSlipageButton(e.target.value ? e.target.value : 0.1)}
+                                                sx={{ color: "white", width: "85px" }}
+                                            />
+                                        </Stack>
+                                    </Stack>
+                                </Paper>
+                            </CAccordionDetails>
+                        </CAccordion>
+                    */}
+                    {/*
+                        <Stack direction="row" justifyContent="space-between" sx={{ margin: "20px 0 0 16px" }}>
+                            <Typography>Partial fill</Typography>
+                            <IOSSwitch />
+                        </Stack>
+                    */}
+                    {/*
+                        <CAccordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} sx={{ background: "transparent" }}>
+                            <CAccordionSummary
+                                aria-controls="panel4bh-content"
+                                id="panel4bh-header"
+                            >
+                                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
+                                    <Typography>Custom Tokens</Typography>
+                                    <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>0&nbsp;</Typography>
+                                </Stack>
+                            </CAccordionSummary>
+                            <CAccordionDetails>
+                                <Typography>
+                                </Typography>
+                            </CAccordionDetails>
+                        </CAccordion>
+                    */}
                 </DialogContent>
             </BootstrapDialog>
 

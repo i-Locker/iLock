@@ -6,7 +6,7 @@ import {
 } from 'ethereum-multicall';
 import { ethers, formatUnits, parseUnits } from "ethers";
 import liquidityPoolAbi from "./liquidityPool_abi.json";
-import { iBridgeAddress, iUniswapAbi, iBridgeAbi, iVaultAbi, maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain, network_lower_to_proper } from './constants';
+import { iBridgeAddress, iUniswapAbi, iBridgeAbi, iVaultAbi, maxTxLimit, lockerAddress, swapTokenLockerFactory, airdropAddress, migratorABI, iMigratorAddress, DEFAULT_ILOCKER_CONTRACT, lockerContractAbi, erc20Abi, network_decimals, network_to_chain, network_lower_to_proper } from './constants';
 export const serverApi = 'http://localhost:5000/api';
 export const provider = {
     "Ethereum": "https://endpoints.omniatech.io/v1/eth/mainnet/public",
@@ -58,7 +58,7 @@ export const getETHtoChecksum = async (provider, account) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 export const deposit = async (provider, tokenSymbol, isEth, token, amount, date, account, holder, network, decimals, gasLimit) => {
     let result;
     try {
@@ -100,7 +100,7 @@ export const deposit = async (provider, tokenSymbol, isEth, token, amount, date,
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const w3 = async (provider, network) => {
     let w3;
@@ -114,7 +114,7 @@ export const w3 = async (provider, network) => {
         w3 = web3;
         return w3;
     };
-}
+};
 
 export const myLocks = async (provider, account, network) => {
     let result; let lockerDataByWallet;
@@ -150,7 +150,7 @@ export const myLocks = async (provider, account, network) => {
         console.log(e);
         return [{ "data": ["data"], "token": ["token"] }];
     };
-}
+};
 
 export const transferOwnership_iLock = async (provider, lockId, account, to, network) => {
     let result;
@@ -163,7 +163,7 @@ export const transferOwnership_iLock = async (provider, lockId, account, to, net
     } catch (e) {
         console.log("yo: ", e);
     };
-}
+};
 
 export const get_iVault_byIndex = async (provider, index, account, network) => {
     let result_iBridge;
@@ -176,7 +176,21 @@ export const get_iVault_byIndex = async (provider, index, account, network) => {
     } catch (e) {
         console.log("yo: ", e);
     };
-}
+};
+
+export const Migrate_v1_to_v2 = async (provider, account, amount, network) => {
+    let result_migrations;
+    try {
+        let web3 = new Web3(provider);
+        console.log("migrate: ", account, amount, network);
+        let contract_Migrator = new web3.eth.Contract(migratorABI, iMigratorAddress[network], account);
+        result_migrations = await contract_Migrator.methods["migrate"](amount).call({ from: account });
+        console.log("result_migrations: ", result_migrations);
+        return result_migrations.toString();
+    } catch (e) {
+        console.log("yo: ", e);
+    };
+};
 
 export const get_iVault_Quote_EthToToken = async (provider, iVault, token, account, amount, network) => {
     let result_iVault;
@@ -194,7 +208,7 @@ export const get_iVault_Quote_EthToToken = async (provider, iVault, token, accou
     } catch (e) {
         console.log("yo: ", e);
     };
-}
+};
 
 export const get_iVault_Quote_TokenToEth = async (provider, iVault, token, account, amount, network) => {
     let result_iVault;
@@ -211,7 +225,7 @@ export const get_iVault_Quote_TokenToEth = async (provider, iVault, token, accou
     } catch (e) {
         console.log("yo: ", e);
     };
-}
+};
 
 export const calculateSuggestedDonation = async (provider, amount, isEth, account, network) => {
     let result_iBridge;
@@ -225,7 +239,7 @@ export const calculateSuggestedDonation = async (provider, amount, isEth, accoun
     } catch (e) {
         console.log("yo: ", e);
     };
-}
+};
 
 
 export const bridgeToken = async (provider, index, amount, isEth, account, network) => {
@@ -246,7 +260,7 @@ export const bridgeToken = async (provider, index, amount, isEth, account, netwo
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const updateProfile = async (provider, newLocker, token, account, network) => {
     let result;
@@ -258,7 +272,7 @@ export const updateProfile = async (provider, newLocker, token, account, network
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const withdraw = async (provider, id, account, receiver, isETH, network, ownable, gasLimit) => {
     let result;
@@ -292,11 +306,11 @@ export const withdraw = async (provider, id, account, receiver, isETH, network, 
             result = await contract.methods["withdraw"](id, await getETHtoChecksum(provider,receiver), isETH).send({ from: account, value: feeInETH, gasLimit: gasLimit });
             console.log("withdrawn: ", result);
             return result;
-        }
+        };
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const isLockClaimed = async (provider, id, account, network) => {
     let result;
@@ -309,7 +323,7 @@ export const isLockClaimed = async (provider, id, account, network) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const _toBN = async (provider, int) => {
     let result;
@@ -321,7 +335,7 @@ export const _toBN = async (provider, int) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const approve = async (provider, token, account, lockAmount, network) => {
     let result;
@@ -334,11 +348,11 @@ export const approve = async (provider, token, account, lockAmount, network) => 
             return result.status;
         } else {
             console.log("results: ", result);
-        }
+        };
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const approveToken = async (provider, token, account, deployedContract) => {
     let result;
@@ -350,7 +364,7 @@ export const approveToken = async (provider, token, account, deployedContract) =
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const allowance = async (token, account, network) => {
     let result;
@@ -362,7 +376,7 @@ export const allowance = async (token, account, network) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const fetch_Balance = async (provider, token, account, network) => {
     let result;
@@ -375,7 +389,7 @@ export const fetch_Balance = async (provider, token, account, network) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const getTokenBalance = async (provider, token, account, network) => {
     let result;
@@ -387,7 +401,7 @@ export const getTokenBalance = async (provider, token, account, network) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const getERC20balance = async (provider, token, account, network) => {
     let result;
@@ -399,7 +413,7 @@ export const getERC20balance = async (provider, token, account, network) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const getERC20allowance = async (provider, token, account, spender, network) => {
     let result;
@@ -411,7 +425,7 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const getEtherBalance = async (provider, account, network) => {
     let balance;
@@ -437,7 +451,7 @@ export const getEtherBalance = async (provider, account, network) => {
     } catch (e) {
         console.log("hmm: ", e);
     };
-}
+};
 
 export const getTokenData = async (token, account, network) => {
     let result;
@@ -455,7 +469,7 @@ export const getTokenData = async (token, account, network) => {
     } catch (e) {
         console.log("px", e);
     };
-}
+};
 
 export const getRawData = async (account, network) => {
     try {
@@ -489,7 +503,7 @@ export const getRawData = async (account, network) => {
     } catch (e) {
         console.log(e);
     };
-}
+};
 
 export const getData = async (provider, account, network) => {
     let lockerDataByWallet;
@@ -554,7 +568,7 @@ export const getLockers = async (provider, account, network) => {
         console.log(e);
         return [{ "data": ["data"], "token": ["token"], "getLock": [undefined] }];
     };
-}
+};
 export const getLocker = async (provider_, lockId, account, network) => {
     let lockerDataByWallet;
     try {
@@ -573,7 +587,7 @@ export const getLocker = async (provider_, lockId, account, network) => {
         console.log(e);
         return [{ "data": ["data"], "token": ["token"], "getLock": [undefined] }];
     };
-}
+};
 
 export const getLockedTokenDetails = async (tokenAddress, account, network) => {
 
@@ -627,9 +641,9 @@ export const getLockedTokenDetails = async (tokenAddress, account, network) => {
                 let baseTokenAmount = BigInt(baseTokenTotalAmount) * BigInt(tokenAmount) / BigInt(totalSupply);
                 if (!each.isWithdrawn) liquidityLocked = liquidityLocked + baseTokenAmount;
                 tokenLockHistory.push({ id: each.id, isPool: true, address: address, owner: ownerAddress, tokenAmount: tokenAmount, baseTokenAmount: baseTokenAmount.toString(), timestamp: timestamp, isWithdrawn: isWithdrawn });
-            }
-        }
-    }
+            };
+        };
+    };
     // let tokenSymbol = await tokenContract.methods.symbol().call();
     // let tokenDecimals = await tokenContract.methods.decimals().call();
     // let tokenLocked = await tokenContract.methods.balanceOf(lockerAddress).call();
@@ -638,10 +652,10 @@ export const getLockedTokenDetails = async (tokenAddress, account, network) => {
     let lockerContract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
     let depositEvents = await lockerContract.getPastEvents("LogLocking", {
         fromBlock: 0
-    })
+    });
     let withdrawEvents = await lockerContract.getPastEvents("LogWithdrawal", {
         fromBlock: 0
-    })
+    });
 
     // let tokenTransferEvents = await tokenContract.getPastEvents("Transfer",{
     //     fromBlock: 0,
@@ -661,7 +675,7 @@ export const getLockedTokenDetails = async (tokenAddress, account, network) => {
     for (let i = 0; i < withdrawEvents.length; i++) {
         let blockDetail = await web3.eth.getBlock(withdrawEvents[i].blockNumber);
         withdrawEvents[i].timestamp = blockDetail.timestamp;
-    }
+    };
     let events = [],
         j = 0;
     for (let i = 0; i < depositEvents.length; i++) {
@@ -670,9 +684,8 @@ export const getLockedTokenDetails = async (tokenAddress, account, network) => {
             j++;
         } else {
             events.push({ deposit: depositEvents[i] });
-        }
-    }
-
+        };
+    };
     return {
         address: tokenAddress,
         symbol: symbol,
@@ -682,13 +695,13 @@ export const getLockedTokenDetails = async (tokenAddress, account, network) => {
         tokenLocked: tokenLocked,
         history: tokenLockHistory,
         events: events
-    }
-}
+    };
+};
 
 export const checkWalletAddress = (walletAddress, network) => {
     let web3 = new Web3(provider[network]);
     return web3.utils.isAddress(walletAddress);
-}
+};
 
 export const getLastDeployedContract = async (account, network) => {
     let lastDeployedAddress;
@@ -699,7 +712,7 @@ export const getLastDeployedContract = async (account, network) => {
         console.log(e);
     };
     return lastDeployedAddress;
-}
+};
 
 export const deployContract = async (provider, account, token, network) => {
     const web3 = new Web3(provider);
@@ -707,9 +720,9 @@ export const deployContract = async (provider, account, token, network) => {
     const contract = new web3.eth.Contract(abi, swapTokenLockerFactory[network]);
     let result = contract.methods.createTokenLocker(token).send({
         from: account
-    })
+    });
     return result;
-}
+};
 
 export const sendTokenVesting = async (provider, deployedContract, csvData, token, account, network) => {
     let _users = [],
@@ -736,9 +749,9 @@ export const sendTokenVesting = async (provider, deployedContract, csvData, toke
             case 'h':
                 _lockHours.push(each.period.slice(0, each.period.length - 1));
 
-        }
+        };
         _sendAmount += BigInt(each.amount * Math.pow(10, decimals));
-    })
+    });
     _sendAmount = _sendAmount.toString();
     abi = [{ "inputs": [{ "internalType": "address[]", "name": "_users", "type": "address[]" }, { "internalType": "uint128[]", "name": "_amounts", "type": "uint128[]" }, { "internalType": "uint32[]", "name": "_lockHours", "type": "uint32[]" }, { "internalType": "uint256", "name": "_sendAmount", "type": "uint256" }], "name": "sendLockTokenMany", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "feesInETH", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }]
 
@@ -751,7 +764,7 @@ export const sendTokenVesting = async (provider, deployedContract, csvData, toke
         value: network !== "Avalanche" || network === "Avalanche" || network === "Avalanche_testnet" ? BigInt(feesInETH * Math.pow(10, 18)).toString() : feesInETH
     });
     return result;
-}
+};
 
 export const getClaimTokenList = async (address, network) => {
     const web3 = new Web3(provider[network]);
@@ -772,7 +785,7 @@ export const getClaimTokenList = async (address, network) => {
                 { reference: 'getLockDataCall', methodName: 'getLockData', methodParameters: [address] },
                 { reference: 'getTokenCall', methodName: 'getToken' }
             ]
-        }
+        };
     })
     response = await multicall.call(contractCallContext);
     let returnData = [];
