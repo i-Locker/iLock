@@ -30,7 +30,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, migratorABI, iMigratorAddress } from "../constants";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, V1_DIGITAL_ASSET, V2_DIGITAL_ASSET, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, migratorABI, iMigratorAddress } from "../constants";
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
@@ -43,6 +43,7 @@ const Migrations = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
     const [activeStep, setActiveStep] = React.useState(0);
+    const [upperLimit, setUpperLimit] = React.useState(2);
     const [open, setOpen] = React.useState(false);
     const [lockerListEnabled, setLockerListEnabled] = useState(false);
     const [snackbar, setSnackbar] = React.useState(false);
@@ -53,8 +54,8 @@ const Migrations = (props) => {
     const [tokenContract, setTokenContract] = useState("");
     const [holder, setHolder] = useState("");
     const [subMethod, setSubMethod] = useState("Project Tokens");
-    const [lockAmount, setLockAmount] = useState(0);
-    const [tokenDecimals, setTokenDecimals] = useState(0);
+    const [migrateAmount, setLockAmount] = useState(0);
+    const [tokenDecimals, setTokenDecimals] = useState(18);
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [tokenName, setTokenName] = useState("");
     const [tokenBalanceString, setTokenBalanceString] = useState("");
@@ -81,8 +82,8 @@ const Migrations = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const token_contract_v1 = useState("0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2");
-    const token_contract_v2 = useState("0xC046dDd298bC41f2b2924b6aFfF66893a160Cf96");
+    // const token_contract_v1 = useState();
+    // const token_contract_v2 = useState("0xC046dDd298bC41f2b2924b6aFfF66893a160Cf96");
 
     const style = {
         position: 'absolute',
@@ -244,6 +245,7 @@ const Migrations = (props) => {
         let provider = await connector.getProvider();
         const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
         let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
+            setTokenBalance(tokenBalance);
         // eslint-disable-next-line
         console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
         // eslint-disable-next-line
@@ -267,54 +269,57 @@ const Migrations = (props) => {
             setWeb3Enabled(false);
             setIsAllowed(0);
             alterLoaderText("Make a selection");
-            setAddressDemand(true);
-            setTokenContract("0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2");
+            setTokenContract(V1_DIGITAL_ASSET);
         } else {
             setWeb3Enabled(false);
-            setAddressDemand(true);
-            setTokenContract(token_contract_v1);
+            setTokenContract(V1_DIGITAL_ASSET);
             try {
                 if (tokenContract && tokenDecimals) {
                     start_(tokenContract, tokenDecimals);
+                } else {
+                    if (tokenContract)
+                    start_(tokenContract, 18);
                 };
             } catch (e) {
                 console.log(e);
                 window.alert("Token not found, please try again...");
             } finally {
                 alterLoaderText("Deploy iLocker");
-                if (!lockAmount) {
+                if (!migrateAmount) {
                     window.alert("Awesome! Let's continue to create your iLocker smart contract...");
                 };
             };
         };
-    }, [account, tokenContract, tokenDecimals, connector, network, web3Enabled, setWeb3Enabled]);
+    }, [account, tokenContract, migrateAmount, setTokenContract, tokenDecimals, connector, network, web3Enabled, setWeb3Enabled]);
 
     const handleAllowance = async (e) => {
-        if (!account || !tokenContract) return;
-        setIsAllowed(0);
+        if (!account || !tokenContract){ 
+            setIsAllowed(0);
+        };
         try {
             let provider = await connector.getProvider();
             const tokenBalance = await getERC20balance(provider, tokenContract, account, network);
-            console.log("tokenBalance: ", tokenBalance);
+            setTokenBalance(tokenBalance);
+            console.log("tokenBalance: ", tokenBalance, tokenContract, account);
             dispatch({ type: USERBALANCE, payload: tokenBalance });
         } catch (e) {
             console.log(e);
         } finally {
-            if (!lockAmount || isNaN(e.target.value)) {
-                console.log("Allowance: ", parseFloat(e.target.value), isNaN(e.target.value));
+            if (!migrateAmount || isNaN(migrateAmount)) {
                 return true;
             } else {
                 console.log("tokenContract: ", tokenContract);
-                console.log("Allowance: ", parseFloat(e.target.value), isNaN(e.target.value));
                 try {
                     let provider = await connector.getProvider();
-                    const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2);
-                    const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
+                    const tokenBalanceFormatted = await _getBN(migrateAmount,tokenDecimals);
+                    const tokenBalanceFormatted_UI = await _getUIfmt(migrateAmount.toString(), tokenDecimals);
+                    setTokenBalanceString(tokenBalanceFormatted_UI);
+                    const allowanceAmount = await getERC20allowance(provider, tokenContract, account, iMigratorAddress[network], network);
                     setTokenAllowance(allowanceAmount);
-                    const lockAmountFormatted = (e.target.value).toFixed(2).toString();
+                    const lockAmountFormatted = (migrateAmount).toFixed(2).toString();
                     let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
                     const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
-                    console.log("Allowance: ", allowanceAmountFormatted_UI, lockAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted));
+                    console.log("tokenBalanceFormatted_UI",tokenBalanceFormatted, tokenBalanceFormatted.toString(), tokenBalanceFormatted_UI,"Allowance: ", allowanceAmountFormatted_UI, lockAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted));
                     if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted)) {
                         setIsAllowed(1);
                     } else {
@@ -327,9 +332,8 @@ const Migrations = (props) => {
         };
     };
     const handleChange = async (event) => {
-        setValues({ tokenAddress: event.target.value });
-        if (event.target.value.length == 42) {
-            const contract_address = event.target.value;
+        const contract_address = iMigratorAddress[network];
+        setValues({ tokenAddress: iMigratorAddress[network] });
             try {
                 let provider = await connector.getProvider();
                 console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, contract_address));
@@ -344,11 +348,9 @@ const Migrations = (props) => {
                 setTokenSymbol(contractData[0]["symbol"].toString());
                 setTokenName(contractData[0]["name"].toString());
             } catch (e) {
+                setTokenDecimals(18);
                 console.log("e: ", e);
             };
-        } else {
-            window.alert("Token not found, please try again...");
-        };
     };
 
     const handleClickSearch = () => {
@@ -410,9 +412,9 @@ const Migrations = (props) => {
     };
 
     const selectLockAmountMax = () => {
-        const _amount = addressDemand ? (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance;
+        const _amount = (test_data.userBalance / Math.pow(10, tokenDecimals)).toFixed(2);
         setLockAmount(_amount);
-        console.log("_amount: ", lockAmount);
+        console.log("_amount: ", migrateAmount);
         setLockAmountMax(true);
     };
 
@@ -420,14 +422,13 @@ const Migrations = (props) => {
         setLockAmount(parseFloat(e.target.value));
         setLockAmountMax(false);
         handleAllowance(e);
-        console.log("_amount: ", lockAmount);
+        console.log("_amount: ", migrateAmount);
     };
     const handleLockAmount = (e) => {
         console.log("e.target.value: ", e.target.value);
         handleLocker(e);
     };
     const handleTokenDecimals = (e) => {
-        console.log("balance: ", test_data.userBalance / Math.pow(10, e.target.value));
         setTokenDecimals(parseFloat(e.target.value).toFixed(0));
     };
     const handleLockToken = async (e) => {
@@ -456,10 +457,10 @@ const Migrations = (props) => {
                     // eslint-disable-next-line
                     if (la == true && lb == false) {
                         window.alert("Savings Token Selected");
-                        setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                        setTokenContract(V1_DIGITAL_ASSET);
                     } else if (la == false && lb == false) {
                         window.alert("Savings Token Selected");
-                        setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                        setTokenContract(V1_DIGITAL_ASSET);
                     } else if (la == true && lb == true) {
                         window.alert(string_to_add);
                     } else {
@@ -469,11 +470,12 @@ const Migrations = (props) => {
                 default:
                     break;
             };
+            handleChange(e);
         };
         nextMsg(0);
         async function nextCount(ctr, tb, ta) {
             let count_lt = ctr > 0 ? ctr : 0;
-            let limit_lt = 3;
+            let limit_lt = upperLimit;
             count_lt = count_lt > limit_lt ? 0 : count_lt += 1;
             setTimeout(await nextMsg, 1024, count_lt, parseFloat(tb) > 0, parseFloat(ta) > 0);
         };
@@ -487,18 +489,18 @@ const Migrations = (props) => {
                 return false;
             };
             let provider = await connector.getProvider();
-            console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
-            let tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, network);
-            const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value), account, lockerAddress[network], network);
+            console.log("ETHtoChecksum: ", await getETHtoChecksum(provider, tokenContract));
+            let tokenBalance = await getTokenBalance(provider, await getETHtoChecksum(provider, tokenContract, account, network));
+            const allowanceAmount = await getERC20allowance(provider, await getETHtoChecksum(provider, tokenContract, account), account, iMigratorAddress[network], network);
             const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
             const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2);
-            const lockAmountFormatted = (lockAmount).toFixed(2).toString();
+            dispatch({ type: USERBALANCE, payload: tokenBalance });
+            const lockAmountFormatted = (migrateAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
-            setTokenBalanceString(tokenBalanceFormatted);
-            console.log("allowanceAmount/lockAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), lockAmount * 10 ** tokenDecimals);
+            console.log("allowanceAmount/migrateAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), migrateAmount * 10 ** tokenDecimals);
             if (parseFloat(allowanceAmount) > 0) {
                 window.alert("Savings Token Selected");
-                setTokenContract(await getETHtoChecksum(provider, document.getElementById("digital-asset-erc20-compatible-interchained-ilock").value));
+                setTokenContract(V1_DIGITAL_ASSET);
             } else {
                 await nextCount(0, parseFloat(tokenBalanceFormatted), parseFloat(allowanceAmountFormatted));
             };
@@ -536,18 +538,11 @@ const Migrations = (props) => {
     const depositToken = async (e) => {
         try {
             let tokenAmount;
-            tokenAmount = lockAmount;
+            tokenAmount = migrateAmount;
             let isEth = false;
             let __decimals = 18;
             let unlockDate = withdrawDate;
-            if (addressDemand == true) {
-                isEth = false;
-                console.log("(ERC-20) tokenSymbol: ", tokenSymbol);
                 __decimals = tokenDecimals ? tokenDecimals : 18;
-            } else {
-                isEth = true;
-                __decimals = 18;
-            };
             if (holder == undefined) {
                 console.log("holder unset! Defaulting ", holder);
                 setHolder(account);
@@ -582,7 +577,6 @@ const Migrations = (props) => {
                             setDateUseful(false);
                             try {
                                 console.log("events (Migrated): ", parseFloat(results["events"]));
-                                // showLockup(network, parseFloat(results["events"]["Transfer"]["returnValues"].tokenId));
                             } catch (e) {
                                 dispatch({
                                     type: TOKENDATA,
@@ -617,19 +611,13 @@ const Migrations = (props) => {
     };
 
     const handleNativeTokenMismatch = async (e) => {
-        if (e !== "Project Tokens") {
-            console.log("NATIVE: ", e);
-            setAddressDemand(false);
-        } else {
-            console.log("ERC-20: ", e);
-            setAddressDemand(true);
-        };
+        setAddressDemand(true);
     };
 
     const approveToken = async () => {
-        let ap = lockAmount * 10 ** tokenDecimals;
-        let amountFormatted = await _getBN(lockAmount, tokenDecimals);
-        console.log("approving: ", lockAmount, tokenDecimals, ap, "\n ", amountFormatted);
+        let ap = migrateAmount * 10 ** tokenDecimals;
+        let amountFormatted = await _getBN(migrateAmount, tokenDecimals);
+        console.log("approving: ", migrateAmount, tokenDecimals, ap, "\n ", amountFormatted);
         let provider = await connector.getProvider();
         approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
             if (status) setIsAllowed(2);
@@ -767,30 +755,6 @@ const Migrations = (props) => {
                                         </div>
                                         <div id="iLockerDeploy" key={2} style={{paddingLeft:1, paddingRight:1}}>
                                             <br />
-                                            { addressDemand ? <Grid 
-                                                container
-                                                direction="row"
-                                                justifyContent="space-between"
-                                                alignItems="center"
-                                                className={MigratorClasses.balanceContainer}
-                                            >
-                                                <Grid item className={MigratorClasses.textLeft} xs={6} sm={6} md={6}>
-                                                    <TextField
-                                                        id="standard-number-decimals"
-                                                        label="Token Decimals"
-                                                        type="number"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                            inputprops: { min: 0, max: 18 }
-                                                        }}
-                                                        InputProps={{ inputprops: { min: 0, max: 18 } }}
-                                                        variant="standard"
-                                                        onChange={handleTokenDecimals}
-                                                        value={tokenDecimals}
-                                                    />
-                                                </Grid>
-                                            </Grid> : <span></span> }
-                                            <br />
                                              <Grid 
                                                 container
                                                 direction="row"
@@ -801,7 +765,7 @@ const Migrations = (props) => {
                                                 <Grid item className={MigratorClasses.textLeft} xs={6} sm={6} md={6}>
                                                     <TextField
                                                         id="standard-number-amount"
-                                                        label="Lock Amount"
+                                                        label="Migrate Amount"
                                                         type="number"
                                                         InputLabelProps={{
                                                             shrink: true,
@@ -810,12 +774,12 @@ const Migrations = (props) => {
                                                         InputProps={{ inputprops: { min: 1 } }}
                                                         variant="standard"
                                                         onChange={(e)=>handleLockAmount(e)}
-                                                        value={lockAmount}
+                                                        value={migrateAmount}
                                                     />
                                                 </Grid>
                                                 <Grid item className={MigratorClasses.textRight}  xs={6} sm={6} md={6}>
                                                     <p style={{marginBottom:2, marginTop:0, fontSize: "10px"}}>
-                                                        Balance: {addressDemand ? (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2) : etherBalance}
+                                                        Balance: {(parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2)}
                                                     </p>
                                                     <Grid 
                                                         container
@@ -835,24 +799,6 @@ const Migrations = (props) => {
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                            {/*
-                                                <Grid 
-                                                    container
-                                                    direction="row"
-                                                    justifyContent="space-between"
-                                                    alignItems="center"
-                                                    className={!isMobile ? `${MigratorClasses.balanceContainer}` : `${mobileClasses.balanceContainer}`}
-                                                >
-                                                    <Grid item className={MigratorClasses.textLeft} xs={12} sm={12} md={12}>
-                                                        <div>
-                                                        {
-                                                            !addressDemand || isAllowed == 2 ? <></>
-                                                            : (isAllowed == 1 ? <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button> : <Button variant="contained" color="secondary" sm={12} onClick={approveToken} className={isMobile ? `${mobileClasses.button}` : ``}>Approve</Button>)
-                                                        }
-                                                        </div>
-                                                    </Grid>
-                                                </Grid>
-                                            */}
                                         </div>
                                     </SwipeableViews>
                                     <MobileStepper
@@ -931,20 +877,6 @@ const Migrations = (props) => {
                                 title="Locked Token List"
                             />
                             <CardContent >
-                            {/* <TextField
-                                id="outlined-search"
-                                label="Search other wallet"
-                                type="search"
-                                variant="standard"
-                                fullWidth={true}
-                                color="primary"
-                                size="small"
-                                onKeyPress={searchOtherWallet}
-                                value={searchWallet}
-                                onChange={onChangeSearchWallet}
-                                error={searchOtherWalletError}
-                                helperText={searchHelperText}
-                            /> */}
                                 {data.length == 0 && 
                                 <div className="text-center" style={{width:'100%', padding:"20px 0px"}}>
                                     <img src="/mylock.png" alt="My Lock" style={{height:200}}/>
@@ -972,7 +904,6 @@ const Migrations = (props) => {
                                 </TableContainer>}
                             </CardContent>
                         </Card>
-                        
                     </Grid> : <Loader value={loaderText} />
                     }
                 </Grid>
