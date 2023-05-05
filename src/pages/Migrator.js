@@ -264,12 +264,12 @@ const Migrations = (props) => {
                         const tokenBalanceFormatted = await _getBN(migrateAmount,tokenDecimals?tokenDecimals:18);
                         const tokenBalanceFormatted_UI = await _getUIfmt(migrateAmount.toString(), tokenDecimals?tokenDecimals:18);
                         setTokenBalanceString(tokenBalanceFormatted_UI);
-                        const allowanceAmount = await getERC20allowance(provider, tokenDecimals, tokenContract, account, iMigratorAddress[network], network);
+                        const allowanceAmount = await getERC20allowance(provider, tokenContract, account, iMigratorAddress[network], network);
                         setTokenAllowance(allowanceAmount);
                         const migrateAmountFormatted = (migrateAmount).toFixed(2).toString();
                         let allowanceAmountFormatted = await _getBN(allowanceAmount.toString(), parseFloat(tokenDecimals?tokenDecimals:18));
                         const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount.toString(), tokenDecimals?tokenDecimals:18);
-                        console.log("tokenBalanceFormatted_UI",tokenBalanceFormatted, tokenBalanceFormatted.toString(), tokenBalanceFormatted_UI,"Allowance: ", allowanceAmountFormatted_UI, migrateAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted));
+                        console.log("tokenBalanceFormatted_UI",tokenBalanceFormatted, tokenBalanceFormatted.toString(), tokenBalanceFormatted_UI,"Allowance: ", tokenDecimals, allowanceAmountFormatted_UI, migrateAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted));
                         if (parseFloat(allowanceAmountFormatted_UI) == parseFloat(0)) {
                             setIsAllowed(0);
                         } else if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted)) {
