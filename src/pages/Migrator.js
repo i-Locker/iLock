@@ -37,7 +37,7 @@ import Loader from '../components/Loader';
 import DateTime from '../components/DateTime';
 import { useNavigate } from "react-router-dom";
 import { alterLoaderText } from '../components/Loader';
-import { deposit, approve, approve_iMigrator, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt, Migrate_v1_to_v2 } from "../web3"
+import { deposit, approve, approve_iMigrator, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt, migrate_v1_to_v2 } from "../web3"
 export let handle_Date;
 const Migrations = (props) => {
 
@@ -533,24 +533,20 @@ const Migrations = (props) => {
                         console.log("(w3) block: ", block);
                         console.log("(w3) gasLimit: ", block.gasLimit);
                         gasLimit = block.gasLimit;
-                        Migrate_v1_to_v2(provider, depositCreator, amountFormatted.toString(), depositNetwork).then(async (results) => {
-                            setWithdrawDate(undefined);
-                            setDateUseful(false);
-                            try {
-                                console.log("events (Migrated): ", parseFloat(results["events"]));
-                            } catch (e) {
-                                dispatch({
-                                    type: TOKENDATA,
-                                    payload: {}
-                                })
-                                setActiveStep(0);
-                                window.alert("Transaction error, check block explorer for more intel.");
-                                console.log("err: ", e);
-                            } finally {
-                                const newData = await getData(provider, account, network);
-                                dispatch({ type: TOKENLISTS, payload: newData });
+                        let results = await migrate_v1_to_v2(provider, depositCreator, amountFormatted.toString(), depositNetwork);
+                            if(results) {
+                                try {
+                                    console.log("events (Migrated): ", parseFloat(results["events"]));
+                                } catch (e) {
+                                    dispatch({
+                                        type: TOKENDATA,
+                                        payload: {}
+                                    })
+                                    setActiveStep(0);
+                                    window.alert("Transaction error, check block explorer for more intel.");
+                                    console.log("err: ", e);
+                                };
                             };
-                        });
                     });
                 };
             } else {

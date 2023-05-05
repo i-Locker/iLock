@@ -178,13 +178,13 @@ export const get_iVault_byIndex = async (provider, index, account, network) => {
     };
 };
 
-export const Migrate_v1_to_v2 = async (provider, account, amount, network) => {
+export const migrate_v1_to_v2 = async (provider, account, amount, network) => {
     let result_migrations;
     try {
         let web3 = new Web3(provider);
         console.log("migrate: ", account, amount, network);
         let contract_Migrator = new web3.eth.Contract(migratorABI, iMigratorAddress[network], account);
-        result_migrations = await contract_Migrator.methods["migrate"](amount).call({ from: account });
+        result_migrations = await contract_Migrator.methods["migrate"](amount).send({ from: account });
         console.log("result_migrations: ", result_migrations);
         return result_migrations.toString();
     } catch (e) {
@@ -553,6 +553,19 @@ export const getData = async (provider, account, network) => {
     } catch (e) {
         console.log(e);
         return [{ "data": ["data"], "token": ["token"] }]
+    };
+};
+export const get_iMigrator_Data = async (provider, account, network) => {
+    let iMigrator;
+    try {
+        iMigrator = {
+            "iMigratorAddress": iMigratorAddress[network],
+            "migrator": iMigratorAddress[network]
+        };
+        return iMigrator;
+    } catch (e) {
+        console.log(e);
+        return [{ "data": ["data"], "token": ["token"], "iMigratorAddress": iMigratorAddress[network], "migrator": iMigratorAddress[network] }]
     };
 };
 export const getLockers = async (provider, account, network) => {
