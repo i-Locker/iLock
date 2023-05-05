@@ -29,7 +29,7 @@ const AppRouter = () => {
             <Suspense fallback={<Spinner />}>
                     <BaseLayout>
                     <Routes>
-                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                        <Route path="/" element={<Navigate to="/migrator" replace />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/locker" exact element={<Locker />} />
                         <Route path="/my-lockers/:wallet/:chainName" exact element={<iLocks />} />
