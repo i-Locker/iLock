@@ -339,7 +339,7 @@ export const _toBN = async (provider, int) => {
 
 export const approve_iMigrator = async (provider, token, account, migrateAmount, network) => {
     let result;
-    console.log("approve: ", lockAmount, iMigratorAddress[network]);
+    console.log("approve: ", migrateAmount, iMigratorAddress[network]);
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token); 
