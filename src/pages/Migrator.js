@@ -688,7 +688,7 @@ const Migrations = (props) => {
                                 title="Migrate V1 to V2"
                             />
                             <CardContent >
-                                <img src="/lock.png" />
+                                <img src="/mylock.png" />
                                 <RadioGroup
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     defaultValue="female"
