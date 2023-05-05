@@ -583,7 +583,7 @@ const Migrations = (props) => {
             let amountFormatted = await _getBN(migrateAmount.toString(), (tokenDecimals?tokenDecimals:18));
             console.log("approving: ", migrateAmount, tokenDecimals, ap, "\n ", amountFormatted);
             let provider = await connector.getProvider();
-            approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
+            approve(provider, tokenContract, account, amountFormatted.toString(), network).then((status) => {
                 if (status) setIsAllowed(2);
             });
         };
