@@ -244,38 +244,44 @@ const Migrations = (props) => {
     const handleAllowance = async (e) => {
         if (!account || !tokenContract){ 
             setIsAllowed(0);
-        };
-        try {
-            let provider = await connector.getProvider();
-            const tokenBalance = await getERC20balance(provider, tokenContract, account, network);
-            setTokenBalance(tokenBalance);
-            console.log("tokenBalance: ", tokenBalance, tokenContract, account);
-            dispatch({ type: USERBALANCE, payload: tokenBalance });
-        } catch (e) {
-            console.log(e);
-        } finally {
-            if (!migrateAmount || isNaN(migrateAmount)) {
-                return true;
-            } else {
-                console.log("tokenContract: ", tokenContract);
-                try {
-                    let provider = await connector.getProvider();
-                    const tokenBalanceFormatted = await _getBN(migrateAmount,tokenDecimals);
-                    const tokenBalanceFormatted_UI = await _getUIfmt(migrateAmount.toString(), tokenDecimals);
-                    setTokenBalanceString(tokenBalanceFormatted_UI);
-                    const allowanceAmount = await getERC20allowance(provider, tokenContract, account, iMigratorAddress[network], network);
-                    setTokenAllowance(allowanceAmount);
-                    const lockAmountFormatted = (migrateAmount).toFixed(2).toString();
-                    let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
-                    const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
-                    console.log("tokenBalanceFormatted_UI",tokenBalanceFormatted, tokenBalanceFormatted.toString(), tokenBalanceFormatted_UI,"Allowance: ", allowanceAmountFormatted_UI, lockAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted));
-                    if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(lockAmountFormatted)) {
-                        setIsAllowed(1);
-                    } else {
-                        setIsAllowed(2);
+            return true;
+        } else {
+            try {
+                let provider = await connector.getProvider();
+                const tokenBalance = await getERC20balance(provider, tokenContract, account, network);
+                setTokenBalance(tokenBalance);
+                console.log("tokenBalance: ", tokenBalance, tokenContract, account);
+                dispatch({ type: USERBALANCE, payload: tokenBalance });
+            } catch (e) {
+                console.log(e);
+            } finally {
+                if (!migrateAmount || isNaN(migrateAmount)) {
+                    return true;
+                } else {
+                    console.log("tokenContract: ", tokenContract);
+                    try {
+                        let provider = await connector.getProvider();
+                        const tokenBalanceFormatted = await _getBN(migrateAmount,tokenDecimals);
+                        const tokenBalanceFormatted_UI = await _getUIfmt(migrateAmount.toString(), tokenDecimals);
+                        setTokenBalanceString(tokenBalanceFormatted_UI);
+                        const allowanceAmount = await getERC20allowance(provider, tokenContract, account, iMigratorAddress[network], network);
+                        setTokenAllowance(allowanceAmount);
+                        const migrateAmountFormatted = (migrateAmount).toFixed(2).toString();
+                        let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals));
+                        const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
+                        console.log("tokenBalanceFormatted_UI",tokenBalanceFormatted, tokenBalanceFormatted.toString(), tokenBalanceFormatted_UI,"Allowance: ", allowanceAmountFormatted_UI, migrateAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted));
+                        if (parseFloat(allowanceAmountFormatted_UI) == parseFloat(0)) {
+                            setIsAllowed(0);
+                        } else if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted)) {
+                            setIsAllowed(1);
+                        } else {
+                            if (parseFloat(allowanceAmountFormatted_UI) >= parseFloat(migrateAmountFormatted)) {
+                                setIsAllowed(2);
+                            }; 
+                        };
+                    } catch (e) {
+                        console.log(e);
                     };
-                } catch (e) {
-                    console.log(e);
                 };
             };
         };
@@ -449,9 +455,9 @@ const Migrations = (props) => {
             const allowanceAmountFormatted = await _getUIfmt(allowanceAmount.toString(), tokenDecimals);
             const tokenBalanceFormatted = (tokenBalance / Math.pow(10, tokenDecimals)).toFixed(2);
             dispatch({ type: USERBALANCE, payload: tokenBalance });
-            const lockAmountFormatted = (migrateAmount).toFixed(2).toString();
+            const migrateAmountFormatted = (migrateAmount).toFixed(2).toString();
             console.log("tokenBalance: ", tokenBalance, tokenBalanceFormatted, parseFloat(tokenBalance) > 0);
-            console.log("allowanceAmount/migrateAmount: ", lockAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), migrateAmount * 10 ** tokenDecimals);
+            console.log("allowanceAmount/migrateAmount: ", migrateAmountFormatted, allowanceAmountFormatted, parseFloat(allowanceAmount), migrateAmount * 10 ** tokenDecimals);
             if (parseFloat(allowanceAmount) > 0) {
                 window.alert("Savings Token Selected");
                 setTokenContract(V1_DIGITAL_ASSET);
@@ -489,13 +495,14 @@ const Migrations = (props) => {
         navigate(`/lockers/${network.toLowerCase()}/${lockId}`);
     };
 
-    const migrateAssets = async (e) => {
+    const migrateAssets = async () => {
         try {
             let tokenAmount;
-            tokenAmount = migrateAmount;
+            tokenAmount = migrateAmount.toString();
             let isEth = false;
+            let amountFormatted = await _getBN(migrateAmount.toString(), (tokenDecimals?tokenDecimals:18));
+                console.log("migrateAmount: ", migrateAmount, amountFormatted);
             let __decimals = 18;
-            let unlockDate = withdrawDate;
                 __decimals = tokenDecimals ? tokenDecimals : 18;
             if (holder == undefined) {
                 console.log("holder unset! Defaulting ", holder);
@@ -503,7 +510,7 @@ const Migrations = (props) => {
             };
             const balanceChecker = true;
             if (balanceChecker == true) {
-                console.log("migrateAssets: ", e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, __decimals, network);
+                console.log("migrateAssets: ", addressDemand, tokenAmount, account, holder, __decimals, network);
                 let unset = true;
                 let allSet = false;
                 let gasLimit;
@@ -526,7 +533,7 @@ const Migrations = (props) => {
                         console.log("(w3) block: ", block);
                         console.log("(w3) gasLimit: ", block.gasLimit);
                         gasLimit = block.gasLimit;
-                        Migrate_v1_to_v2(provider, depositCreator, tokenAmount, depositNetwork).then(async (results) => {
+                        Migrate_v1_to_v2(provider, depositCreator, amountFormatted.toString(), depositNetwork).then(async (results) => {
                             setWithdrawDate(undefined);
                             setDateUseful(false);
                             try {
@@ -569,13 +576,17 @@ const Migrations = (props) => {
     };
 
     const approveToken = async () => {
-        let ap = migrateAmount * 10 ** tokenDecimals;
-        let amountFormatted = await _getBN(migrateAmount, tokenDecimals);
-        console.log("approving: ", migrateAmount, tokenDecimals, ap, "\n ", amountFormatted);
-        let provider = await connector.getProvider();
-        approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
-            if (status) setIsAllowed(2);
-        });
+        if(!migrateAmount) {
+            return true;
+        } else {
+            let ap = migrateAmount * 10 ** (tokenDecimals?tokenDecimals:18);
+            let amountFormatted = await _getBN(migrateAmount.toString(), (tokenDecimals?tokenDecimals:18));
+            console.log("approving: ", migrateAmount, tokenDecimals, ap, "\n ", amountFormatted);
+            let provider = await connector.getProvider();
+            approve(provider, tokenContract, account, amountFormatted, network).then((status) => {
+                if (status) setIsAllowed(2);
+            });
+        };
     };
 
     const networkData = networks_data;
@@ -705,7 +716,8 @@ const Migrations = (props) => {
                                                         </Grid>
                                                     </Grid>
                                                     <Grid item  className="text-center" xs={2} sm={1} md={1}>
-                                                        {item.name==network ? <div style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} />: <div style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
+                                                        {item.name==network ? <div style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} /> :
+                                                        <div style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
                                                     </Grid>
                                                 </Grid>
                                                 )
@@ -768,8 +780,9 @@ const Migrations = (props) => {
                                                 <Grid item xs={12} sm={12} md={12} justify="center" alignItems="center">
                                                   <br />
                                                     {
-                                                        activeStep == 1 ? <Button variant="contained" color="secondary" xs={12} sm={12} md={12} style={{textAlign: 'center', paddingRight:1, paddingLeft: 1, marginLeft: 'auto', marginRight: 'auto', maxWidth: '100%', maxHeight:'100%', minWidth: '100%', minHeight: '100%'}}
-                                                 value={addressDemand} onClick={(e)=>migrateAssets(e)} >Migrate</Button> : <></>
+                                                        activeStep == 1 && isAllowed == 2 ? <Button variant="contained" color="secondary" xs={12} sm={12} md={12} style={{textAlign: 'center', paddingRight:1, paddingLeft: 1, marginLeft: 'auto', marginRight: 'auto', maxWidth: '100%', maxHeight:'100%', minWidth: '100%', minHeight: '100%'}}
+                                                 onClick={()=>migrateAssets()} >Migrate</Button> : activeStep == 1 && isAllowed <= 1 ? <Button variant="contained" color="secondary" xs={12} sm={12} md={12} style={{textAlign: 'center', paddingRight:1, paddingLeft: 1, marginLeft: 'auto', marginRight: 'auto', maxWidth: '100%', maxHeight:'100%', minWidth: '100%', minHeight: '100%'}}
+                                                 onClick={()=>approveToken()} >Approve</Button> : <></>
                                                     }
                                                 </Grid>
                                             </Grid>
