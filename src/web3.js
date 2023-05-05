@@ -396,7 +396,7 @@ export const getTokenBalance = async (provider, token, account, network) => {
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token.toString(), account);
-        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call({ from: account });
+        result = await contract.methods["balanceOf"](account).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);
@@ -408,7 +408,7 @@ export const getERC20balance = async (provider, token, account, network) => {
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token, account);
-        result = await contract.methods["balanceOf"](await getETHtoChecksum(provider,account)).call({ from: account });
+        result = await contract.methods["balanceOf"](account).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);
@@ -420,7 +420,7 @@ export const getERC20allowance = async (provider, token, account, spender, netwo
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token, account);
-        result = await contract.methods["allowance"](await getETHtoChecksum(provider,account), spender).call({ from: account });
+        result = await contract.methods["allowance"](account, spender).call({ from: account });
         return result;
     } catch (e) {
         console.log(e);
