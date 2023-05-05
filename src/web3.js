@@ -337,6 +337,22 @@ export const _toBN = async (provider, int) => {
     };
 };
 
+export const approve_iMigrator = async (provider, token, account, lockAmount, network) => {
+    let result;
+    console.log("approve: ", lockAmount);
+    try {
+        let web3 = new Web3(provider);
+        let contract = new web3.eth.Contract(erc20Abi, token); 
+        result = await contract.methods["approve"](iMigratorAddress[network], lockAmount).send({ from: account });
+        if (result.status) {
+            return result.status;
+        } else {
+        };
+    } catch (e) {
+        console.log(e);
+    };
+};
+
 export const approve = async (provider, token, account, lockAmount, network) => {
     let result;
             console.log("approve: ", lockAmount);
@@ -347,7 +363,7 @@ export const approve = async (provider, token, account, lockAmount, network) => 
         if (result.status) {
             return result.status;
         } else {
-            console.log("results: ", result);
+            console.log("results: ", result);iMigratorAddress
         };
     } catch (e) {
         console.log(e);

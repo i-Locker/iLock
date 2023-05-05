@@ -37,7 +37,7 @@ import Loader from '../components/Loader';
 import DateTime from '../components/DateTime';
 import { useNavigate } from "react-router-dom";
 import { alterLoaderText } from '../components/Loader';
-import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt, Migrate_v1_to_v2 } from "../web3"
+import { deposit, approve, approve_iMigrator, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt, Migrate_v1_to_v2 } from "../web3"
 export let handle_Date;
 const Migrations = (props) => {
 
@@ -583,7 +583,7 @@ const Migrations = (props) => {
             let amountFormatted = await _getBN(migrateAmount.toString(), (tokenDecimals?tokenDecimals:18));
             console.log("approving: ", migrateAmount, tokenDecimals, ap, "\n ", amountFormatted);
             let provider = await connector.getProvider();
-            approve(provider, tokenContract, account, amountFormatted.toString(), network).then((status) => {
+            approve_iMigrator(provider, tokenContract, account, amountFormatted.toString(), network).then((status) => {
                 if (status) setIsAllowed(2);
             });
         };
