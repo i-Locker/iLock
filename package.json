@@ -6,23 +6,12 @@
   "private": true,
   "homepage": "https://ilocks.interchained.org",
   "scripts": {
+    "dev": "webpack-dev-server",
     "test": "cd srv/test/ && node serve.js",
     "devel": "cd srv/devel/ && node serve.js",
-    "dev": "cd srv/devel/ && node serve.js",
     "prod": "cd srv/prod/ && node serve.js",
     "start": "react-scripts start",
     "build": "react-scripts build"
-  },
-  "babel": {
-    "presets": [
-      "@babel/env",
-      "@babel/preset-typescript"
-    ],
-    "plugins": [
-      "@babel/proposal-class-properties",
-      "@babel/proposal-object-rest-spread",
-      "@babel/plugin-proposal-class-properties"
-    ]
   },
   "repository": {
     "type": "git",
@@ -121,6 +110,7 @@
     "node-sass": "^6.0.0",
     "prettier": "^2.3.1",
     "react-scripts": "latest",
-    "react-swipeable-views-workspace": "github:oliviertassinari/react-swipeable-views#pull/654/head"
+    "react-swipeable-views-workspace": "github:oliviertassinari/react-swipeable-views#pull/654/head",
+    "webpack-cli": "^5.0.2"
   }
 }

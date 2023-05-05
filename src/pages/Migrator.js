@@ -30,7 +30,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, V1_DIGITAL_ASSET, V2_DIGITAL_ASSET, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, migratorABI, iMigratorAddress } from "../constants";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, V1_DIGITAL_ASSET, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, migratorABI, iMigratorAddress } from "../constants";
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
@@ -42,7 +42,7 @@ export let handle_Date;
 const Migrations = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = useState(0);
     const [upperLimit, setUpperLimit] = React.useState(2);
     const [open, setOpen] = React.useState(false);
     const [lockerListEnabled, setLockerListEnabled] = useState(false);
@@ -120,10 +120,9 @@ const Migrations = (props) => {
             };
         });
     };
-    const handleNext = async (events) => {
+    async function handleNext (events) {
         if (account) {
             console.log("events: ", events);
-            console.log("activeStep: ", activeStep);
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
             const currentNetworkData = networkData.filter((each) => each.name === network);
@@ -139,42 +138,15 @@ const Migrations = (props) => {
                     });
                     console.log("You have successfully switched to ", network);
                 };
-                if (activeStep == 0) {
-                    if (account === undefined) {
-                        setModalTitle("Please connect Wallet");
-                        setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        handleOpen();
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    };
-                } else if (activeStep >= 2) {
-                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                        setModalTitle("Please select Token");
-                        setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        if (activeStep == 2) {
-                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                        } else if (activeStep == 3) {
-                            return true;
+                    if (events == 0 || activeStep==0) {
+                        if (!chainId||account === undefined) {
+                            setModalTitle("Please connect Wallet");
+                            setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
+                            handleOpen();
                         };
-                        handleOpen();
-                    } else {
-                        console.log("activeStep: ", activeStep);
-                        if (activeStep == 2) {
-                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                        } else if (activeStep == 3) {
-                            return true;
-                        };
+                    } else if (events > 1 || activeStep>1) {
+                        return true;
                     };
-                } else if (addressDemand && activeStep == 4 || !addressDemand && activeStep == 3) {
-                    return;
-                } else {
-                    console.log("activeStep: ", activeStep);
-                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    };
-                };
             } catch (switchError) {
                 try {
                     const params_network_add = {
@@ -199,40 +171,16 @@ const Migrations = (props) => {
                         });
                     } else if (switchError.code === 4001) {
                         console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     } else if (switchError.code === 4200) {
                         console.log("You have succefully switched to ", network);
-                        if (activeStep == 0) {
-                            if (account === undefined) {
+                        if (activeStep == 0 || events==0) {
+                            if (account === undefined || !chainId) {
                                 setModalTitle("Please connect Wallet");
                                 setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
                                 handleOpen();
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        } else if (activeStep == 2) {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                setModalTitle("Please select Token");
-                                setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                                console.log("activeStep: ", activeStep);
-                                if (activeStep == 2) {
-                                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                                } else if (activeStep == 3) {
-                                    return true;
-                                };
-                                handleOpen();
-                            } else {
-                                console.log(activeStep);
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        } else if (addressDemand && activeStep == 4 || !addressDemand && activeStep == 3) {
-                            return;
-                        } else {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
                             };
+                        } else if (activeStep > 1 || events>1) {
+                            return true;
                         };
                     };
                 } catch (e) {
@@ -249,7 +197,7 @@ const Migrations = (props) => {
         // eslint-disable-next-line
         console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
         // eslint-disable-next-line
-        window.alert("Token Found! Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
+        window.alert("V1 Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
         dispatch({ type: USERBALANCE, payload: tokenBalance });
     };
 
@@ -284,13 +232,14 @@ const Migrations = (props) => {
                 console.log(e);
                 window.alert("Token not found, please try again...");
             } finally {
-                alterLoaderText("Deploy iLocker");
+                alterLoaderText("Migrate V1 Tokens");
                 if (!migrateAmount) {
-                    window.alert("Awesome! Let's continue to create your iLocker smart contract...");
+                    // eslint-disable-next-line
+                    window.alert("Network: "+ui_friendly_networks[network]+"\n "+" migrate your digital assets from V1 to V2...");
                 };
             };
         };
-    }, [account, tokenContract, migrateAmount, setTokenContract, tokenDecimals, connector, network, web3Enabled, setWeb3Enabled]);
+    }, [account, V1_DIGITAL_ASSET, tokenContract, migrateAmount, setTokenContract, tokenDecimals, connector, network, web3Enabled, setWeb3Enabled]);
 
     const handleAllowance = async (e) => {
         if (!account || !tokenContract){ 
@@ -364,42 +313,43 @@ const Migrations = (props) => {
         event.preventDefault();
     };
 
-    const handleBack = (activeStep) => {
-        if (!account) {
-            return true;
-        } else if (addressDemand && activeStep == 4 || !addressDemand && activeStep == 3) {
-            return true;
-        } else {
-            if (addressDemand && activeStep < 4 || !addressDemand && activeStep < 3) {
-                setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const handleBack = () => {
+        try {
+            if (!account) {
+                return true;
+            } else if (account&&activeStep < 2) {
+                setActiveStep((activeStep) => activeStep - 1);
             };
+        } catch(e){
+            return true;
         };
     };
 
-    const handleStepChange = (step) => {
+    const handleStepChange = (events) => {
         if (!account || !chainId) {
             event.preventDefault();
             return true;
         } else {
-            if (addressDemand && activeStep == 4 || !addressDemand && activeStep == 3) {
+            if (!account) {
                 return true;
             } else {
-                if (addressDemand && activeStep < 4 || !addressDemand && activeStep < 3) {
-                    handleNext(step);
+                if(activeStep == 0) {
+                    setActiveStep(1);
+                    handleNext(events);
+                } else if(activeStep == 1) {
+                    handleNext(events);
+                    return true;
+                } else if(activeStep == 2) {
+                    return true;
                 };
             };
-        };
-    };
-    const selectToken = async (step) => {
-        if (step) {
-            handleNext(step);
-            console.log("activeStep: ", activeStep, "\n step: ", step);
+            console.log("activeStep: ",activeStep);
         };
     };
 
     const handleRestart = (step) => {
         console.log("step: ", step);
-        if (!account || !chainId) {
+        if (!account) {
             event.preventDefault();
             return true;
         } else {
@@ -409,6 +359,10 @@ const Migrations = (props) => {
 
     const fetchEtherBalance = (eb) => {
         setEtherBalance(eb);
+    };
+
+    const bumpStep = () => {
+        setActiveStep((activeStep) => activeStep + 1);
     };
 
     const selectLockAmountMax = () => {
@@ -535,7 +489,7 @@ const Migrations = (props) => {
         navigate(`/lockers/${network.toLowerCase()}/${lockId}`);
     };
 
-    const depositToken = async (e) => {
+    const migrateAssets = async (e) => {
         try {
             let tokenAmount;
             tokenAmount = migrateAmount;
@@ -549,7 +503,7 @@ const Migrations = (props) => {
             };
             const balanceChecker = true;
             if (balanceChecker == true) {
-                console.log("depositToken: ", e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, __decimals, network);
+                console.log("migrateAssets: ", e.target.value, addressDemand, tokenAmount, unlockDate, account, holder, __decimals, network);
                 let unset = true;
                 let allSet = false;
                 let gasLimit;
@@ -680,8 +634,12 @@ const Migrations = (props) => {
                 <Grid container direction="row" justifyContent="space-evenly" alignItems="center" >
                     <Grid className={isMobile ? `${mobileClasses.root} grid text-center`  : "grid text-center"} style={{marginTop:40}} item xs={12} sm={12} md={6} >
                         <div style={{maxWidth:400, display:'inline-block', textAlign:'left'}}>
-                            <h1>Create your own custom TimeLock instantly.</h1>
-                            <p>All digital assets are locked into your very own TimeLock enabled smart contract which has been specially engineered by the top devs and tested to serve this purpose. TimeLock certified digital assets can only be withdrawn after the preset time lock expires.</p>
+                            <h1>Migrate from participating V1 to V2 tokens instantly.</h1>
+                            <p>All digital assets migrateable from V1 to V2 could pass through public migrations to avoid human errors or loss of contact with project operators. This utility has been specially engineered
+                             by the top devs and tested to serve this purpose. 
+                             iMigrator certified smart contracts are deployed with multi-chain, interoperability, and scaleability. 
+                             Participating digital assets providers and projects operators deploy public iMigrators && designate reserves for holders to easily, smoothly migrate from V1 to V2 for example; in just a few simple steps.
+                            </p>
                             <Link
                                 href={`${websiteURI}`}
                                 target="_blank"
@@ -695,7 +653,7 @@ const Migrations = (props) => {
                         <Card className="card">
                             <CardHeader
                                 className={MigratorClasses.cardHeader}
-                                title="Create New iLock"
+                                title="Migrate V1 to V2"
                             />
                             <CardContent >
                                 <img src="/lock.png" />
@@ -707,13 +665,13 @@ const Migrations = (props) => {
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        disabled={web3Enabled||addressDemand&&activeStep == 4||!addressDemand&&activeStep == 3}
+                                        disabled={activeStep == 1}
                                         onChangeIndex={(e)=>handleStepChange(e)}
                                     >
                                        
                                         <div key={1} style={{paddingLeft:1, paddingRight:1}}>
                                             <p style={{textAlign:'center'}} color="textSecondary">
-                                                Choose the blockchain network.
+                                                Select V1 blockchain network where to migrate FROM.
                                             </p>
                                             {
                                                 networkData ? networkData.map((item)=>
@@ -761,6 +719,7 @@ const Migrations = (props) => {
                                                 justifyContent="space-between"
                                                 alignItems="center"
                                                 className={MigratorClasses.balanceContainer}
+                                                style={{marginTop:"10%"}}
                                             >
                                                 <Grid item className={MigratorClasses.textLeft} xs={6} sm={6} md={6}>
                                                     <TextField
@@ -799,6 +758,21 @@ const Migrations = (props) => {
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
+                                              <br />
+                                                <Grid 
+                                                    container
+                                                    direction="row"
+                                                    alignItems="center"
+                                                    justify="center"
+                                                >
+                                                <Grid item xs={12} sm={12} md={12} justify="center" alignItems="center">
+                                                  <br />
+                                                    {
+                                                        activeStep == 1 ? <Button variant="contained" color="secondary" xs={12} sm={12} md={12} style={{textAlign: 'center', paddingRight:1, paddingLeft: 1, marginLeft: 'auto', marginRight: 'auto', maxWidth: '100%', maxHeight:'100%', minWidth: '100%', minHeight: '100%'}}
+                                                 value={addressDemand} onClick={(e)=>migrateAssets(e)} >Migrate</Button> : <></>
+                                                    }
+                                                </Grid>
+                                            </Grid>
                                         </div>
                                     </SwipeableViews>
                                     <MobileStepper
@@ -807,10 +781,10 @@ const Migrations = (props) => {
                                         position="static"
                                         activeStep={activeStep}
                                         nextButton={
-                                        addressDemand&&activeStep < 4?<Button
+                                        activeStep < 1?<Button
                                             size="small"
                                             onClick={(e)=>handleStepChange(e)}
-                                            disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}
+                                            disabled={activeStep >= 1?true:false}
                                         >
                                             Next
                                             {theme.direction === 'rtl' ? (
@@ -818,23 +792,11 @@ const Migrations = (props) => {
                                             ) : (
                                             <KeyboardArrowRight />
                                             )}
-                                        </Button> :
-                                        !addressDemand&&activeStep < 3?<Button
-                                            size="small"
-                                            onClick={(e)=>handleStepChange(e)}
-                                            disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}
-                                        >
-                                            Next
-                                            {theme.direction === 'rtl' ? (
-                                            <KeyboardArrowLeft />
-                                            ) : (
-                                            <KeyboardArrowRight />
-                                            )}
-                                        </Button> :
+                                        </Button> : activeStep == 1 ?
                                         <Button
                                             size="small"
-                                            onClick={(e)=>handleRestart(e)}
-                                            disabled={addressDemand?activeStep != 4:!addressDemand?activeStep != 3:activeStep==0}
+                                            onClick={()=>setActiveStep(0)}
+                                            disabled={activeStep < 1?true:false}
                                         >
                                             Start Over
                                             {theme.direction === 'rtl' ? (
@@ -842,70 +804,23 @@ const Migrations = (props) => {
                                             ) : (
                                             <KeyboardArrowRight />
                                             )}
-                                        </Button>
+                                        </Button> : <></>
                                         }
                                         backButton={
-                                        addressDemand&&activeStep < 4?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}>
+                                        activeStep < 1?<Button size="small" onClick={handleBack} disabled={activeStep >= 1?true:false}>
                                             {theme.direction === 'rtl' ? (
                                             <KeyboardArrowRight />
                                             ) : (
                                             <KeyboardArrowLeft />
                                             )}
                                             Back
-                                        </Button> :
-                                        !addressDemand&&activeStep < 3?<Button size="small" onClick={(activeStep)=>handleBack(activeStep)} disabled={addressDemand?activeStep == 4:!addressDemand?activeStep == 3:activeStep==0}>
-                                            {theme.direction === 'rtl' ? (
-                                            <KeyboardArrowRight />
-                                            ) : (
-                                            <KeyboardArrowLeft />
-                                            )}
-                                            Back
-                                        </Button> :
-                                        activeStep == 4 ? <Button variant="contained" color="secondary" sm={12} style={{maxWidth: '30em', maxHeight: '40em', minWidth: '30em', minHeight: '40em'}} value={addressDemand} onClick={(e)=>depositToken(e)} className={isMobile ? `${mobileClasses.button}` : ``}>Deposit</Button> :
-                                        <></>
+                                        </Button> : <></>
                                     }
                                     />
                                 </RadioGroup>
                             </CardContent>
                         </Card>
                     </Grid>
-                    {
-                        lockerListEnabled ? <Grid className={isMobile ? `${mobileClasses.root} grid `  : "grid"} style={{marginTop:40}} item xs={12} sm={12} md={12} >
-                        <Card className="card">
-                            <CardHeader
-                                className={MigratorClasses.cardHeader}
-                                title="Locked Token List"
-                            />
-                            <CardContent >
-                                {data.length == 0 && 
-                                <div className="text-center" style={{width:'100%', padding:"20px 0px"}}>
-                                    <img src="/mylock.png" alt="My Lock" style={{height:200}}/>
-                                    <h2 style={{marginBottom:0}}>No Locked Coin</h2>
-                                    <p style={{color:'grey',margin:0}}>You have not locked up any coins yet.</p>
-                                </div>}
-                                {data.length != 0 && <TableContainer component={Paper}>
-                                    <Table aria-label="collapsible table">
-                                        <TableHead>
-                                        <TableRow>
-                                            <TableCell>No</TableCell>
-                                            <TableCell>Token</TableCell>
-                                            <TableCell align="right">Tokens Locked</TableCell>
-                                            <TableCell align="right">Liquidity Locked</TableCell>
-                                            <TableCell align="right">Next Unlock</TableCell>
-                                            <TableCell align="right"></TableCell>
-                                        </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                        {data.map((row, index) => (
-                                            <Row key={`lockToken-${index}`} row={row} index={index} />
-                                        ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>}
-                            </CardContent>
-                        </Card>
-                    </Grid> : <Loader value={loaderText} />
-                    }
                 </Grid>
             </Box>
             <Modal

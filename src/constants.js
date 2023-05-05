@@ -124,6 +124,45 @@ export let __TOKENLIST = [
     { name: "Interchained", symbol: "INT", decimals: 18, contract: "0x" },
     { name: "FrenChain", symbol: "FREN", decimals: 18, contract: "0x" }
 ];
+export const networking = [
+    { name: "Goerli", currency: "gETH", subtitle: "Choose if your project is deployed to gETH", url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" }], chainData: [{ chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } }] },
+    { name: "Cronos_testnet", currency: "tCRO", subtitle: "Choose if your project is deployed to tCRO", url: "/networks/cronos.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "CRO", url: "/networks/cronos.svg" }], chainData: [{ chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { symbol: 'tCRO', decimals: 18 } }] },
+    { name: "Binance_testnet", currency: "tBNB", subtitle: "Choose if your coin is built on tBSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: [{ chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } }] },
+    { name: "Polygon_testnet", currency: "tMATIC", subtitle: "Choose if your project is deployed to tMATIC", url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" }], chainData: [{ chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } }] },
+    { name: "Avalanche_testnet", currency: "tAVAX", subtitle: "Choose if your project is deployed to tAVAX", url: "/networks/avax.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tAXAX", url: "/networks/avax.svg" }], chainData: [{ chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { symbol: 'AVAX', decimals: 9 } }] },
+    { name: "Frenchain_testnet", currency: "tFREN", subtitle: "Choose if your project is deployed to tFREN", url: "/networks/fren.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tFREN", url: "/networks/fren.svg" }], chainData: [{ chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { symbol: 'tFREN', decimals: 18 } }] },
+    { name: "Kekchain_testnet", currency: "tKEK", subtitle: "Choose if your project is deployed to tKEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: [{ chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } }] }
+];
+export const __NETWORKS = networking;
+export const DEFAULT_CHAIN_ID = 338;
+export const DEVNAME = 'interchained';
+export const DEVNAMEMED = DEVNAME;
+export const DEVNAMELG = 'Interchained';
+export const PROJECTNAME = 'FrenChain';
+export const PROJECTNAMEMED = 'frenchain';
+export const PROJECTGIT = 'fren-chain';
+export const PROJECTTWIT = 'fren_chain';
+export const PROJECTLG = 'Ethereum';
+export const PROJECTMED = 'ethereum';
+export const githubSourceURI = "https://github.com/i-Locker/iLock";
+export const websiteURI = "https://frenchain.app";
+export const V1_DIGITAL_ASSET = "0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2"
+export const V2_DIGITAL_ASSET = "0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2"
+export const TOKENADDRESS = '0x8e14c88aB0644eF41bd7138ab91C0160D8c1583A';
+export const devUrl = `https://t.me/${DEVNAME}`;
+export const telegramUrl = `https://t.me/${PROJECTNAME}`;
+export const githubUrl = `https://github.com/${PROJECTGIT}`;
+export const twitterUrl = `https://twitter.com/${PROJECTTWIT}`;
+export const mediumUrl = `https://medium.com/search?q=${PROJECTMED}`;
+export const coinGeckoUrl = `https://www.coingecko.com/en/coins/${PROJECTNAME}`;
+export const coinMarketCapUrl = `https://coinmarketcap.com/currencies/${PROJECTNAME}/`;
+export const traderJoeUrl = `https://app.uniswap.org/#/swap?outputCurrency=${TOKENADDRESS}`;
+export let __MIGRATELIST = {
+    "Ethereum": { name: "Ethereum", symbol: "ETH", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Cronos_testnet": { name: "Cronos (testnet)", symbol: "tCRO", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Frenchain_testnet": { name: "FrenChain (testnet)", symbol: "tFREN", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Frenchain": { name: "FrenChain", symbol: "FREN", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] }
+};
 export const network_hex_to_dec = {
     "0x1": 1,
     "0x5": 5,
@@ -188,6 +227,18 @@ export const rpc_ = {
     "0x66A44": provider["Kekchain"],
     "0x66B3A": provider["Kekchain_testnet"]
 };
+let dx_uri;
+let ex_uri;
+try {
+    if (ethereum.chainId != undefined) {
+        dx_uri = `https://dexscreener.com/${network_[ethereum.chainId.toString()]}/${TOKENADDRESS}`;
+        ex_uri = `${explorer_[ethereum.chainId.toString()]}/token/${TOKENADDRESS}`;
+    }
+} catch (e) {
+    console.log("e (no network): ", e);
+};
+export const dexscreenerUrl = dx_uri;
+export const snowtraceUrl = ex_uri;
 export const icons_ = {
     "0x1": "/networks/eth.svg",
     "0x5": "/networks/eth.svg",
@@ -222,51 +273,6 @@ export const tokens_data = {
    "Frenchain_testnet" : { name: "Frenchain_testnet", currency: "tFREN", subtitle: "Choose if your project is deployed to tFREN", url: "/networks/fren.svg", chainData: { chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { name: "FrenChain", symbol: 'tFREN', decimals: 18 }, tokens: [{ name: "FrenChain", symbol: "tFREN", decimals: 18 , contract: "0xd0d049E19D35c7c32Dc37933950D6615AE43Fb61" }] }  },
    "Kekchain_testnet" : { name: "Kekchain_testnet", currency: "tKEK", subtitle: "Choose if your project is deployed to tKEK", url: "/networks/kek.png", chainData: { chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { name: "KekChain", symbol: 'tKEK', decimals: 18 }, tokens: [{ name: "KekChain", symbol: "tKEK", decimals: 18 , contract: "0x7806c2744c08deea4e048d825f1962f1159e7f8c" }] } }
 };
-export const networking = [
-    { name: "Goerli", currency: "gETH", subtitle: "Choose if your project is deployed to gETH", url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" }], chainData: [{ chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } }] },
-    { name: "Cronos_testnet", currency: "tCRO", subtitle: "Choose if your project is deployed to tCRO", url: "/networks/cronos.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "CRO", url: "/networks/cronos.svg" }], chainData: [{ chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { symbol: 'tCRO', decimals: 18 } }] },
-    { name: "Binance_testnet", currency: "tBNB", subtitle: "Choose if your coin is built on tBSC", url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: [{ chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } }] },
-    { name: "Polygon_testnet", currency: "tMATIC", subtitle: "Choose if your project is deployed to tMATIC", url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" }], chainData: [{ chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } }] },
-    { name: "Avalanche_testnet", currency: "tAVAX", subtitle: "Choose if your project is deployed to tAVAX", url: "/networks/avax.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tAXAX", url: "/networks/avax.svg" }], chainData: [{ chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { symbol: 'AVAX', decimals: 9 } }] },
-    { name: "Frenchain_testnet", currency: "tFREN", subtitle: "Choose if your project is deployed to tFREN", url: "/networks/fren.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tFREN", url: "/networks/fren.svg" }], chainData: [{ chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { symbol: 'tFREN', decimals: 18 } }] },
-    { name: "Kekchain_testnet", currency: "tKEK", subtitle: "Choose if your project is deployed to tKEK", url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: [{ chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } }] }
-];
-export const __NETWORKS = networking;
-export const DEFAULT_CHAIN_ID = 338;
-export const DEVNAME = 'interchained';
-export const DEVNAMEMED = DEVNAME;
-export const DEVNAMELG = 'Interchained';
-export const PROJECTNAME = 'FrenChain';
-export const PROJECTNAMEMED = 'frenchain';
-export const PROJECTGIT = 'fren-chain';
-export const PROJECTTWIT = 'fren_chain';
-export const PROJECTLG = 'Ethereum';
-export const PROJECTMED = 'ethereum';
-export const githubSourceURI = "https://github.com/i-Locker/iLock";
-export const websiteURI = "https://frenchain.app";
-export const V1_DIGITAL_ASSET = "0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2"
-export const V2_DIGITAL_ASSET = "0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2"
-export const TOKENADDRESS = '0x8e14c88aB0644eF41bd7138ab91C0160D8c1583A';
-export const devUrl = `https://t.me/${DEVNAME}`;
-export const telegramUrl = `https://t.me/${PROJECTNAME}`;
-export const githubUrl = `https://github.com/${PROJECTGIT}`;
-export const twitterUrl = `https://twitter.com/${PROJECTTWIT}`;
-export const mediumUrl = `https://medium.com/search?q=${PROJECTMED}`;
-export const coinGeckoUrl = `https://www.coingecko.com/en/coins/${PROJECTNAME}`;
-export const coinMarketCapUrl = `https://coinmarketcap.com/currencies/${PROJECTNAME}/`;
-export const traderJoeUrl = `https://app.uniswap.org/#/swap?outputCurrency=${TOKENADDRESS}`;
-let dx_uri;
-let ex_uri;
-try {
-    if (ethereum.chainId != undefined) {
-        dx_uri = `https://dexscreener.com/${network_[ethereum.chainId.toString()]}/${TOKENADDRESS}`;
-        ex_uri = `${explorer_[ethereum.chainId.toString()]}/token/${TOKENADDRESS}`;
-    }
-} catch (e) {
-    console.log("e (no network): ", e);
-};
-export const dexscreenerUrl = dx_uri;
-export const snowtraceUrl = ex_uri;
 export const lockerAddress = {
     "Ethereum": "",
     "Goerli": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
