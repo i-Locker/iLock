@@ -261,19 +261,21 @@ const Migrations = (props) => {
                     console.log("tokenContract: ", tokenContract);
                     try {
                         let provider = await connector.getProvider();
-                        const tokenBalanceFormatted = await _getBN(migrateAmount,tokenDecimals?tokenDecimals:18);
+                        const tokenBalanceFormatted = await _getBN(migrateAmount.toString(),tokenDecimals?tokenDecimals:18);
                         const tokenBalanceFormatted_UI = await _getUIfmt(migrateAmount.toString(), tokenDecimals?tokenDecimals:18);
                         setTokenBalanceString(tokenBalanceFormatted_UI);
                         const allowanceAmount = await getERC20allowance(provider, tokenContract, account, iMigratorAddress[network], network);
                         setTokenAllowance(allowanceAmount);
-                        const migrateAmountFormatted = (migrateAmount).toFixed(2).toString();
+                        const migrateAmountFormatted = tokenBalanceFormatted.toString();
                         let allowanceAmountFormatted = await _getBN(allowanceAmount, parseFloat(tokenDecimals?tokenDecimals:18));
                         const allowanceAmountFormatted_UI = await _getUIfmt(allowanceAmount, tokenDecimals?tokenDecimals:18);
                         console.log("tokenBalanceFormatted_UI",tokenBalanceFormatted, tokenBalanceFormatted.toString(), tokenBalanceFormatted_UI,"Allowance: ", tokenDecimals, allowanceAmountFormatted_UI, migrateAmountFormatted, parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted));
                         if (parseFloat(allowanceAmountFormatted_UI) == parseFloat(0)) {
                             setIsAllowed(0);
+                            console.log("isAllowed: ",isAllowed);
                         } else if (parseFloat(allowanceAmountFormatted_UI) < parseFloat(migrateAmountFormatted)) {
                             setIsAllowed(1);
+                            console.log("isAllowed: ",isAllowed);
                         } else {
                             if (parseFloat(allowanceAmountFormatted_UI) >= parseFloat(migrateAmountFormatted)) {
                                 setIsAllowed(2);
