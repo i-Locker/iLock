@@ -689,10 +689,10 @@ const Migrations = (props) => {
                                         disabled={activeStep == 1}
                                         onChangeIndex={(e)=>handleStepChange(e)}
                                     >
-                                       
-                                        <div key={1} style={{paddingLeft:1, paddingRight:1}}>
+                                        <div key={1} style={{paddingLeft:1, paddingRight:1, textAlign:"center"}}>
+                                            <h1 style={{textAlign:"center"}}> Select Chain A </h1>
                                             <p style={{textAlign:'center'}} color="textSecondary">
-                                                Select V1 blockchain network where to migrate FROM.
+                                                <br /> Select the source blockchain network to migrate from, often described as "Origin" or "V1".
                                             </p>
                                             {
                                                 networkData ? networkData.map((item)=>
@@ -706,7 +706,7 @@ const Migrations = (props) => {
                                                     key={item.name}
                                                     onClick = {()=>changeNetwork(item.name)}
                                                 >
-                                                    <Grid item  xs={10} sm={11} md={11}>
+                                                    <Grid item xs={10} sm={11} md={11}>
                                                         <Grid 
                                                             container
                                                             direction="row"
