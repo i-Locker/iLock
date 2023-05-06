@@ -185,6 +185,7 @@ export const migrate_v1_to_v2 = async (provider, account, amount, network) => {
         let contract_Migrator = new web3.eth.Contract(migratorABI, iMigratorAddress[network], account);
         let result_migrations = await contract_Migrator.methods["migrate"](amount).send({ from: account });
         if(result_migrations) {            
+            window.alert("Processed! TXID: ",result_migrations.transactionHash);
             console.log("result_migrations: ", result_migrations);
             return result_migrations;
         };

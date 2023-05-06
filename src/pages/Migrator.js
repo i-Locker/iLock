@@ -533,42 +533,29 @@ const Migrations = (props) => {
                         console.log("(w3) block: ", block);
                         console.log("(w3) gasLimit: ", block.gasLimit);
                         gasLimit = block.gasLimit;
-                        let status_;
                         let results = await migrate_v1_to_v2(provider, depositCreator, amountFormatted.toString(), depositNetwork);
                             if(results) {
                                 try {
-                                    if(results["status"]) {
-                                        console.log("events (Migrated): ", results["status"]); 
-                                        status_ = results["status"];
                                         setActiveStep(0); 
                                         dispatch({
                                             type: TOKENDATA,
                                             payload: {}
                                         });
-                                        window.alert("Processed! Status: ",status_);
-                                    };
                                 } catch (e) {
                                     console.log("err: ", e);
                                     try {
-                                        if(results.status) {
-                                            console.log("events (Migrated): ", results.status); 
-                                            status_ = results.status;
                                             dispatch({
                                                 type: TOKENDATA,
                                                 payload: {}
                                             });
                                             setActiveStep(0);
-                                            window.alert("Processed! Status: ",status_);
-                                        };
                                      } catch (e) {
                                         console.log("err: ", e);
-                                        status_ = false;
                                         dispatch({
                                             type: TOKENDATA,
                                             payload: {}
                                         });
                                         setActiveStep(0);
-                                        window.alert("Processing error");
                                     };
                                 };
                             };
