@@ -56,9 +56,6 @@ const Dashboard = (props) => {
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [isAllowed, setIsAllowed] = useState(0);
-    {/*
-        // 0: checking, 1: not allowed, 2: allowed
-    */}
     const [lockAmountMax, setLockAmountMax] = useState(false);
     const maxSteps = 4;
     const theme = useTheme();
@@ -150,6 +147,7 @@ const Dashboard = (props) => {
         if (!network) return;
         if (!TOKENLISTS) return;
         try {
+            // eslint-disable-next-line
             getData(account, network).then(newData => {
                 if (!newData) return;
                 if (!TOKENLISTS) return;
@@ -159,7 +157,8 @@ const Dashboard = (props) => {
                     console.log(e);
                 };
             });
-            const interval = setInterval(() => {
+            // eslint-disable-next-line
+            const interval = setInterval(() => { 
                 getData(account, network).then(newData => {
                     try {
                         if (!newData) return;
@@ -187,13 +186,17 @@ const Dashboard = (props) => {
         } finally { 
             try {
                 const allowanceAmount = await allowance(tokenContract, account, network);
-                if (allowanceAmount < 115792089237316195423570985008687907853269984665640564039457584007913129639935) setIsAllowed(1);
-                else setIsAllowed(2);
+                // eslint-disable-next-line
+                if (allowanceAmount < 115792089237316195423570985008687907853269984665640564039457584007913129639935) {
+                    setIsAllowed(1);
+                } else { 
+                    setIsAllowed(2);
+                };
             } catch(e) {
                 console.log(e);
             };
         };
-    }, [account, tokenContract, connector, network]);
+    }, [account, tokenContract, connector, network, allowance, getTokenBalance]);
 
     const handleChange = async (event) => {
         setValues({ tokenAddress: event.target.value });

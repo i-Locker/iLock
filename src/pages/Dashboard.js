@@ -295,6 +295,7 @@ const Dashboard = (props) => {
         } finally {
             if (!lockAmount||isNaN(e.target.value)) {
                 console.log("Allowance: ",parseFloat(e.target.value),isNaN(e.target.value));
+                // eslint-disable-next-line
                 return true;
             } else {
                 console.log("tokenContract: ",tokenContract);

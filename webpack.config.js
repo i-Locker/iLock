@@ -1,5 +1,5 @@
 const webpack = require("webpack");
-var Buffer = require('buffer/').Buffer;
+const Buffer = require("buffer");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {

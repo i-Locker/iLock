@@ -6,13 +6,15 @@ const getTokenListValidator = (() => {
     let tokenListValidator;
     return () => {
         if (!tokenListValidator) {
-            tokenListValidator = new Promise(async (resolve) => {
-                const [ajv, schema] = await Promise.all([
-                    import('ajv'),
-                    import('@uniswap/token-lists/src/tokenlist.schema.json'),
-                ]);
-                const validator = new ajv.default({ allErrors: true }).compile(schema);
-                resolve(validator);
+            tokenListValidator = new Promise((resolve) => {
+                async function ___RESOLVE(resolve) {
+                    const [ajv, schema] = await Promise.all([
+                        import('ajv'),
+                        import('@uniswap/token-lists/src/tokenlist.schema.json'),
+                    ]);
+                    const validator = new ajv.default({ allErrors: true }).compile(schema);
+                    resolve(validator);
+                }; ___RESOLVE(resolve);
             });
         }
         return tokenListValidator;

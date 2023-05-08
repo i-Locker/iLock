@@ -256,6 +256,7 @@ const Migrations = (props) => {
                 console.log(e);
             } finally {
                 if (!migrateAmount || isNaN(migrateAmount)) {
+                    // eslint-disable-next-line
                     return true;
                 } else {
                     console.log("tokenContract: ", tokenContract);
@@ -689,10 +690,16 @@ const Migrations = (props) => {
                                         disabled={activeStep == 1}
                                         onChangeIndex={(e)=>handleStepChange(e)}
                                     >
-                                        <div key={1} style={{paddingLeft:1, paddingRight:1, textAlign:"center"}}>
-                                            <h1 style={{textAlign:"center"}}> Select Chain A </h1>
+                                        <div key={1} style={{paddingLeft:1, paddingRight:1, textAlign:'center'}}>
+                                            <h1 style={{textAlign:'center'}}> Select Chain A </h1>
+                                            { 
+                                                // eslint-disable-next-line 
+                                            }
                                             <p style={{textAlign:'center'}} color="textSecondary">
-                                                <br /> Select the source blockchain network to migrate from, often described as "Origin" or "V1".
+                                            { 
+                                                // eslint-disable-next-line 
+                                            }
+                                                <br /> Select the source blockchain network to migrate from, often described as the Origin chain.
                                             </p>
                                             {
                                                 networkData ? networkData.map((item)=>
@@ -726,8 +733,8 @@ const Migrations = (props) => {
                                                         </Grid>
                                                     </Grid>
                                                     <Grid item  className="text-center" xs={2} sm={1} md={1}>
-                                                        {item.name==network ? <div style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} /> :
-                                                        <div style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
+                                                        {item.name==network ? <div style={{width:'20px', height:'20px', borderRadius:'10px', backgroundColor:'#fff', display:'inline-block'}} /> :
+                                                        <div style={{width:'20px', height:'20px', borderRadius:'10px', border:'1px solid #fff', display:'inline-block'}} />}
                                                     </Grid>
                                                 </Grid>
                                                 )

@@ -10,7 +10,6 @@ import { BrowserRouter as Router,
 import { createBrowserHistory } from "history";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Locker = lazy(() => import("./pages/Locker"));
 const CrossChain = lazy(() => import("./pages/CrossChain"));
 const Bridge = lazy(() => import("./pages/Bridge"));
 const LockUp = lazy(() => import("./pages/LockUp"));
@@ -31,7 +30,6 @@ const AppRouter = () => {
                     <Routes>
                         <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/locker" exact element={<Locker />} />
                         <Route path="/my-lockers/:wallet/:chainName" exact element={<iLocks />} />
                         <Route path="/swipe" exact element={<Swipe />} />
                         <Route path="/locks/:chainName/:lockId" exact element={<iLocks />} />

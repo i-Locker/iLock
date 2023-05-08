@@ -245,19 +245,18 @@ export const calculateSuggestedDonation = async (provider, amount, isEth, accoun
 
 
 export const bridgeToken = async (provider, index, amount, isEth, account, network) => {
-    let result;
+    let result; let result_iBridge;
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
         console.log("get_iVault_byIndex: ", account, index, network);
         let contract_iBridge = new web3.eth.Contract(iBridgeAbi, iBridgeAddress[network]);
         result_iBridge = await contract_iBridge.methods["bridgeTOKEN"](amount,index,isEth).call({ from: account });
-        feeInETH = feeInETH["donation_in_ETH"];
+        let feeInETH = feeInETH["donation_in_ETH"];
             console.log("feeInETH: ",feeInETH);
         feeInETH = feeInETH * 2;
-        console.log("bridge: ", feeInETH, token, amount, account, holder, network)
         if (feeInETH) {
-            //
+            console.log("bridge: ", feeInETH, amount, account, network)
         };
     } catch (e) {
         console.log(e);
@@ -348,7 +347,6 @@ export const approve_iMigrator = async (provider, token, account, migrateAmount,
         result = await contract.methods["approve"](iMigratorAddress[network], migrateAmount).send({ from: account });
         if (result.status) {
             return result;
-        } else {
         };
     } catch (e) {
         console.log(e);
@@ -789,10 +787,10 @@ export const sendTokenVesting = async (provider, deployedContract, csvData, toke
     contract = new web3.eth.Contract(abi, deployedContract)
     let feeInETH = await contract.methods.iLocker_CORE(0).call();
     feeInETH = feeInETH["donation_in_ETH"];
-    console.log(_users, _amounts, _lockHours, _sendAmount, account)
+    console.log(_users, _amounts, _lockHours, _sendAmount, account);
     let result = await contract.methods.sendLockTokenMany(_users, _amounts, _lockHours, _sendAmount).send({
         from: account,
-        value: network !== "Avalanche" || network === "Avalanche" || network === "Avalanche_testnet" ? BigInt(feesInETH * Math.pow(10, 18)).toString() : feesInETH
+        value: network !== "Avalanche" || network === "Avalanche" || network === "Avalanche_testnet" ? BigInt(feeInETH * Math.pow(10, 18)).toString() : feeInETH
     });
     return result;
 };

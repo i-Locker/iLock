@@ -124,6 +124,9 @@ const LockUp = (props) => {
     const _transfer_ownership = async (e) => {
         _toggleOwnershipModal(modalInner, "Ownership Transfer", await getLockId(), await getNetwork());
     };
+    function epoch(date) {
+        return Date.parse(date)
+    };
     useEffect(() => {
         let lock_props;
         let props_out;
@@ -154,9 +157,6 @@ const LockUp = (props) => {
             return d;
         };
 
-        function epoch(date) {
-            return Date.parse(date)
-        };
         const __dispatch = async (newData) => {
             try {
                 dispatch({ type: TOKENLISTS, payload: newData });

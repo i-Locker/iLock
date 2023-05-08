@@ -10,8 +10,6 @@ export const setNetwork = (chainId) => {
     NETWORK_URL = REACT_APP_NETWORK_URL[network_[chainId]];
 };
 console.log("REACT_APP_NETWORK_URL[DEFAULT_CHAIN_ID]: ", DEFAULT_CHAIN_ID, REACT_APP_NETWORK_URL[network_[network_dec_to_hex[DEFAULT_CHAIN_ID]]], network_[network_dec_to_hex[DEFAULT_CHAIN_ID]], DEFAULT_CHAIN_ID);
-// [SupportedChainId.OASISTEST]: "https://testnet.emerald.oasis.dev",
-// [SupportedChainId.OASISMAINNET]: "https://emerald.oasis.dev",
 export const RPC = {    
     [SupportedChainId.BINANCE]: "https://bsc-dataseed4.binance.org",
     [SupportedChainId.BINANCETEST]: "https://data-seed-prebsc-2-s3.binance.org:8545",
@@ -49,7 +47,7 @@ export default function getLibrary(provider) {
     return library;
 };
 let networkLibrary;
-export function getNetworkLibrary() {
+export function getNetworkLibrary(provider) {
     // eslint-disable-next-line no-return-assign
     const library = new Web3Provider(network ? network.provider : provider);
     library.pollingInterval = 15000;
@@ -68,7 +66,8 @@ export const walletconnect = new WalletConnectConnector({
     supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
     rpc: RPC,
     qrcode: true,
-}); {
+}); 
+{
     /*
     // export const walletlink = new WalletLinkConnector({
     //     url: NETWORK_URL,

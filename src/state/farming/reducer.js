@@ -68,6 +68,7 @@ export default createReducer(initialState, (builder) => builder
         filterResult: farmData,
     };
 })
+    // eslint-disable-next-line
     .addCase(clearSearchResult, (farming, {}) => {
     return {
         ...farming,
