@@ -23,7 +23,6 @@
     "url": "https://github.com/i-Lockers/iLock/issues"
   },
   "dependencies": {
-    "@binance-chain/bsc-connector": "^1.0.0",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.0",
     "@emotion/react": "latest",
@@ -56,6 +55,7 @@
     "framer-motion": "^10.12.8",
     "ga-gtag": "^1.1.7",
     "history": "^5.3.0",
+    "multicodec": "github:shopglobal/mutlicodec",
     "notistack": "^2.0.2",
     "parent-module": "^2.0.0",
     "process": "^0.11.10",

@@ -1,7 +1,6 @@
 import { Web3Provider } from "@ethersproject/providers";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { BscConnector } from "@binance-chain/bsc-connector";
 import { DEFAULT_CHAIN_ID, REACT_APP_NETWORK_URL, network_, network_dec_to_hex } from "../../constants";
 import { NetworkConnector } from "./NetworkConnector";
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from "../constants/chains";
@@ -59,9 +58,6 @@ export const injected = new InjectedConnector({
 });
 const supportedChainIds = [1, 5, 25, 56, 338, 97, 444, 44444, 420420, 420666, 80001, 137, 42261, 42262, 43114, 43113];
 export const checkSupportedIds = (chainID) => supportedChainIds.some((id) => id === chainID);
-export const bscConnector = new BscConnector({
-    supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
-});
 export const walletconnect = new WalletConnectConnector({
     supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
     rpc: RPC,
@@ -80,5 +76,4 @@ export const connectorKey = "connectv2";
 export const connectorsByName = {
     [ConnectorNames.Injected]: injected,
     [ConnectorNames.WalletConnect]: walletconnect,
-    [ConnectorNames.BSC]: bscConnector,
 };
