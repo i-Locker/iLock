@@ -714,10 +714,10 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                                                     badgeContent={<DoneIcon sx={{ color: "white", width: "10px" }} />}
                                                                     color="success"
                                                                 >
-                                                                    <Typography component="img" src={data.logo2}></Typography>
+                                                                    <Typography sx={{ width: "66px", height: "66px" }} component="img" src={data.logo2}></Typography>
                                                                 </Badge>
                                                                 :
-                                                                <Typography component="img" src={data.logo2}></Typography>
+                                                                <Typography sx={{ width: "66px", height: "66px" }} component="img" src={data.logo2}></Typography>
                                                             }
                                                         </Button>
                                                     </Grid>
@@ -732,7 +732,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                             {Wallets.map((data, index) => {
                                                 return (
                                                     <Grid item lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
-                                                        <Button className="netButton" onClick={() => onConnectWallet(data, chain)} sx={{ padding: "10px 20px", borderRadius: "12px" }}><Typography component="img" src={data.logo1}></Typography></Button>
+                                                        <Button className="netButton" onClick={() => onConnectWallet(data, chain)} sx={{ padding: "10px 20px", borderRadius: "12px" }}><Typography component="img" sx={{ width: "66px", height: "66px" }} src={data.logo1}></Typography></Button>
                                                     </Grid>
                                                 )
                                             })}

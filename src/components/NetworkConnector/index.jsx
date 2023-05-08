@@ -82,11 +82,8 @@ function NetworkIndicator() {
       <Button _hover={{ bgColor: buttonBgColor }} _active={{ bgColor: buttonBgColor }} bgColor={buttonBgColor} onClick={onOpen} mr={2} className="Network">
         <Flex alignItems="center">
           <Box mr={2}>
-            {info.label == "Binance" ? (<BinanceIcon />) : // <EthereumIcon />
+            {info.label == "Binance" ? (<BinanceIcon />) : 
         info.label == "BSC Testnet" ? (<BinanceIcon />) : info.label == "Polygon" ? (<Img w="30px" src={MATICLOGO}/>) : info.label == "Mumbai Testnet" ? (<Img w="30px" src={MATICLOGO}/>) : info.label == "Oasis Emerald Testnet" ? (<Img w="30px" src={OASISLOGO}/>) : info.label == "Oasis Emerald Mainnet" ? (<Img w="30px" src={OASISLOGO}/>) : info.label == "Avalanche" ? (<Img w="30px" src={AVAXLOGO}/>)
-            // : info.label.toLowerCase() === "Avalanche Fuji TestNet".toLowerCase() ? (
-            //   <Img w="30px" src={AVAXLOGO} />
-            // )
             : (<EthereumIcon />)}
           </Box>
           <Text textColor={textColor} fontSize="14px">

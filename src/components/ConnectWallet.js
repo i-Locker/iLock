@@ -255,7 +255,7 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                             connected ||
                             !!error;
                         return (
-                            <ListItem
+                            activating ? <></> : <ListItem
                                 button
                                 key={idx}
                                 className="item"

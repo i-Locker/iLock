@@ -33,7 +33,8 @@ import okex from '../img/common/okex.png';
 import cronos from '../img/common/cronos.png';
 import fantom from '../img/common/fantom.png';
 import optimism from '../img/common/optimism.png';
-import solana from '../img/common/solana.png';
+import kekchain from '../img/kek.png';
+import frenchain from '../img/fren.png';
 import Frame281 from '../img/common/Frame 281.png';
 import Frame281_1 from '../img/common/Frame 281-1.png';
 import Frame282 from '../img/common/Frame 282.png';
@@ -108,20 +109,9 @@ let Chains = [
         logo2: Frame282,
         wallets: [Wallets[0]],
         tokens: [],
-        // tokens: bsc_tokens.tokens,
         test_tokens: [
-            { chainId: 97, address: "0xA1B71d61E071A6Cc277d13BEf2841CD8F363e017", name: "TestBSCToken1", symbol: "TBT1", decimals: 18, logoURI: null },
-            { chainId: 97, address: "0x27C449c03D8776Bcc9fbe7E9e9c1b2aFC5D5B87f", name: "TestBSCToken2", symbol: "TBT2", decimals: 18, logoURI: null },
-            { chainId: 97, address: "0x66712Cd82EE13eCaA7f2C8D9EC4DC0bC2f97ce25", name: "TestBSCToken3", symbol: "TBT3", decimals: 18, logoURI: null },
-            { chainId: 97, address: "0xCd2cC03f07bA28180fE26Ae288CFAa30f089EeF8", name: "LmabSwapToken", symbol: "LST", decimals: 9, logoURI: null },
-            { chainId: 97, address: "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee", name: "Binance USD", symbol: "BUSD", decimals: 18, logoURI: "https://assets.dex.guru/icons/0xe9e7cea3dedca5984780bafc599bd69add087d56-bsc.png" },
         ],
         bridge_tokens: [
-            { chainId: 56, address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8", name: "WETH", symbol: "ETH", decimals: 18, logoURI: "https://assets.dex.guru/icons/0x2170ed0880ac9a755fd29b2688956bd959f933f8-bsc.png", _num: [0] },
-            { chainId: 56, address: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56", name: "BUSD Token", symbol: "BUSD", decimals: 18, logoURI: "https://assets.dex.guru/icons/0xe9e7cea3dedca5984780bafc599bd69add087d56-bsc.png", _num: [6] },
-            { chainId: 56, address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", name: "BTCB Token", symbol: "BTCB", decimals: 18, logoURI: "https://assets.dex.guru/icons/0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c-bsc.png", _num: [1] },
-            { chainId: 56, address: "0x55d398326f99059fF775485246999027B3197955", name: "Tether USD", symbol: "USDT", decimals: 18, logoURI: "https://assets.dex.guru/icons/0x55d398326f99059ff775485246999027b3197955-bsc.png", _num: [3, 5] },
-            { chainId: 56, address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", name: "USDC Token", symbol: "USDC", decimals: 18, logoURI: "https://assets.dex.guru/icons/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d-bsc.png", _num: [2, 4] }
         ],
         swaps: [],
         name: 'BSC Mainnet',
@@ -134,10 +124,6 @@ let Chains = [
         wallets: [Wallets[0]],
         tokens: [],
         bridge_tokens: [
-            { chainId: 1, address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", name: "WETH", symbol: "WETH", decimals: 18, logoURI: "https://assets.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png", _num: [0] },
-            { chainId: 1, address: "0xdac17f958d2ee523a2206206994597c13d831ec7", name: "USDTethererc20", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xdac17f958d2ee523a2206206994597c13d831ec7-eth.png", _num: [3, 5, 6] },
-            { chainId: 1, address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", name: "USDCoin", symbol: "USDC", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48-eth.png", _num: [2, 4] },
-            { chainId: 1, address: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", name: "Wrapped BTC", symbol: "WBTC", decimals: 8, logoURI: "https://assets.dex.guru/icons/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599-eth.png", _num: [1] }
         ],
         swaps: [],
         name: 'Ethereum',
@@ -151,57 +137,12 @@ let Chains = [
         wallets: [Wallets[0]],
         tokens: [],
         test_tokens: [
-            { chainId: 80001, address: "0x98666E35D13968a2cdbdf98Cf3E92fD2a1256Aee", name: "TestPolyToken1", symbol: "TPT1", decimals: 18, logoURI: null },
-            { chainId: 80001, address: "0x4cB6b11C5a71cE6E2C0Dc76279F68B74dDac4287", name: "TestPolyToken2", symbol: "TPT2", decimals: 18, logoURI: null },
-            { chainId: 80001, address: "0xaA4FC897E1dd242386CC2Ba2F1258660CC2DFa11", name: "TestPolyToken3", symbol: "TPT3", decimals: 18, logoURI: null },
-            { chainId: 80001, address: "0x18ffee6159E13108F873c5acb8D0977f3cCAE534", name: "LmabSwapToken", symbol: "LST", decimals: 9, logoURI: null },
-            { chainId: 80001, address: "0xf8B7Eb9fC632434d614444C358aecA2AE0C2a706", name: "USD Coin", symbol: "USDC", decimals: 18, logoURI: 'https://assets.dex.guru/icons/0x2791bca1f2de4661ed88a30c99a7a9449aa84174-polygon.png' },
         ],
         bridge_tokens: [
-            { chainId: 137, address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", name: "USD Coin (PoS)", symbol: "USDC", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x2791bca1f2de4661ed88a30c99a7a9449aa84174-polygon.png", _num: [2, 4] },
-            { chainId: 137, address: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f", name: "(PoS) Tether USD", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xc2132d05d31c914a87c6611c10748aeb04b58e8f-polygon.png", _num: [3, 5] },
         ],
         swaps: [],
         name: 'Polygon Network',
         symbol: 'polygon'
-    },
-    {
-        chainId: 42161,
-        logo1: solana,
-        logo2: Frame284,
-        wallets: [Wallets[4]],
-        tokens: [],
-        swaps: [],
-        name: 'Solana',
-        symbol: 'sol'
-    },
-    {
-        chainId: 42161,
-        logo1: Arbitrum,
-        logo2: Frame285,
-        wallets: [Wallets[0]],
-        tokens: [],
-        bridge_tokens: [
-            { chainId: 42161, address: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", name: "Tether USD", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9-arbitrum.png", _num: [3, 5] },
-            { chainId: 42161, address: "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8", name: "USD Coin (Arb1)", symbol: "USDC", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8-arbitrum.png", _num: [2, 4] },
-        ],
-        swaps: [],
-        name: 'Arbitrum',
-        symbol: 'arbitrum'
-    },
-    {
-        chainId: 10,
-        logo1: optimism,
-        logo2: Frame282_1,
-        wallets: [Wallets[0]],
-        tokens: [],
-        bridge_tokens: [
-            { chainId: 10, address: "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58", name: "Tether USD", symbol: "USDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x94b008aa00579c1307b0ef2c499ad98a8ce58e58-optimism.png", _num: [3, 5] },
-            { chainId: 10, address: "0x7f5c764cbc14f9669b88837ca1490cca17c31607", name: "USD Coin", symbol: "USDC", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x7f5c764cbc14f9669b88837ca1490cca17c31607-optimism.png", _num: [2, 4] }
-        ],
-        swaps: [],
-        name: 'Optimism',
-        symbol: 'optimism'
     },
     {
         chainId: 43114,
@@ -210,37 +151,34 @@ let Chains = [
         wallets: [Wallets[0]],
         tokens: [],
         bridge_tokens: [
-            { chainId: 43114, address: "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664", name: "USD Coin", symbol: "USDC.e", decimals: 6, logoURI: "https://assets.dex.guru/icons/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664-avalanche.png", _num: [2, 4] },
         ],
         swaps: [],
         name: 'Avalanche',
         symbol: 'avalanche'
     },
     {
-        chainId: 250,
-        logo1: fantom,
-        logo2: Frame283_1,
+        chainId: 44444,
+        logo1: frenchain,
+        logo2: frenchain,
         wallets: [Wallets[0]],
         tokens: [],
         bridge_tokens: [
-            { chainId: 250, address: "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664", name: "Frapped USDT", symbol: "fUSDT", decimals: 6, logoURI: "https://assets.dex.guru/icons/0x049d68029688eabf473097a2fc38ef61633a3c7a-fantom.png", _num: [3, 5] },
         ],
         swaps: [],
-        name: 'Fantom',
-        symbol: 'fantom'
+        name: 'Frenchain',
+        symbol: 'frenchain'
     },
     {
-        chainId: 66,
-        logo1: okex,
-        logo2: Frame285_1,
+        chainId: 420420,
+        logo1: kekchain,
+        logo2: kekchain,
         wallets: [Wallets[0]],
         tokens: [],
         bridge_tokens: [
-            { chainId: 66, address: "0x382bB369d343125BfB2117af9c149795C6C65C50", name: "USDT", symbol: "USDT", decimals: 18, logoURI: "https://assets.dex.guru/icons/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9-arbitrum.png", _num: [3, 5] },
         ],
         swaps: [],
-        name: 'Okex',
-        symbol: 'okex'
+        name: 'Kekchain',
+        symbol: 'kekchain'
     },
     {
         chainId: 338,
@@ -249,7 +187,6 @@ let Chains = [
         wallets: [Wallets[0]],
         tokens: [],
         bridge_tokens: [
-            { chainId: 338, address: "0x382bB369d343125BfB2117af9c149795C6C65C50", name: "USDT", symbol: "USDT", decimals: 18, logoURI: "https://assets.dex.guru/icons/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9-arbitrum.png", _num: [3, 5] },
         ],
         swaps: [],
         name: 'Cronos',
@@ -1268,14 +1205,8 @@ const CrossPool = [
 
 const CrossPoolColor = {
     "1": { bg: "rgba(52, 241, 75, 0.5)", text: "#34f14b", group_name: "ERC-20", logo: ETH },
-    "56": { bg: "rgb(240, 185, 11, 0.5)", text: "#f0b90b", group_name: "BEP-20", logo: crypto7 },
     "137": { bg: "rgb(130, 71, 229, 0.5)", text: "#8247e5", group_name: "Polygon", logo: polygon },
-    "138": { bg: "rgb(0, 140, 214, 0.5)", text: "#008cd6", group_name: "Solana", logo: solana },
-    "42161": { bg: "rgb(150, 190, 220, 0.5)", text: "#96bedc", group_name: "Arbitrum", logo: Arbitrum },
-    "10": { bg: "rgb(69, 159, 251, 0.5)", text: "#459ffb", group_name: "Optimism", logo: optimism },
     "43114": { bg: "rgb(69, 159, 251, 0.5)", text: "#459ffb", group_name: "Avalanche", logo: avalanche },
-    "250": { bg: "rgb(69, 159, 251, 0.5)", text: "#459ffb", group_name: "Fantom", logo: fantom },
-    "66": { bg: "rgb(69, 159, 251, 0.5)", text: "#459ffb", group_name: "Okex", logo: okex },
     "338": { bg: "rgb(69, 159, 251, 0.5)", text: "#459ffb", group_name: "Cronos", logo: cronos }
 }
 

@@ -973,7 +973,6 @@ const Bridge = (props) => {
             </Box>
             <Modal
                 open={open}
-                onOpen={()=>handleOpen(true)}
                 onClose={()=>handleClose(true)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
@@ -993,7 +992,6 @@ const Bridge = (props) => {
                 open={snackbar}
                 autoHideDuration={600}
                 style={{width:100}}
-                onOpen={()=>handleSnackbarOpen(true)}
                 onClose={()=>handleSnackbarClose(true)}
                 message="Successfully Copied to Clipboard"
             />
