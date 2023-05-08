@@ -1,5 +1,5 @@
 import React from "react";
-import { Buffer } from 'buffer/';
+import { Buffer } from 'buffer';
 import * as ReactDOMClient from "react-dom/client";
 import { createRoot } from "react-dom/client";
 // ** Import Providers

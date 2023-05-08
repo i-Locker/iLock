@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+const Buffer = require("buffer");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
@@ -30,8 +32,21 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+        process: 'process/browser',
+    }),
     new HtmlWebpackPlugin({
       template: "./public/index.html", // base html
     }),
   ],
+  resolve: {
+    extensions: [ '.ts', '.js' ],
+    fallback: {
+        "stream": require.resolve("stream-browserify"),
+        "buffer": require.resolve("buffer")
+    }
+  },
 };

@@ -46,13 +46,14 @@
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.8",
     "axios": "^0.21.1",
-    "buffer": "6.0.3",
+    "buffer": "^6.0.3",
     "clsx": "^1.1.1",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
     "dexscreener-api": "^0.0.7",
     "ethereum-multicall": "^2.9.0",
     "ethers": "^6.0.0",
+    "framer-motion": "^10.12.8",
     "ga-gtag": "^1.1.7",
     "history": "^5.3.0",
     "notistack": "^2.0.2",
@@ -110,7 +111,6 @@
     "node-sass": "^6.0.0",
     "prettier": "^2.3.1",
     "react-scripts": "latest",
-    "react-swipeable-views-workspace": "github:oliviertassinari/react-swipeable-views#pull/654/head",
     "webpack-cli": "^5.0.2"
   }
 }
