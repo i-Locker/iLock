@@ -16,6 +16,11 @@ import {
     Avatar,
     Alert,
     Collapse,
+    AspectRatio,
+    Card,
+    Divider,
+    CardContent,
+    CardOverflow,
     Link
 } from '@mui/material';
 import { useWeb3React } from "@web3-react/core";
@@ -23,22 +28,27 @@ import Web3 from 'web3';
 import Cwallet from "../assets/constants/Cwallet";
 import { CustomTab } from '../config/style';
 import { erc20Abi, network_, network_dec_to_hex, iBridgeAddress, network_lower_to_proper } from "../constants";
-import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, get_iVault_byIndex, calculateSuggestedDonation, getEtherBalance } from "../web3";
+import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, calculateSuggestedDonation, getEtherBalance } from "../web3";
 import { getBalance } from "../config/app";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { styled, createTheme } from '@mui/material/styles';
-import { ThemeProvider } from '@emotion/react';
 import './swap.css';
 import axios from 'axios';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useStyles from '../assets/styles';
 import { Router_address } from "../config/abi/router/dexRouter";
 import { Factory_address } from "../config/abi/router/dexFactory";
 import fren from '../assets/img/common/fren.svg';
 import Filter from '../assets/img/common/filter.png';
 import Refresh from '../assets/img/common/refresh.png';
+import { styled, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@emotion/react';
 const theme = createTheme({
+    shape: {
+        borderRadius: 16,
+    },
     palette: {
         primary: {
             main: "#34F14B",
@@ -67,8 +77,25 @@ let ActiveGrid = styled(Grid)(() => ({
 let ActiveStack = styled(Stack)(() => ({
     display: "none"
 }));
-
-export default function Bridge({ chainState, setChainState }) {
+let BlockedDisplay = styled(Stack)(() => ({
+    display: "none"
+}));
+let ActiveDisplay = styled(Stack)(() => ({
+    display: "block"
+}));
+let BasicStack = styled(Stack)(() => ({
+    margin: 'auto'
+}));
+let basicStyle = {
+    padding: 1
+};
+let FlexibleContainer = styled(Stack)(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+  padding: 1,
+  margin: 'auto'
+}));
+export default function iBridge({ chainState, setChainState }) {
     const { active, account, chainId, connector } = useWeb3React();
     const [swapTabValue, setSwapTabValue] = useState(0);
     const [activeRate, setActiveRate] = useState(12);
@@ -98,6 +125,8 @@ export default function Bridge({ chainState, setChainState }) {
     const web3 = new Web3(window.ethereum);
     const BN = web3.utils.BN;
 
+    const isMobile = useMediaQuery('(max-width:600px)');
+
     useEffect(() => {
         if (importAlert) {
             setTimeout(function() {
@@ -121,9 +150,6 @@ export default function Bridge({ chainState, setChainState }) {
                 console.log("Engine token ", token);
                 console.log("Engine chainId ", chainId, network_dec_to_hex[chainId]);
                 console.log("Engine network_ ", network_[network_dec_to_hex[chainId]]);
-                console.log("Engine get_iVault_byIndex: ", await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]));
-                // console.log("Engine get_iVault_Quote_EthToToken: ", await get_iVault_Quote_EthToToken(provider, await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]), token, account, 0, network_[network_dec_to_hex[chainId]]));
-                // console.log("Engine get_iVault_Quote_TokenToEth: ", await get_iVault_Quote_TokenToEth(provider, await get_iVault_byIndex(provider, 0, account, network_[network_dec_to_hex[chainId]]), token, account, 0, network_[network_dec_to_hex[chainId]]));
             };
             Engine(chainId, account, connector, token1.address);
             Engine(chainId, account, connector, token2.address);
@@ -433,9 +459,9 @@ export default function Bridge({ chainState, setChainState }) {
         <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }}>
                     {<Grid container justifyContent="space-between">
-                        <ActiveGrid item={true} xs={12} md={7} sx={{ margin: "80px 0 130px" }} className='responsive3'>
+                        <ActiveGrid item={true} xs={12} md={12} sm={12} sx={{ margin: "auto" }} className='responsive3'>
                             <Paper sx={{ width: "100%", height: "630px", background: "#191919" }}>
-                                <FormControl sx={{ width: "150px", margin: "20px 45px" }}>
+                                <FormControl sx={{ width: "150px", margin: "auto" }}>
                                     <InputLabel id="token-select-label3">Token</InputLabel>
                                     <Select
                                         labelId="token-select-label3"
@@ -454,25 +480,110 @@ export default function Bridge({ chainState, setChainState }) {
                                 </FormControl>
                             </Paper>
                         </ActiveGrid>
-                        <Grid xs={12} item={true} md={activeRate === 11 ? 12 : activeRate} container direction="column" alignItems="center">
+                        <Grid xs={12} lg={12} item={true} md={12} container direction="column" alignItems="center" style={{textAlign:'center',alignItems:'center'}} >
                             <Collapse in={importAlert.state1} sx={{ mb: "-50px", mt: "50px" }}>
                                 <Alert variant="filled" severity={importAlert.state2} sx={{ mb: 2 }}>{importAlert.data}</Alert>
                             </Collapse>
-                            <SwapPaper variant='outlined' sx={{ background: "#191919", borderRadius: "12px", maxWidth: "476px", width: "100%", borderColor: "white" }}>
+                            <SwapPaper variant='outlined' sx={{ background: "#191919", margin: "auto", padding: 1, borderRadius: "12px", maxWidth: "100%", width: "100%", maxHeight: "777px", height: "100%", borderColor: "white", textAlign:'center',alignItems:'center'}}>
                                 <Box sx={{ m: "0 8% 25px" }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Stack direction="row" justifyContent="space-between" sx={{ width: "45%", maxWidth: "200px" }} spacing={1}>
                                             <CustomTab text={["Bridge"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
                                         </Stack>
                                         <Stack direction="row" spacing={1} alignItems="center">
-                                            {/* <CircularProgress variant="determinate" value={progress} size={20} /> */}
                                             <IconButton sx={{ color: "white" }}><Typography component="img" src={Refresh}></Typography></IconButton>
                                             <IconButton sx={{ color: "white" }} onClick={()=>swapSettingDialogOpen()}><Typography component="img" src={Filter}></Typography></IconButton>
                                         </Stack>
                                     </Stack>
-                                    {swapTabValue === 0 &&
-                                        <Stack direction="column" alignItems="center">
-                                            <Paper sx={{ width: "100%", background: "#101010", borderRadius: "12px", mt: "25px" }}>
+                                    {!isMobile&&swapTabValue === 0 && <FlexibleContainer direction="column" alignItems="center">
+                                            <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2 }}>
+                                                <Stack direction="column" sx={{ p: "12px 24px" }}>
+                                                    <Stack direction="row" justifyContent="space-between">
+                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>From Asset : Chain A</Typography>
+                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
+                                                        <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                            :
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
+                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
+                                                    </Stack>
+                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
+                                                        <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:"FREN (ERC20)"}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
+                                                    {
+                                                        active ? <Box sx={{ verticalAlign: "center", width: "88.8%", marginLeft: "auto", marginRight: "auto", padding: 2, textAlign: 'center', alignItems:'center' }} >
+                                                                {swapBtnState === 0 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Amount to Bridge</Typography></SwapButton>}
+                                                                {swapBtnState === 1 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>No Liquidity Pool</Typography></SwapButton>}
+                                                                {swapBtnState === 2 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Insufficient balance to pay for gas</Typography></SwapButton>}
+                                                                {swapBtnState === 3 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Insufficient {token1.symbol} balance</Typography></SwapButton>}
+                                                                {swapBtnState === 4 && <SwapButton onClick={tokenApprove}>Give permission to use {token1.symbol}</SwapButton>}
+                                                                {swapBtnState === 5 && <SwapButton onClick={tokenSwap}>Transport</SwapButton>}
+                                                                {swapBtnState === 6 && <SwapButton disabled={true}>Loading...</SwapButton>}
+                                                            </Box>
+                                                            : <SwapButton onClick={() => setIsOpenDialog(true)}>Connect Wallet</SwapButton>
+                                                    }
+                                                    </Stack>
+                                                </Stack>
+                                            </Paper>
+                                            <IconButton aria-label="swap" sx={{ color: "white" }} onClick={tokenChange}>
+                                                <ArrowCircleDownIcon />
+                                            </IconButton>
+                                            <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2  }}>
+                                                <Stack direction="column" sx={{ p: "12px 24px" }}>
+                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#7E8B74" }}>
+                                                        <Typography sx={{ fontSize: "14px" }}>To Asset : Chain B</Typography>
+                                                        <Typography sx={{ fontSize: "14px" }}> {token2Balance}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
+                                                        <Button startIcon={token2.logoURI&&token2.logoURI !== null ?
+                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                            :
+                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
+                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
+                                                    </Stack>
+                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
+                                                        <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
+                                                        {/*
+                                                            <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
+                                                        */}
+                                                    </Stack>
+                                                    <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
+                                                        <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
+                                                    </Stack>
+                                                    <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
+                                                        <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
+                                                            <Stack direction="row" justifyContent="space-between">
+                                                                <Typography gutterBottom>{maxAmount}</Typography>
+                                                                <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
+                                                            </Stack>
+                                                            <Stack direction="row" justifyContent="space-between">
+                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
+                                                            </Stack>
+                                                        </Stack>
+                                                    </Paper>
+                                                    {dexsOrder && dexsOrder.length > 1 &&
+                                                        <Box>
+                                                            {swapSelectState && dexsOrder.length > 2 &&
+                                                                <Paper sx={{ margin: "0 0 8px", cursor: "pointer", background: "#161714", color: "white", border: "1px solid #7E8B74", borderRadius: "12px" }} onClick={() => setDexsOrder([dexsOrder[0], dexsOrder[2], dexsOrder[1]], setSwapSelectState(false))}>
+                                                                    <Stack direction="column" sx={{ p: "14px 8px", color: "#7E8B74" }}>
+                                                                        <Stack direction="row" justifyContent="space-between">
+                                                                            <Typography gutterBottom>{routerAddress[Number(dexsOrder[2].num)].name}</Typography>
+                                                                            <Typography gutterBottom>{dexsOrder[2].amountOut}</Typography>
+                                                                        </Stack>
+                                                                    </Stack>
+                                                                </Paper>
+                                                            }
+                                                        </Box>
+                                                    }
+                                                </Stack>
+                                            </Paper>                                            
+                                        </FlexibleContainer>
+                                    }
+                                    {isMobile&&swapTabValue === 0 && <BasicStack direction="column" alignItems="center">
+                                            <Paper sx={{ width: "100%", background: "#101010", borderRadius: "12px" }}>
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>From</Typography>
@@ -483,11 +594,10 @@ export default function Bridge({ chainState, setChainState }) {
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
-                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px" }} />
+                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:"FREN (ERC20)"}</Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}>~${token1.priceUSD?Number(Number(token1.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </Paper>
@@ -505,24 +615,25 @@ export default function Bridge({ chainState, setChainState }) {
                                                             <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
                                                             <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
-                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px" }} />
+                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
+                                                        {/*
+                                                            <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
+                                                        */}
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
-                                                        <Chip size='small' label='Primary' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
+                                                        <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
                                                     </Stack>
                                                     <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
                                                                 <Typography gutterBottom>{maxAmount}</Typography>
+                                                                <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}>Tx cost 41682.3131 FREN</Typography>
-                                                                <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>~$8.88 (-0.69%)</Typography>
+                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
                                                             </Stack>
                                                         </Stack>
                                                     </Paper>
@@ -543,8 +654,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                                         <Typography gutterBottom>{dexsOrder[1].amountOut}</Typography>
                                                                     </Stack>
                                                                     <Stack direction="row" justifyContent="space-between">
-                                                                        <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 1 ? "#34F14B" : "#7E8B74"}` }}>Tx cost 0.0233 = (~$80.43)</Typography>
-                                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>~$2,426 (-0.06%)</Typography>
+                                                                        <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 1 ? "#34F14B" : "#7E8B74"}` }}></Typography>
                                                                     </Stack>
                                                                 </Stack>
                                                             </Paper>
@@ -556,8 +666,8 @@ export default function Bridge({ chainState, setChainState }) {
                                                                             <Typography gutterBottom>{dexsOrder[2].amountOut}</Typography>
                                                                         </Stack>
                                                                         <Stack direction="row" justifyContent="space-between">
-                                                                            <Typography sx={{ fontSize: "14px" }}>Tx cost 0.0233 = (~$80.43)</Typography>
-                                                                            <Typography sx={{ fontSize: "14px" }}>~$2,426 (-0.06%)</Typography>
+                                                                            <Typography sx={{ fontSize: "14px" }}></Typography>
+                                                                            <Typography sx={{ fontSize: "14px" }}></Typography>
                                                                         </Stack>
                                                                     </Stack>
                                                                 </Paper>
@@ -566,21 +676,25 @@ export default function Bridge({ chainState, setChainState }) {
                                                     }
                                                 </Stack>
                                             </Paper>
+                                            <Box component="ul" sx={{textAlign: 'center', alignItems:'center', margin: 'auto', display: 'flex', padding: 1, flexDirection: 'row' }}>
+                                                <CardContent>
                                             {
                                                 active ?
-                                                    <Box sx={{ width: "100%" }}>
-                                                        {swapBtnState === 0 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Enter amount to swap</Typography></SwapButton>}
+                                                    <Box sx={{ width: "100%", textAlign: 'center', alignItems:'center', margin: 'auto', display: 'flex', padding: 1, flexDirection: 'row' }}>
+                                                        {swapBtnState === 0 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Amount to swap</Typography></SwapButton>}
                                                         {swapBtnState === 1 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>No Liquidity Pool</Typography></SwapButton>}
                                                         {swapBtnState === 2 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Insufficient balance to pay for gas</Typography></SwapButton>}
                                                         {swapBtnState === 3 && <SwapButton disabled={true} sx={{ background: "#37474f" }}><Typography sx={{ color: "#78909c", py: "3px", fontWeight: "600" }}>Insufficient {token1.symbol} balance</Typography></SwapButton>}
                                                         {swapBtnState === 4 && <SwapButton onClick={tokenApprove}>Give permission to use {token1.symbol}</SwapButton>}
-                                                        {swapBtnState === 5 && <SwapButton onClick={tokenSwap}>swap</SwapButton>}
+                                                        {swapBtnState === 5 && <SwapButton onClick={tokenSwap}>Transport</SwapButton>}
                                                         {swapBtnState === 6 && <SwapButton disabled={true}>Loading...</SwapButton>}
                                                     </Box>
                                                     :
                                                     <SwapButton onClick={() => setIsOpenDialog(true)}>Connect Wallet</SwapButton>
                                             }
-                                        </Stack>
+                                                </CardContent>
+                                            </Box>
+                                        </BasicStack>
                                     }
                                     {swapTabValue === 1 &&
                                         <Stack direction="column" alignItems="center">
@@ -592,8 +706,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                         <Input className='swap_input' color="primary" type='number' variant="standard" sx={{ color: "white" }}></Input>
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
-                                                        <Typography sx={{ fontSize: "14px" }}>Wrapped Ether</Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}>~$3,216</Typography>
+                                                        <Typography sx={{ fontSize: "14px" }}></Typography>
                                                     </Stack>
                                                 </Stack>
                                             </Paper>
@@ -604,7 +717,7 @@ export default function Bridge({ chainState, setChainState }) {
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#7E8B74" }}>
                                                         <Typography gutterBottom sx={{ fontSize: "14px" }}>To (estimated)</Typography>
-                                                        <Typography gutterBottom sx={{ fontSize: "14px" }}>Balance: 0.00</Typography>
+                                                        <Typography gutterBottom sx={{ fontSize: "14px" }}>Balance: </Typography>
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ p: "10px 0" }}>
                                                         <Button startIcon={<Avatar sx={{ width: "30px", height: "30px" }} src={token2.logoURI&&token2.logoURI} />} endIcon={<ExpandMoreIcon />} sx={{ fontSize: "16px", color: "white" }} onClick={() => setTokenDialogState(2)}>{token2.symbol&&token2.symbol}</Button>
@@ -612,19 +725,19 @@ export default function Bridge({ chainState, setChainState }) {
                                                     <Paper sx={{ margin: "0 0 8px", background: "#161714", border: "1px solid #7E8B74", borderRadius: "12px" }}>
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: "white" }}>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>1inch</Typography>
-                                                                <Typography gutterBottom>3 214.09829</Typography>
+                                                                <Typography gutterBottom></Typography>
+                                                                <Typography gutterBottom></Typography>
                                                             </Stack>
-                                                            <Typography sx={{ fontSize: "14px", color: "#34F14B" }}>Tx cost 0.0233 = (~$80.43)</Typography>
+                                                            <Typography sx={{ fontSize: "14px", color: "#34F14B" }}></Typography>
                                                         </Stack>
                                                     </Paper>
                                                     <Paper sx={{ background: "#161714", border: "1px solid #7E8B74", borderRadius: "12px" }}>
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: "#34F14B" }}>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>1inch</Typography>
-                                                                <Typography gutterBottom>3 214.09829</Typography>
+                                                                <Typography gutterBottom></Typography>
+                                                                <Typography gutterBottom></Typography>
                                                             </Stack>
-                                                            <Typography sx={{ fontSize: "14px", color: "#34F14B" }}>Tx cost 0.0233 = (~$80.43)</Typography>
+                                                            <Typography sx={{ fontSize: "14px", color: "#34F14B" }}></Typography>
                                                         </Stack>
                                                     </Paper>
                                                 </Stack>
@@ -634,51 +747,6 @@ export default function Bridge({ chainState, setChainState }) {
                                     }
                                 </Box>
                             </SwapPaper>
-                            <Stack direction="column" sx={{ maxWidth: "476px", width: "100%", m: "20px 0 230px" }} spacing={1}>
-                                {rateState === 0 ?
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Link underline='none' sx={{ color: "white" }} onClick={() => setRateState(1)}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography sx={{ fontSize: "14px" }}>Rate</Typography>
-                                                <ExpandMoreIcon />
-                                            </Stack>
-                                        </Link>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <Typography sx={{ fontSize: "14px" }}>1 {token2.symbol?token2.symbol:"FREN"} = {Number((token2.priceUSD?token2.priceUSD:1 / token1.priceUSD?token1.priceUSD:1).toFixed(5))} {token1.symbol} (~${Number(token2.priceUSD?token2.priceUSD.toFixed(5) : 0.00020575)})</Typography>
-                                            <InfoOutlinedIcon />
-                                        </Stack>
-                                    </Stack>
-                                    :
-                                    <Stack direction="column" spacing={1}>
-                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                            <Link underline='none' sx={{ color: "white" }} onClick={() => setRateState(0)}>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography sx={{ fontSize: "14px" }}>{`1 ${token1.symbol} Price`}</Typography>
-                                                    <ExpandLessIcon />
-                                                </Stack>
-                                            </Link>
-                                            <Typography sx={{ fontSize: "14px" }}>{`${Number((token1.priceUSD / token2.priceUSD).toFixed(5))} ${token2.symbol} (~$${token1.priceUSD && Number(token1.priceUSD.toFixed(5))})`}</Typography>
-                                        </Stack>
-                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                            <Typography sx={{ fontSize: "14px" }}>{`1 ${token2.symbol} Price`}</Typography>
-                                            <Typography sx={{ fontSize: "14px" }}>{`${Number((token2.priceUSD / token1.priceUSD).toFixed(5))} ${token1.symbol} (~$${token2.priceUSD && Number(token2.priceUSD.toFixed(5))})`}</Typography>
-                                        </Stack>
-                                        {dexsOrder &&
-                                            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                <Typography sx={{ fontSize: "14px" }}>Minimum received</Typography>
-                                                <Typography sx={{ fontSize: "14px" }}>{`${Number((dexsOrder[swapSelectData].amountOut-(dexsOrder[swapSelectData].amountOut * slippage / 100)).toFixed(5))} ${token2.symbol}`}</Typography>
-                                            </Stack>
-                                        }
-                                    </Stack>
-                                }
-                                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                    <Typography sx={{ fontSize: "14px" }}>Route</Typography>
-                                    <Stack direction="row" spacing={1} alignItems="center">
-                                        <Typography sx={{ fontSize: "14px" }}>{`${token1.symbol?token1.symbol:"FrenChain"} > ${token2.symbol?token2.symbol:"FrenChain"}`}</Typography>
-                                        <ExpandLessIcon />
-                                    </Stack>
-                                </Stack>
-                            </Stack>
                         </Grid>
                     </Grid>}
                 </Stack>

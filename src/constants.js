@@ -329,13 +329,13 @@ export const iBridgeAddress = {
     "Goerli": '',
     "Binance": "",
     "Binance Smart Chain": "",
-    "Binance_testnet": "",
+    "Binance_testnet": "0xBCae51873a3FC8B782DC2981Ddb98a5be8c9ADe3", // 0x4ADddcEB000A23F613F8E1300938b703226f4064
     "Cronos": "",
-    "Cronos_testnet": "0x3C9F1eaF212a889f437368C7eA86eD5Ef2A37AE9",
+    "Cronos_testnet": "0x639E8bDEA73d1cA098AA4775B38102b0D1bb37b7", // 0x55652dea07d52D020E6ae4043E4B37bECc435006
     "Avalanche": "",
     "Avalanche_testnet": '',
     "Polygon": "",
-    "Polygon_testnet": "",
+    "Polygon_testnet": "0xdDbE999514cE1F8afb868f087bd8d3274c94a77C",
     "Frenchain": "",
     "Frenchain_testnet": "",
     "Kekchain": "",
@@ -363,9 +363,9 @@ export const iMigratorAddress = {
     "Goerli": '',
     "Binance": "",
     "Binance Smart Chain": "",
-    "Binance_testnet": "",
-    "Cronos": "",
-    "Cronos_testnet": "0xdDbE999514cE1F8afb868f087bd8d3274c94a77C",
+    "Binance_testnet": "0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c", // 0x25D77332E0570375Ef73Ed073f8E9a56fFD9ce5F
+    "Cronos": "", 
+    "Cronos_testnet": "0x11755Dc7e0b3CEF7277a8Dd3C0dc2b39881ec958", // 0x5C41055c0FF510847c92B0176749bec81569F92F, 0xdDbE999514cE1F8afb868f087bd8d3274c94a77C
     "Avalanche": "",
     "Avalanche_testnet": '',
     "Polygon": "",

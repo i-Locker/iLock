@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         background: `${theme.custom.appbar} !important`,
     },
+    darkBg: "#eee",
     networkSelector: {
         "&:hover": {
             cursor: "pointer",

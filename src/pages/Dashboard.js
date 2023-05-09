@@ -762,8 +762,8 @@ const Dashboard = (props) => {
                                         </div>
                                         <div key={2} style={{paddingLeft:1, paddingRight:1}}>
                                             <p style={{textAlign:'center'}} color="textSecondary">
-                                                Select the type of token you would like to create a lock for.
-                                                You can create multiple locks with different settings for each one.
+                                                Select the type of digital asset you would like to create an iLock for.
+                                                You can deploy multiple iLock smart contract with different settings for each.
                                             </p>
                                             {
                                                 network !="" && networkData.find((item)=>item.name==network).subData.map((each)=><Grid

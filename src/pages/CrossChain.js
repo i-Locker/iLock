@@ -37,10 +37,11 @@ import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
 import DateTime from '../components/DateTime';
 import { alterLoaderText } from '../components/Loader';
-import Bridge from '../components/Bridge';
+import iBridge from '../components/Bridge';
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
 export let handle_Date;
 export let chainHook;
+let Bridge = iBridge;   
 export let handle_dispatch;
 const CrossChain = (props) => {
 

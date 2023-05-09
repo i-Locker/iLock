@@ -12,6 +12,9 @@ import { createBrowserHistory } from "history";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CrossChain = lazy(() => import("./pages/CrossChain"));
 const Bridge = lazy(() => import("./pages/Bridge"));
+const Swap = lazy(() => import("./pages/Swap/swap"));
+const Transport = lazy(() => import("./pages/Bridge"));
+const BridgeV2 = lazy(() => import("./pages/CrossChainV2"));
 const LockUp = lazy(() => import("./pages/LockUp"));
 const iLocks = lazy(() => import("./pages/MyLockers"));
 const iLock = lazy(() => import("./pages/Dashboard"));
@@ -31,12 +34,15 @@ const AppRouter = () => {
                         <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/my-lockers/:wallet/:chainName" exact element={<iLocks />} />
+                        <Route path="/swap" exact element={<Swap />} />
                         <Route path="/swipe" exact element={<Swipe />} />
+                        <Route path="/transport" exact element={<Transport />} />
                         <Route path="/locks/:chainName/:lockId" exact element={<iLocks />} />
                         <Route path="/lockers/:chainName/:lockId" exact element={<LockUp />} />
                         <Route path="/lockup/:chainName/:lockId" exact element={<LockUp />} />
                         <Route path="/bridge" element={<Navigate to="/iBridge" replace />} />
                         <Route path="/migrator" exact element={<Migrations />} />
+                        <Route path="/v2" exact element={<BridgeV2 />} />
                         <Route path="/iBridge" exact element={<CrossChain />} />
                     </Routes>
                     </BaseLayout>
@@ -44,5 +50,4 @@ const AppRouter = () => {
         </Router>
     );
 };
-
 export default AppRouter;
