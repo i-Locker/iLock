@@ -210,20 +210,24 @@ export default function iBridge({ chainState, setChainState }) {
 
     useEffect(() => {
         async function ___SWAP_CORE(token1, token2, account, chainId) {
-            if (maxAmount && maxAmount > 0) {
-                setSwapAmount(maxAmount);
+            try {
+                if (maxAmount && maxAmount > 0) {
+                    setSwapAmount(maxAmount);
+                };
+                let provider = await connector.getProvider();
+                console.log("network_ ", network_[network_dec_to_hex[chainId]], "token1 ", token1, "token2: ", token2);
+                let balance_COIN = await getEtherBalance(provider, account, network_[network_dec_to_hex[chainId]]);
+                console.log("balance: (balance_COIN) ", balance_COIN[0]);
+                setEtherBalance(balance_COIN ? balance_COIN : 0);
+                let balance1_v2 = await fetch_Balance(provider, token1.address, account, network_[network_dec_to_hex[chainId]]);
+                setToken1Balance(balance1_v2 ? balance1_v2 : 0);
+                console.log("balance: (token1) ", balance1_v2, token1.address, token1.name, token1.symbol, token1.decimals);
+                let balance2_v2 = await fetch_Balance(provider, token2.address, account, network_[network_dec_to_hex[chainId]]);
+                console.log("balance: (token2) ", balance2_v2, token2.address, token2.name, token2.symbol, token2.decimals);
+                setToken2Balance(balance2_v2 ? balance2_v2 : 0);
+            } catch(e) {
+                console.log("err: ",e);
             };
-            let provider = await connector.getProvider();
-            console.log("network_ ", network_[network_dec_to_hex[chainId]], "token1 ", token1, "token2: ", token2);
-            let balance_COIN = await getEtherBalance(provider, account, network_[network_dec_to_hex[chainId]]);
-            console.log("balance: (balance_COIN) ", balance_COIN[0]);
-            setEtherBalance(balance_COIN ? balance_COIN : 0);
-            let balance1_v2 = await fetch_Balance(provider, token1.address, account, network_[network_dec_to_hex[chainId]]);
-            setToken1Balance(balance1_v2 ? balance1_v2 : 0);
-            console.log("balance: (token1) ", balance1_v2, token1.address, token1.name, token1.symbol, token1.decimals);
-            let balance2_v2 = await fetch_Balance(provider, token2.address, account, network_[network_dec_to_hex[chainId]]);
-            console.log("balance: (token2) ", balance2_v2, token2.address, token2.name, token2.symbol, token2.decimals);
-            setToken2Balance(balance2_v2 ? balance2_v2 : 0);
         };
         if (account) {
             ___SWAP_CORE(token1, token2, account, chainId);

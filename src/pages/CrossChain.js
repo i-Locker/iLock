@@ -231,24 +231,28 @@ const CrossChain = (props) => {
     };
     chainHook = chain_Hook;
     async function start_(tokenContract, tokenDecimals) {
-        let state_chain = {
-            "chainId": chainId,
-            "tokens": [{
-                "name": "FrenChain",
-                "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
+        try {
+            let state_chain = {
+                "chainId": chainId,
+                "tokens": [{
+                    "name": "FrenChain",
+                    "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
+                    "symbol": "FREN"
+                }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
                 "symbol": "FREN"
-            }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
-            "symbol": "FREN"
-        };
-        console.log("tokens_data: ", tokens_data[network_[network_dec_to_hex[chainId]]][0].address);
-        let provider = await connector.getProvider();
-        const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
-        let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
-        // eslint-disable-next-line
-        console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
-        // eslint-disable-next-line
-        window.alert("Token Found! Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
-        dispatch({ type: USERBALANCE, payload: tokenBalance });
+            };
+            console.log("tokens_data: ", tokens_data[network_[network_dec_to_hex[chainId]]][0].address);
+            let provider = await connector.getProvider();
+            const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
+            let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
+            // eslint-disable-next-line
+            console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
+            // eslint-disable-next-line
+            window.alert("Token Found! Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
+            dispatch({ type: USERBALANCE, payload: tokenBalance });
+        } catch(e) {
+            console.log("err: ",e);
+        }
     };
 
     useEffect(() => {
