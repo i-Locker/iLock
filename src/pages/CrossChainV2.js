@@ -119,11 +119,15 @@ const CrossChainV2 = (props) => {
             return results;
         });
     };
+    let checked = false;
     const checkEtherBalance = async (provider, account) => {
-        getEtherBalance(provider, account, network).then(async (ebf) => {
-            console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
-            fetchEtherBalance(ebf[2]);
-        });
+        if(!checked) {
+            checked = true;
+            getEtherBalance(provider, account, network).then(async (ebf) => {
+                console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
+                fetchEtherBalance(ebf[2]);
+            });
+        };
     };
     const handleNext = async () => {
         if (account) {
@@ -235,25 +239,29 @@ const CrossChainV2 = (props) => {
         setChainState(state_chain);
     };
     chainHook = chain_Hook;
+    let checked_all = false;
     async function start_(tokenContract, tokenDecimals) {
-        let state_chain = {
-            "chainId": chainId,
-            "tokens": [{
-                "name": "FrenChain",
-                "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
+        if(!checked_all) {
+            checked_all = true;
+            let state_chain = {
+                "chainId": chainId,
+                "tokens": [{
+                    "name": "FrenChain",
+                    "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
+                    "symbol": "FREN"
+                }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
                 "symbol": "FREN"
-            }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
-            "symbol": "FREN"
-        };
-        console.log("tokens_data: ", tokens_data[network_[network_dec_to_hex[chainId]]][0].address);
-        let provider = await connector.getProvider();
-        const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
-        let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
-        // eslint-disable-next-line
-        console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
-        // eslint-disable-next-line
-        window.alert("Token Found! Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
-        dispatch({ type: USERBALANCE, payload: tokenBalance });
+            };
+            console.log("tokens_data: ", tokens_data[network_[network_dec_to_hex[chainId]]][0].address);
+            let provider = await connector.getProvider();
+            const tokenBalance = await getTokenBalance(provider, tokenContract, account, network);
+            let data_ = await _getUIfmt(tokenBalance.toString(), parseFloat(tokenDecimals));
+            // eslint-disable-next-line
+            console.log("tokenBalance: ", tokenBalance, data_, (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
+            // eslint-disable-next-line
+            window.alert("Token Found! Balance: " + (parseFloat(tokenBalance) / Math.pow(10, parseFloat(tokenDecimals))).toFixed(2));
+            dispatch({ type: USERBALANCE, payload: tokenBalance });
+        }
     };
 
     useEffect(() => {
@@ -268,32 +276,8 @@ const CrossChainV2 = (props) => {
             alterLoaderText("Select Network");
         } else if (account && network && chainId && !tokenContract) {
             setIsAllowed(0);
-            let state_chain = {
-                "chainId": chainId,
-                "tokens": [{
-                    "name": "FrenChain",
-                    "address": tokens_data[network_[network_dec_to_hex[chainId]]][0].address,
-                    "symbol": "FREN"
-                }, tokens_data[network_[network_dec_to_hex[chainId]]][0]],
-                "symbol": "FREN"
-            };
             console.log("tokens_data: ", [network_[network_dec_to_hex[chainId]]][0].address);
-            setChainState(state_chain);
             alterLoaderText("Make a selection");
-        } else {
-            try {
-                if (tokenContract && tokenDecimals) {
-                    start_(tokenContract, tokenDecimals);
-                };
-            } catch (e) {
-                console.log(e);
-                window.alert("Token not found, please try again...");
-            } finally {
-                alterLoaderText("Deploy iLocker");
-                if (!lockAmount) {
-                    window.alert("Awesome! Let's continue to create your iLocker smart contract...");
-                };
-            };
         };
     }, [account, tokenContract, tokenDecimals, connector, network]);
 

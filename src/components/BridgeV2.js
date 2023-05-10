@@ -164,26 +164,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                 setImportAlert({ state1: false, state2: "success", data: "" });
             }, 5000);
         }
-        if (chainId) {
-            // const Engine = async (chainId, account, connector, token) => {
-            //     // let provider = await connector.getProvider();
-            //     // if (chainId != 444 || chainId != 44444) {
-            //     //     try {
-            //     //         await provider.request({
-            //     //             method: 'wallet_switchEthereumChain',
-            //     //             params: [{ chainId: await network_dec_to_hex[44444] }],
-            //     //         });
-            //     //         console.log("You have succefully switched to ", network)
-            //     //     } catch (e) {
-            //     //         //
-            //     //     };
-            //     // };
-            //     console.log("Engine token ", token);
-            //     console.log("Engine chainId ", chainId, network_dec_to_hex[chainId]);
-            //     console.log("Engine network_ ", network_[network_dec_to_hex[chainId]]);
-            // };
-            // Engine(chainId, account, connector, token1.address);
-            // Engine(chainId, account, connector, token2.address);
+        if (chainId&&!bridgeAddress) {
             try {
                 console.log("iBridgeAddress: ", iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
                 setBridgeAddress(iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
@@ -236,89 +217,18 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
         };
         ____SWAP_ENGINE(chainState);
     }, [chainState]);
-
+    let core_synced;
     useEffect(() => {
-        async function ___SWAP_CORE(token1, token2, account, chainId) {
-            if (maxAmount && maxAmount > 0) {
-                setSwapAmount(maxAmount);
-            };
-            let provider = await connector.getProvider();
-            console.log("network_ ", network_[network_dec_to_hex[chainId]], "token1 ", token1, "token2: ", token2);
-            let balance_COIN = await getEtherBalance(provider, account, network_[network_dec_to_hex[chainId]]);
-            console.log("balance: (balance_COIN) ", balance_COIN[0]);
-            setEtherBalance(balance_COIN ? balance_COIN : 0);
-            let balance1_v2 = await fetch_Balance(provider, token1.address, account, network_[network_dec_to_hex[chainId]]);
-            setToken1Balance(balance1_v2 ? balance1_v2 : 0);
-            console.log("balance: (token1) ", balance1_v2, token1.address, token1.name, token1.symbol, token1.decimals);
-            let balance2_v2 = await fetch_Balance(provider, token2.address, account, network_[network_dec_to_hex[chainId]]);
-            console.log("balance: (token2) ", balance2_v2, token2.address, token2.name, token2.symbol, token2.decimals);
-            setToken2Balance(balance2_v2 ? balance2_v2 : 0);
-        };
-        if (account) {
-            ___SWAP_CORE(token1, token2, account, chainId);
+        if (account && !core_synced) {
+            core_synced = true;
         } else {
             return;
         };
     }, [token1, token2, account, connector, chainId])
 
     let num = 0;
-    useEffect(() => {
-        if (num > 0) {
-            swapTabChange(swapTabValue);
-        }
-        num++;
-    }, [swapTabValue]);
-
-    useEffect(() => {
-        async function ___SWAP_ORDERS(token1, token2, dexsOrder, swapSelectData, routerAddress) {
-            if (!maxAmount || maxAmount === '' || Number(maxAmount) <= 0) {
-                setSwapBtnState(0);
-                return;
-            } else {
-                let factoryInst = new web3.eth.Contract(factoryAddress[Number(dexsOrder[swapSelectData].num)].abi, factoryAddress[Number(dexsOrder[swapSelectData].num)].address);
-                let pair = await factoryInst.methods.getPair(token1.address, token2.address).call();
-                if (pair === '0x0000000000000000000000000000000000000000' || !pair) {
-                    setSwapBtnState(1);
-                    return;
-                } else {
-                    let eth_balance = await web3.eth.getBalance(account);
-                    if (eth_balance === '0') {
-                        setSwapBtnState(2);
-                        return;
-                    };
-                };
-                try {
-                    let token1Inst = new web3.eth.Contract(erc20Abi, token1.address);
-                    let balance = await token1Inst.methods.balanceOf(account).call();
-                    let balance_v2 = await getBalance(balance, token1.decimals);
-                    if (!balance_v2 || balance_v2 < maxAmount) {
-                        setSwapBtnState(3);
-                    } else {
-                        let allowance = await token1Inst.methods.allowance(account, routerAddress[dexsOrder[swapSelectData].num].address).call();
-                        let allowance_v2 = await getBalance(allowance, token1.decimals);
-                        if (allowance_v2 && allowance_v2 >= maxAmount) {
-                            setSwapBtnState(5);
-                        } else {
-                            setSwapBtnState(4);
-                        };
-                    };
-                } catch (e) {
-                    //
-                } finally {
-                    clearTimeout(t);
-                };
-            };
-        };
-        const t = setTimeout(() => {
-            setSwapAmount(maxAmount);
-        }, 10000);
-        if (!token1 | !token2 | !dexsOrder | !swapSelectData | !routerAddress) {
-            //
-        } else {
-            ___SWAP_ORDERS(token1, token2, dexsOrder, swapSelectData, routerAddress);
-        };
-    }, [token1, token2, dexsOrder, swapSelectData, routerAddress, erc20Abi]);
-
+    let t;
+    let sOrders;
 
     const swapTabChange = (newValue) => {
         setSwapTabValue(newValue);
@@ -444,20 +354,19 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
     };
 
     const chainA_Network = (name, i_D) => {
-        console.log("networking (A): ", name, i_D);
-        setChainA(i_D);
+        console.log("networking (A): ", i_D,network_hex_to_dec[i_D]);
+        setChainA(network_hex_to_dec[i_D]);
     };
 
-    const chainB_Network = (name, i_D) => {
-        console.log("networking (B): ", name, i_D);
-        setChainB(i_D);
+    const chainB_Network = (i_D) => {
+        console.log("networking (B): ", i_D,network_hex_to_dec[i_D]);
+        setChainB(network_hex_to_dec[i_D]);
     };
 
     const setSwapAmount = async (newValue) => {
         if (!newValue || newValue <= 0) {
             console.log("swapBtnState: ", swapBtnState);
             return false;
-            // setSwapBtnState(5);
         } else {
             setDexsOrder();
             newValue = (new BN(newValue).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
