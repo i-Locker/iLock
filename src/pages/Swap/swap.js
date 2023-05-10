@@ -78,8 +78,8 @@ export default function Swap({ chainState, setChainState }) {
     const [poolCreateDialogState, setPoolCreateDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
     const [pools, setPools] = useState([]);
-    const [token1, setToken1] = useState(chainState["tokens"][0] && chainState["tokens"][0].length > 0 ? chainState["tokens"][0] : "");
-    const [token2, setToken2] = useState(chainState["tokens"][1] && chainState["tokens"][1].length > 0 ? chainState["tokens"][1] : "");
+    const [token1, setToken1] = useState("");
+    const [token2, setToken2] = useState("");
     const [token1Balance, setToken1Balance] = useState(0);
     const [token2Balance, setToken2Balance] = useState(0);
     const [etherBalance, setEtherBalance] = useState(0);
@@ -683,7 +683,7 @@ export default function Swap({ chainState, setChainState }) {
                     </Grid>}
                 </Stack>
             </ThemeProvider> 
-        <Cwallet isOpenDialog = { isOpenDialog } setIsOpenDialog = { setIsOpenDialog } chain = { chainState } setChain = { setChainState } tokenDialogState = { tokenDialogState } setTokenDialogState = { setTokenDialogState } selectToken = { selectToken } swapSettingDialogState = { swapSettingDialogState } setSwapSettingDialogState = { setSwapSettingDialogState } poolCreateDialogState = { poolCreateDialogState } setPoolCreateDialogState = { setPoolCreateDialogState } setPools = { setPools } setImportAlert = { setImportAlert } />
+        <Cwallet isOpenDialog = { isOpenDialog } setIsOpenDialog = { setIsOpenDialog } chain = { chainState } setChain = { setChainState } tokenDialogState = { tokenDialogState } setTokenDialogState = { setTokenDialogState } selectToken = { selectToken } swapSettingDialogState = { swapSettingDialogState } setSwapSettingDialogState = { setSwapSettingDialogState } poolCreateDialogState = { poolCreateDialogState } setPoolCreateDialogState = { setPoolCreateDialogState } setPools = { setPools } setImportAlert = { setImportAlert } token1={token1} setToken1={setToken1} token2={token2} setToken2={setToken2}/>
     </>
     );
 }

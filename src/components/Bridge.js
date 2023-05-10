@@ -105,8 +105,8 @@ export default function iBridge({ chainState, setChainState }) {
     const [poolCreateDialogState, setPoolCreateDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
     const [pools, setPools] = useState([]);
-    const [token1, setToken1] = useState(chainState["tokens"][0] && chainState["tokens"][0].length > 0 ? chainState["tokens"][0] : "");
-    const [token2, setToken2] = useState(chainState["tokens"][1] && chainState["tokens"][1].length > 0 ? chainState["tokens"][1] : "");
+    const [token1, setToken1] = useState("");
+    const [token2, setToken2] = useState("");
     const [token1Balance, setToken1Balance] = useState(0);
     const [token2Balance, setToken2Balance] = useState(0);
     const [etherBalance, setEtherBalance] = useState(0);
@@ -115,8 +115,8 @@ export default function iBridge({ chainState, setChainState }) {
     const [dexsOrder, setDexsOrder] = useState("");
     const [swapSelectData, setSwapSelectData] = useState(0);
     const [swapBtnState, setSwapBtnState] = useState(0);
-    const [routerAddress, setRouterAddress] = useState(Router_address[0].length > 0 ? Router_address[0].dexs : "");
-    const [factoryAddress, setFactoryAddress] = useState(Factory_address[0].length > 0 ? Factory_address[0].dexs : "");
+    const [routerAddress, setRouterAddress] = useState("");
+    const [factoryAddress, setFactoryAddress] = useState("");
     const [maxAmount, setMaxAmount] = useState(0);
     const [importAlert, setImportAlert] = useState({ state1: false, state2: "success", data: "" });
     const [rateState, setRateState] = useState(0);
@@ -135,7 +135,7 @@ export default function iBridge({ chainState, setChainState }) {
         }
         if (chainId) {
             const Engine = async (chainId, account, connector, token) => {
-                let provider = await connector.getProvider();
+                // let provider = await connector.getProvider();
                 // if (chainId != 444 || chainId != 44444) {
                 //     try {
                 //         await provider.request({
@@ -548,11 +548,15 @@ export default function iBridge({ chainState, setChainState }) {
                                                             <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
                                                     </Stack>
+                                                    <Stack direction="row" spacing={5} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
+                                                        <Button startIcon={token2.logoURI&&token2.logoURI !== null ?
+                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                            :
+                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
+                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
+                                                    </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
-                                                        {/*
-                                                            <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
-                                                        */}
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
                                                         <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
@@ -623,9 +627,6 @@ export default function iBridge({ chainState, setChainState }) {
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
-                                                        {/*
-                                                            <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
-                                                        */}
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
                                                         <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 

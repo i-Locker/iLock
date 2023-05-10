@@ -3,14 +3,11 @@ import {
     Grid,
     Stack,
     Typography,
-    Box,
     Button,
     Paper,
     FormControl,
     InputLabel,
-    Select,
     CardHeader,
-    MenuItem,
     Input,
     IconButton,
     Chip,
@@ -50,6 +47,9 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import './swap.css';
 import axios from 'axios';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import useStyles from '../assets/styles';
 import { Router_address } from "../config/abi/router/dexRouter";
 import { Factory_address } from "../config/abi/router/dexFactory";
@@ -71,14 +71,6 @@ const theme = createTheme({
         }
     }
 });
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  flexGrow: 1,
-}));
 const SwapButton = styled(Button)(() => ({
     width: "100%",
     color: "white",
@@ -113,7 +105,7 @@ let FlexibleContainer = styled(Stack)(() => ({
     flexDirection: 'row',
     padding: 1,
     margin: 'auto'
-})); 
+}));
 export default function BridgeV2({ token1, token2, setToken1, setToken2, factoryAddress, routerAddress, setFactoryAddress, setRouterAddress, chainState, setChainState }) {
     const { active, account, chainId, connector } = useWeb3React();
     const [swapTabValue, setSwapTabValue] = useState(0);
@@ -123,6 +115,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
     const [activeStep, setActiveStep] = React.useState(0);
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [tokenDialogState, setTokenDialogState] = useState(false);
+    const [age, setAge] = React.useState('');
     const [poolCreateDialogState, setPoolCreateDialogState] = useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
     const [pools, setPools] = useState([]);
@@ -137,6 +130,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
     const [importAlert, setImportAlert] = useState({ state1: false, state2: "success", data: "" });
     const [rateState, setRateState] = useState(0);
     const [slippage, setSlippage] = useState(1);
+    const [chainB, setChainB] = useState("");
+    const [chainA, setChainA] = useState("");
     const [network, setNetwork] = useState("");
     const [modalTitle, setModalTitle] = useState("");
     const [modalDes, setModalDes] = useState("");
@@ -170,25 +165,25 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
             }, 5000);
         }
         if (chainId) {
-            const Engine = async (chainId, account, connector, token) => {
-                let provider = await connector.getProvider();
-                // if (chainId != 444 || chainId != 44444) {
-                //     try {
-                //         await provider.request({
-                //             method: 'wallet_switchEthereumChain',
-                //             params: [{ chainId: await network_dec_to_hex[44444] }],
-                //         });
-                //         console.log("You have succefully switched to ", network)
-                //     } catch (e) {
-                //         //
-                //     };
-                // };
-                console.log("Engine token ", token);
-                console.log("Engine chainId ", chainId, network_dec_to_hex[chainId]);
-                console.log("Engine network_ ", network_[network_dec_to_hex[chainId]]);
-            };
-            Engine(chainId, account, connector, token1.address);
-            Engine(chainId, account, connector, token2.address);
+            // const Engine = async (chainId, account, connector, token) => {
+            //     // let provider = await connector.getProvider();
+            //     // if (chainId != 444 || chainId != 44444) {
+            //     //     try {
+            //     //         await provider.request({
+            //     //             method: 'wallet_switchEthereumChain',
+            //     //             params: [{ chainId: await network_dec_to_hex[44444] }],
+            //     //         });
+            //     //         console.log("You have succefully switched to ", network)
+            //     //     } catch (e) {
+            //     //         //
+            //     //     };
+            //     // };
+            //     console.log("Engine token ", token);
+            //     console.log("Engine chainId ", chainId, network_dec_to_hex[chainId]);
+            //     console.log("Engine network_ ", network_[network_dec_to_hex[chainId]]);
+            // };
+            // Engine(chainId, account, connector, token1.address);
+            // Engine(chainId, account, connector, token2.address);
             try {
                 console.log("iBridgeAddress: ", iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
                 setBridgeAddress(iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
@@ -214,14 +209,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                             console.log(res.data.data[0]);
                             setToken1(res.data.data[0]);
                         } else {
-                            // let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
                             let pj1 = { "total": 1, "data": [{ "id": "0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth", "address": "0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a", "symbol": "FREN", "name": "FrenChain (ERC20)", "description": "FrenChain/FREN", "txns24h": 2, "txns24hChange": -0.5, "verified": true, "decimals": 18, "volume24h": 0.0, "volume24hUSD": 235.84081844012337, "volume24hETH": 0.12303964262357231, "volumeChange24h": 0.0, "liquidityUSD": 31783.183491244, "liquidityETH": 16.581487310242, "liquidityChange24h": 0.0, "logoURI": "https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png", "priceUSD": 0.00021155709187981557, "priceETH": 1.1037066929948508e-07, "priceUSDChange24h": -0.036307376632898423, "priceETHChange24h": -0.007719123029520966, "timestamp": 1667493912, "blockNumber": 1, "AMM": "all", "network": "eth", "tokenListsNames": ["CoinGecko"], "marketCap": 0.0, "marketCapChange24h": 0.0, "liquidityUSDChange24h": -0.032555487289210386, "liquidityETHChange24h": -0.0038559326740329647, "volumeUSDChange24h": -0.9497107384650174, "volumeETHChange24h": -0.948233885660636 }] };
                             setToken1(pj1["data"][0]);
                         };
                     });
                 };
             } catch (e) {
-                // let pj1 = {"total":1,"data":[{"id":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","symbol":"WETH","name":"WETH","description":"Wrapped Ether/WETH","txns24h":247012,"txns24hChange":-0.19774991149695192,"verified":true,"decimals":18,"volume24h":0.0,"volume24hUSD":1088457168.4826467,"volume24hETH":561166.7892331104,"volumeChange24h":0.0,"liquidityUSD":6848874429.3484,"liquidityETH":3572646.3197278,"liquidityChange24h":0.0,"logoURI":"https://assets-stage.dex.guru/icons/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-eth.png","priceUSD":1921.7411221446696,"priceETH":1.0,"priceUSDChange24h":-0.015828325165292936,"priceETHChange24h":0.0,"timestamp":1616361199,"blockNumber":0,"AMM":"uniswap","network":"eth","tokenListsNames":["1inch","Aave Token List","CoinGecko","Uniswap Labs List","Zerion","Zapper Token List","Wrapped Tokens","Roll Social Money","Furucombo","Kleros Tokens","MyCrypto Token List","Uniswap Labs Default","Balancer","SushiSwap Menu","KyberSwap Token List Ethereum"],"marketCap":5269391195.878679,"marketCapChange24h":1.9690666257144935,"liquidityUSDChange24h":-0.0017124215369804558,"liquidityETHChange24h":0.005644837805377931,"volumeUSDChange24h":0.03277133122391191,"volumeETHChange24h":0.044853465598931094}]};
                 let pj1 = { "total": 1, "data": [{ "id": "0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth", "address": "0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a", "symbol": "FREN", "name": "FrenChain (ERC20)", "description": "FrenChain/FREN", "txns24h": 2, "txns24hChange": -0.5, "verified": true, "decimals": 18, "volume24h": 0.0, "volume24hUSD": 235.84081844012337, "volume24hETH": 0.12303964262357231, "volumeChange24h": 0.0, "liquidityUSD": 31783.183491244, "liquidityETH": 16.581487310242, "liquidityChange24h": 0.0, "logoURI": "https://assets-stage.dex.guru/icons/0x8e14c88ab0644ef41bd7138ab91c0160d8c1583a-eth.png", "priceUSD": 0.00021155709187981557, "priceETH": 1.1037066929948508e-07, "priceUSDChange24h": -0.036307376632898423, "priceETHChange24h": -0.007719123029520966, "timestamp": 1667493912, "blockNumber": 1, "AMM": "all", "network": "eth", "tokenListsNames": ["CoinGecko"], "marketCap": 0.0, "marketCapChange24h": 0.0, "liquidityUSDChange24h": -0.032555487289210386, "liquidityETHChange24h": -0.0038559326740329647, "volumeUSDChange24h": -0.9497107384650174, "volumeETHChange24h": -0.948233885660636 }] };
                 setToken1(pj1["data"][0]);
             };
@@ -387,6 +380,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
         }
     };
 
+    const handleChange = (event, i_D) => {
+        setNetwork(event.target.value);
+        setChainA(i_D);
+        setAge(event.target.value);
+    };
+
     const TokenSelect3 = (event) => {
         setToken3(event.target.value);
     };
@@ -395,7 +394,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
         let token_var = token1;
         setToken1(token2);
         setToken2(token_var);
-    }
+    };
 
     const selectToken = async (data) => {
         if (tokenDialogState === 1) {
@@ -439,47 +438,58 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
         console.log("holder: ", holder);
     };
 
-    const changeNetwork = (name) => {
+    const changeNetwork = (name, i_D) => {
         setNetwork(name);
+        chainA_Network(name, i_D);
+    };
+
+    const chainA_Network = (name, i_D) => {
+        console.log("networking (A): ", name, i_D);
+        setChainA(i_D);
+    };
+
+    const chainB_Network = (name, i_D) => {
+        console.log("networking (B): ", name, i_D);
+        setChainB(i_D);
     };
 
     const setSwapAmount = async (newValue) => {
         if (!newValue || newValue <= 0) {
-            setSwapBtnState(5);
             console.log("swapBtnState: ", swapBtnState);
-            setDexsOrder();
             return false;
-        }
-        newValue = (new BN(newValue).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
+            // setSwapBtnState(5);
+        } else {
+            setDexsOrder();
+            newValue = (new BN(newValue).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
+            let provider = await connector.getProvider();
+            let isEth = true;
+            console.log("res: ", newValue, isEth, account, network_[network_dec_to_hex[chainId]]);
+            calculateSuggestedDonation(provider, newValue, isEth, account, network_[network_dec_to_hex[chainId]]).then((res) => {
+                console.log("res: ", res);
+            });
 
-        let provider = await connector.getProvider();
-        let isEth = true;
-        console.log("res: ", newValue, isEth, account, network_[network_dec_to_hex[chainId]]);
-        calculateSuggestedDonation(provider, newValue, isEth, account, network_[network_dec_to_hex[chainId]]).then((res) => {
-            console.log("res: ", res);
-        });
+            let dexs_amountOuts = [];
+            for (let i = 0; i < routerAddress.length; i++) {
+                let dexs_amountOut = { amountOut: "0", num: i };
+                let routerInsts = new web3.eth.Contract(routerAddress[i].abi, routerAddress[i].address);
+                let amountOut = await routerInsts.methods.getAmountsOut(
+                    newValue,
+                    [token1.address, token2.address]
+                ).call();
+                dexs_amountOut.amountOut = amountOut[1];
+                dexs_amountOut.amountOut = await getBalance(dexs_amountOut.amountOut, token2.decimals);
+                dexs_amountOuts.push(dexs_amountOut);
+            }
+            let dexs_amountOuts_v2 = dexs_amountOuts.slice(1).sort(function(a, b) {
+                return Number(b.amountOut) - Number(a.amountOut);
+            });
 
-        let dexs_amountOuts = [];
-        for (let i = 0; i < routerAddress.length; i++) {
-            let dexs_amountOut = { amountOut: "0", num: i };
-            let routerInsts = new web3.eth.Contract(routerAddress[i].abi, routerAddress[i].address);
-            let amountOut = await routerInsts.methods.getAmountsOut(
-                newValue,
-                [token1.address, token2.address]
-            ).call();
-            dexs_amountOut.amountOut = amountOut[1];
-            dexs_amountOut.amountOut = await getBalance(dexs_amountOut.amountOut, token2.decimals);
-            dexs_amountOuts.push(dexs_amountOut);
+            dexs_amountOuts_v2.splice(0, 0, dexs_amountOuts[0]);
+            if (dexs_amountOuts_v2.length > 3) {
+                dexs_amountOuts_v2 = dexs_amountOuts_v2.slice(0, 3);
+            }
+            setDexsOrder(dexs_amountOuts_v2);
         }
-        let dexs_amountOuts_v2 = dexs_amountOuts.slice(1).sort(function(a, b) {
-            return Number(b.amountOut) - Number(a.amountOut);
-        });
-
-        dexs_amountOuts_v2.splice(0, 0, dexs_amountOuts[0]);
-        if (dexs_amountOuts_v2.length > 3) {
-            dexs_amountOuts_v2 = dexs_amountOuts_v2.slice(0, 3);
-        }
-        setDexsOrder(dexs_amountOuts_v2);
     }
 
     const checkAllowance = async (token, account, network) => {
@@ -632,7 +642,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
         setSwapBtnState(4);
     }
 
-    const maxSteps = 4;
+    const maxSteps = 3;
     const theme = useTheme();
     const classes = useStyles.pools();
     const mobileClasses = useStyles.mobile();
@@ -689,14 +699,14 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                 </FormControl>
                             </Paper>
                         </ActiveGrid>
-                    <Grid style={{marginTop:40, alignItems:'center', textAlign:'center', minWidth: '100%'}} item xs={12} sm={12} md={12} >
+                    <Grid style={{marginTop:40, maxHeight:'100%', alignItems:'center', textAlign:'center', minWidth: '100%'}} item xs={12} sm={12} md={12} >
                         <Card className="card" style={{width: '100%'}}>
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
                                 title="Cross-Chain"
                             />
                             <CardContent >
-                        <RadioGroup
+                                <RadioGroup
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     defaultValue="female"
                                     name="radio-buttons-group"
@@ -708,7 +718,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                     >
                                         <div key={1} style={{paddingLeft:1, paddingRight:1}}>
                                             <p style={{textAlign:'center', alignItems:'center'}} color="textSecondary">
-                                                Choose the blockchain network.
+                                                Select Chain A blockchain network.
                                             </p>
                                             {
                                                 networkData ? networkData.map((item)=>
@@ -718,9 +728,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                                     direction="row"
                                                     justifyContent="space-evenly"
                                                     alignItems="center"
-                                                    style={{padding:"10px 0px", border:item.name==network?"1px solid #fff":"1px solid transparent", borderRadius:'5px'}}
+                                                    spacing={5}
+                                                    style={{padding:0, borderRadius:'5px'}}
                                                     key={item.name}
-                                                    onClick = {()=>changeNetwork(item.name)}
+                                                    onClick = {()=>changeNetwork(item.name,item.chainData.chainId)}
                                                 >
                                                 <Grid item  xs={12} sm={12} md={12}>
                                                         <Grid 
@@ -728,10 +739,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                                             direction="row"
                                                             alignItems="center"
                                                         >
-                                                            <Grid item className="text-center" xs={3} sm={2} md={2}>
-                                                                <img className={dashboardClasses.networkImage} src={item.url} alt="network" />
-                                                            </Grid>
-                                                            <Grid item   xs={9} sm={10} md={10}>
+                                                            <Grid item xs={12} sm={12} md={12} style={{padding:6}}>
+                                                                <div style={{padding:6}}>
+                                                                    <img className={dashboardClasses.networkImage} src={item.url} alt="network" />
+                                                                </div>
                                                                 <p  color="textSecondary" className={dashboardClasses.networkTitle}>
                                                                     {ui_friendly_networks[item.name]}
                                                                 </p>
@@ -739,15 +750,15 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                                                     {item.subtitle}
                                                                 </p>
                                                             </Grid>
-                                                        {item.name==network ? <div style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} />: <div style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
                                                         </Grid>
+                                                            {item.name==network ? <div style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} />: <div style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
                                                     </Grid>
                                                 </Grid>
                                                 )
                                             : <></> }
                                         </div>
-                    <div key={2} style={{paddingLeft:1, paddingRight:1}}>
-                        <Grid xs={12} lg={12} md={12} item={true} container direction="column" alignItems="center" style={{textAlign:'center', alignItems:'center', borderColor: "white",}} >
+                    <div key={3} style={{paddingLeft:1, paddingRight:1}}>
+                        <Grid xs={12} lg={12} md={12} item={true} container direction="column" alignItems="center" style={{textAlign:'center', alignItems:'center', borderColor: "white"}} >
                             <Collapse in={importAlert.state1} sx={{ mb: "-50px", mt: "50px" }}>
                                 <Alert variant="filled" severity={importAlert.state2} sx={{ mb: 2 }}>{importAlert.data}</Alert>
                             </Collapse>
@@ -755,13 +766,34 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                 <Box sx={{ m: "0 8% 25px" }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Stack direction="row" justifyContent="space-between" sx={{ width: "45%", maxWidth: "200px" }} spacing={1}>
-                                            <CustomTab text={["Bridge"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
-                                        </Stack>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <IconButton sx={{ color: "white" }}><Typography component="img" src={Refresh}></Typography></IconButton>
-                                            <IconButton sx={{ color: "white" }} onClick={()=>swapSettingDialogOpen()}><Typography component="img" src={Filter}></Typography></IconButton>
+                                            <CustomTab text={["iBridge"]} padding={20} tabValue={swapTabValue} setTabValue={setSwapTabValue} position={"top"} />
                                         </Stack>
                                     </Stack>
+                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                            <p style={{margin:'auto', alignItems:"center"}}>
+                                                Select Chain B (Receiving Chain)
+                                            </p>
+                                        </Stack>
+                                        <Box m={3} sx={{ minWidth: 120 }}>
+                                              <Select
+                                                fullWidth
+                                                MenuProps={{
+                                                  PaperProps: {
+                                                    sx: {
+                                                      bgcolor: 'green',
+                                                      '& .MuiMenuItem-root': {
+                                                        padding: 2,
+                                                      },
+                                                    },
+                                                  },
+                                                }}
+                                              >
+                                                { networkData ? networkData.map((item)=>
+                                                        <MenuItem sx={{textAlign:"center"}} key={item.chainData.chainId} onClick = {()=>chainB_Network(item.chainData.chainId)} value={item.chainData.chainId} >{ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` }</MenuItem>
+                                                    )
+                                                : <></> }
+                                        </Select>
+                                        </Box>
                                     {!isMobile&&swapTabValue === 0 && <FlexibleContainer direction="column" alignItems="center">
                                             <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2 }}>
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
@@ -777,7 +809,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
-                                                        <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:"FREN (ERC20)"}</Typography>
+                                                        <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:"FREN"}</Typography>
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                     {
@@ -813,9 +845,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
-                                                        {/*
-                                                            <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
-                                                        */}
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
                                                         <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
@@ -886,9 +915,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, factory
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
-                                                        {/*
-                                                            <Typography sx={{ fontSize: "14px" }}>~${token2.priceUSD?Number(Number(token2.priceUSD*maxAmount).toFixed(2)):(maxAmount*0.00020575).toFixed(2)}</Typography>
-                                                        */}
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
                                                         <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 

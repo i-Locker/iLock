@@ -95,8 +95,7 @@ const MenuProps = {
     },
 };
 
-const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogState, setTokenDialogState, selectToken, swapSettingDialogState, setSwapSettingDialogState, poolCreateDialogState,
- setPoolCreateDialogState, setPools, setImportAlert }) => {
+const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogState, setTokenDialogState, selectToken, swapSettingDialogState, setSwapSettingDialogState, poolCreateDialogState, setPoolCreateDialogState, setPools, setImportAlert }) => {
     const triedEager = useEagerConnect();
     const {
         activate,
@@ -181,37 +180,41 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
         };
     }, [chain]);
 
-    async function ___HISTORY(poolCreateDialogState) {
+    async function ___HISTORY(connector, oolCreateDialogState) {
         if (poolCreateDialogState) {
-            setToken1(poolCreateDialogState.token1);
-            setToken2(poolCreateDialogState.token2);
-            let provider = await connector.getProvider();
-            if (poolCreateDialogState.title === "Remove Liquidity") {
-                const FactoryInst = new web3.eth.Contract(factoryAddress.abi, factoryAddress.address);
-                const LPAddress = await FactoryInst.methods.getPair(poolCreateDialogState.token1.address, poolCreateDialogState.token2.address).call();
-                const LPInst = new web3.eth.Contract(TokenABI, LPAddress);
-                let lp_balance_v1 = await LPInst.methods.balanceOf().call();
-                let lp_balance_v2 = await getBalance(lp_balance_v1, lp_decimal);
-                let lp_decimal = await LPInst.methods.decimals().call();
-                console.log("balance: (LP) ", await fetch_Balance(provider, LPAddress, account, network_[network_dec_to_hex[chainId]]));
-                setLPMax(lp_balance_v2);
-            } else {
-                const token1Inst = new web3.eth.Contract(TokenABI, poolCreateDialogState.token1.address);
-                let balance1_v1 = await token1Inst.methods.balanceOf(account).call();
-                let balance1_v2 = await getBalance(balance1_v1, poolCreateDialogState.token1.decimals);
-                const token2Inst = new web3.eth.Contract(TokenABI, poolCreateDialogState.token2.address);
-                let balance2_v1 = await token2Inst.methods.balanceOf(account).call();
-                let balance2_v2 = await getBalance(balance2_v1, poolCreateDialogState.token2.decimals);
-                console.log("balance: (t1) ", await fetch_Balance(provider, poolCreateDialogState.token1.address, account, network_[network_dec_to_hex[chainId]]));
-                console.log("balance: (t2) ", await fetch_Balance(provider, poolCreateDialogState.token2.address, account, network_[network_dec_to_hex[chainId]]));
-                setToken1Max(balance1_v2);
-                setToken2Max(balance2_v2);
-            }; 
+            try {
+                setToken1(poolCreateDialogState.token1);
+                setToken2(poolCreateDialogState.token2);
+                let provider = await connector.getProvider();
+                if (poolCreateDialogState.title === "Remove Liquidity") {
+                    const FactoryInst = new web3.eth.Contract(factoryAddress.abi, factoryAddress.address);
+                    const LPAddress = await FactoryInst.methods.getPair(poolCreateDialogState.token1.address, poolCreateDialogState.token2.address).call();
+                    const LPInst = new web3.eth.Contract(TokenABI, LPAddress);
+                    let lp_balance_v1 = await LPInst.methods.balanceOf().call();
+                    let lp_balance_v2 = await getBalance(lp_balance_v1, lp_decimal);
+                    let lp_decimal = await LPInst.methods.decimals().call();
+                    console.log("balance: (LP) ", await fetch_Balance(provider, LPAddress, account, network_[network_dec_to_hex[chainId]]));
+                    setLPMax(lp_balance_v2);
+                } else {
+                    const token1Inst = new web3.eth.Contract(TokenABI, poolCreateDialogState.token1.address);
+                    let balance1_v1 = await token1Inst.methods.balanceOf(account).call();
+                    let balance1_v2 = await getBalance(balance1_v1, poolCreateDialogState.token1.decimals);
+                    const token2Inst = new web3.eth.Contract(TokenABI, poolCreateDialogState.token2.address);
+                    let balance2_v1 = await token2Inst.methods.balanceOf(account).call();
+                    let balance2_v2 = await getBalance(balance2_v1, poolCreateDialogState.token2.decimals);
+                    console.log("balance: (t1) ", await fetch_Balance(provider, poolCreateDialogState.token1.address, account, network_[network_dec_to_hex[chainId]]));
+                    console.log("balance: (t2) ", await fetch_Balance(provider, poolCreateDialogState.token2.address, account, network_[network_dec_to_hex[chainId]]));
+                    setToken1Max(balance1_v2);
+                    setToken2Max(balance2_v2);
+                }; 
+            } catch(e) {
+                //
+            }
         };
     };
     useEffect(() => {
-        ___HISTORY(poolCreateDialogState);
-    }, [poolCreateDialogState])
+        ___HISTORY(connector, poolCreateDialogState);
+    }, [connector, poolCreateDialogState])
 
     useEffect(() => {
         async function __FREE(token1, token2, poolCreateDialogState) {
