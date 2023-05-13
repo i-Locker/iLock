@@ -15,6 +15,7 @@ import List from "@mui/material/List";
 import Alert from "@mui/lab/Alert";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -34,40 +35,45 @@ import { injected, walletconnect } from "../assets/constants/connectors";
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CHANGE_WALLET } from "../redux/constants";
+import GroupOrientation from './GroupButtons';
 import { createStyles, DialogContent, IconButton, makeStyles, Tooltip } from '@mui/material';
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useSelector } from "react-redux";
-import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS } from "../constants.js";
+import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS, _token_map } from "../constants.js";
 
 export default function ChainATokens({ token, setToken }) {
     const classes = useStyles.base();
     const { activate, active, account, deactivate, connector, error, setError, chainId } = useWeb3React();
     const dashboardClasses = useStyles.dashboard();
-    const triedEager = useEagerConnect();
     const [activatingConnector, setActivatingConnector] = React.useState(undefined);
     const [network, setNetwork] = React.useState("");
     const [networkData, setNetworkData] = React.useState("");
-    const cWallet = ConnectedWallet();
-    const dispatch = useDispatch();
     const [holderString, setHolderString] = React.useState("");
     const [tokenIdHolderString, setTokenIdHolderString] = React.useState("");
     const [loadingError, setLoadingError] = React.useState("");
     const [isLocalLoading, setLocalLoading] = React.useState(false);
     const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
     const [selectionError, setSelectionError] = React.useState("");
+
+    const triedEager = useEagerConnect();
+    const cWallet = ConnectedWallet();
+    const dispatch = useDispatch();
+    
     const openDialog = React.useCallback(() => {
         setHolderString("");
         setSelectionError("");
         setDialogIsOpen(true);
     }, []);
+
     const closeDialog = React.useCallback(() => {
         setDialogIsOpen(false);
     }, []);
+
     const searchFilter = React.useCallback((option) => {
         if (!holderString) {
             return true;
-        }
+        };
         const optionString = ((option.publicKey || "") +
             " " +
             (option.mintKey || "") +
@@ -84,6 +90,7 @@ export default function ChainATokens({ token, setToken }) {
     let subMethod = false;
     let showLoader = false;
     let useTokenId = false;
+
     useEffect(() => {
         if (account) {
             dispatch({
@@ -139,26 +146,33 @@ export default function ChainATokens({ token, setToken }) {
             window.alert("Web3 not detected. Are you connected?");
             return;
         };
-    }, [account, network, networkData, networks, chainId])
+    }, [account, network, networkData, networks, chainId]);
+
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
     };
+
     const viewBlockUrl = (account) => {
         const { ethereum } = window;
         console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
         window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
     };
+
     useEffect(() => {
+        if(chainId) {
+            _token_map[chainId.toString()];
+            console.log("chainId: ", _token_map[chainId.toString()], chainId, ethereum.chainId, chainId == ethereum.chainId)
+        };
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
-        }
+        };
     }, [activatingConnector, connector]);
+
     useEffect(() => {
         const logURI = (uri) => {
             console.log("WalletConnect URI", uri);
         };
         walletconnect.on(URI_AVAILABLE, logURI);
-
         return () => {
             walletconnect.off(URI_AVAILABLE, logURI);
         };
@@ -167,26 +181,33 @@ export default function ChainATokens({ token, setToken }) {
     console.log("token: ",token);
 
     useInactiveListener(!triedEager);
+
     const retryConnect = () => {
         setError(false);
     };
+
     const handleContract = (event) => {
         setHolderString(event);
         console.log("holderString: ",event, holderString);
     };
+
     const onConnectWallet = async (item) => {
         setActivatingConnector(item.connector);
         await activate(item.connector);
     };
+
     const onDeactiveWallet = () => {
         deactivate();
     };
+
     const handleOpenWalletList = () => {
         setIsOpen(true);
     };
+
     const handleCloseWalletList = () => {
         setIsOpen(false);
     };
+
     const getErrorMessage = (error) => {
         if (error instanceof NoEthereumProviderError) {
             return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
@@ -222,6 +243,11 @@ export default function ChainATokens({ token, setToken }) {
           <div className={classes.grower}/>
         </div>
       </DialogTitle>
+      <DialogContent className={classes.dialogContent}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" style={{margin:'auto', alignItems:"center"}}>
+            {<GroupOrientation items={""} />}
+        </Stack>
+      </DialogContent> 
       <DialogContent className={classes.dialogContent}>
         <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => handleContract(event.target.value)} fullWidth margin="normal"/>
         {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>

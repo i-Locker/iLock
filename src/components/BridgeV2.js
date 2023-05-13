@@ -168,6 +168,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
 
     let networks;
     let networks___ = [];
+    let core_synced;
+    let started = false;
     
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
@@ -177,9 +179,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
    
     useInactiveListener(!triedEager);
     
-    let started = false;
-    let core_synced;
-
     async function token_Change(token1,token2) {
         let token_var = token1;
         setToken1(token2);
@@ -230,6 +229,11 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const chainB_Network = (i_D) => {
         console.log("networking (B): ", i_D,network_hex_to_dec[i_D]);
         setChainB(network_hex_to_dec[i_D]);
+    };
+
+    async function setSwapping(newValue) {
+        let swapAmount = await setSwappingAmount(newValue);
+        return swapAmount;
     };
 
     const setSwapAmount = async(newValue) => {
@@ -393,11 +397,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const maxSteps = 3;
     const theme = useTheme();
     const mobileClasses = useStyles.mobile();
-    const userBalance = useSelector(state => state.userBalance);
+    const test_data = useSelector(state => state);
     const token = useSelector(state => state.tokenData);
     const data = useSelector(state => state.tokenLists);
-    const test_data = useSelector(state => state);
+    const userBalance = useSelector(state => state.userBalance);
     console.log("test_data: ", test_data, test_data.tokenData);
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -529,18 +534,22 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}></Typography>
-                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
+                                                        {
+                                                            /*
+                                                            <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
+                                                            */
+                                                        }
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
                                                             <ChainATokens token={token1&&token1} setToken={setToken1} />
+                                                       <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
+                                                    </Stack>
+                                                    <Stack direction="row" alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
                                                         <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
-                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
-                                                    </Stack>
-                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B", padding: "2%" }}>
-                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>From: {token1.name?token1.name:"FREN (ERC20)"} </Typography>
+                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74", padding: "1%" }}>From: {token1.name?token1.name:"FREN (ERC20)"} </Typography>
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                     {
@@ -571,17 +580,19 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px" }}></Typography>
-                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token2Balance?token2Balance:0} <a onClick={(e) => handleAmount(e.target.value)} >Max</a></Typography>
+                                                        {/*
+                                                            <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token2Balance?token2Balance:0} <a onClick={(e) => handleAmount(e.target.value)} >Max</a></Typography>
+                                                        */}
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
                                                             <ChainBTokens token={token2&&token2} setToken={setToken2} />
-                                                        <Button startIcon={token2.logoURI&&token2.logoURI !== null ?
-                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
-                                                            :
-                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
                                                     </Stack>
                                                     <Stack direction="row" alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
+                                                        <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                            :
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74", padding: "1%" }}>To: {token2.name?token2.name:"FREN (Fungible Coin)"} </Typography>
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
@@ -591,7 +602,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
                                                                 <Typography gutterBottom>{maxAmount}</Typography>
-                                                                <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
+                                                                <Typography gutterBottom>{token1.symbol ? token1.symbol : "FrenChain"}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
                                                                 <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
@@ -610,13 +621,14 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
+                                                            <ChainATokens token={token1&&token1} setToken={setToken1} />
+                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
+                                                    </Stack>
+                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
-                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
-                                                    </Stack>
-                                                    <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:"FREN (ERC20)"}</Typography>
                                                     </Stack>
                                                 </Stack>
@@ -625,16 +637,17 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#7E8B74" }}>
                                                         <Typography sx={{ fontSize: "14px" }}>To (estimated)</Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}> {token2Balance}</Typography>
+                                                        <Typography sx={{ fontSize: "14px" }}>{token2Balance}</Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
-                                                        <Button startIcon={token2.logoURI&&token2.logoURI !== null ?
-                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
-                                                            :
-                                                            <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token2.symbol&&token2.symbol.substring(0, 1)}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token2.symbol}</Button>
+                                                            <ChainBTokens token={token2&&token2} setToken={setToken2} />
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B" }}>
+                                                        <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                            :
+                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):fren}</Avatar>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
                                                         <Typography sx={{ fontSize: "14px" }}>{token2.name?token2.name:"FREN (Fungible Coin)"}</Typography>
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>

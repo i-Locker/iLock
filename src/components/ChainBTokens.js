@@ -22,6 +22,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch } from 'react-redux';
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
@@ -34,11 +35,12 @@ import { injected, walletconnect } from "../assets/constants/connectors";
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CHANGE_WALLET } from "../redux/constants";
+import GroupOrientation from './GroupButtons';
 import { createStyles, DialogContent, IconButton, makeStyles, Tooltip } from '@mui/material';
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useSelector } from "react-redux";
-import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS } from "../constants.js";
+import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS, _token_map } from "../constants.js";
 
 export default function ChainBTokens({ token, setToken }) {
     const classes = useStyles.base();
@@ -67,7 +69,7 @@ export default function ChainBTokens({ token, setToken }) {
     const searchFilter = React.useCallback((option) => {
         if (!holderString) {
             return true;
-        }
+        };
         const optionString = ((option.publicKey || "") +
             " " +
             (option.mintKey || "") +
@@ -78,14 +80,13 @@ export default function ChainBTokens({ token, setToken }) {
         const searchString = holderString.toLowerCase();
         return optionString.includes(searchString);
     }, [holderString]);
-    
-    console.log("token: ",token);
 
     let networks;
     let networks___ = [];
     let subMethod = false;
     let showLoader = false;
     let useTokenId = false;
+
     useEffect(() => {
         if (account) {
             dispatch({
@@ -141,20 +142,24 @@ export default function ChainBTokens({ token, setToken }) {
             window.alert("Web3 not detected. Are you connected?");
             return;
         };
-    }, [account, network, networkData, networks, chainId])
+    }, [account, network, networkData, networks, chainId]);
+
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
     };
+
     const viewBlockUrl = (account) => {
         const { ethereum } = window;
         console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
         window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
     };
+
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
         }
     }, [activatingConnector, connector]);
+
     useEffect(() => {
         const logURI = (uri) => {
             console.log("WalletConnect URI", uri);
@@ -166,23 +171,35 @@ export default function ChainBTokens({ token, setToken }) {
         };
     }, []);
 
+    console.log("token: ",token);
+
     useInactiveListener(!triedEager);
     const retryConnect = () => {
         setError(false);
     };
+
+    const handleContract = (event) => {
+        setHolderString(event);
+        console.log("holderString: ",event, holderString);
+    };
+
     const onConnectWallet = async (item) => {
         setActivatingConnector(item.connector);
         await activate(item.connector);
     };
+
     const onDeactiveWallet = () => {
         deactivate();
     };
+
     const handleOpenWalletList = () => {
         setIsOpen(true);
     };
+
     const handleCloseWalletList = () => {
         setIsOpen(false);
     };
+    
     const getErrorMessage = (error) => {
         if (error instanceof NoEthereumProviderError) {
             return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
@@ -217,9 +234,14 @@ export default function ChainBTokens({ token, setToken }) {
           <Typography variant="h5">Select a token</Typography>
           <div className={classes.grower}/>
         </div>
-      </DialogTitle>
+      </DialogTitle> 
       <DialogContent className={classes.dialogContent}>
-        <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => setHolderString(event.target.value)} fullWidth margin="normal"/>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" style={{margin:'auto', alignItems:"center"}}>
+            {<GroupOrientation items={""} />}
+        </Stack>
+      </DialogContent> 
+      <DialogContent className={classes.dialogContent}>
+        <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => handleContract(event.target.value)} fullWidth margin="normal"/>
         {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>
           </List>)}
       </DialogContent>
