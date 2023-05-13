@@ -5,6 +5,7 @@ import {
     Typography,
     Button,
     Paper,
+    List,
     FormControl,
     InputLabel,
     CardHeader,
@@ -28,12 +29,12 @@ import Cwallet from "../assets/constants/Cwallet";
 import { CustomTab } from '../config/style';
 import { useTheme } from '@mui/material/styles';
 import { connect, useSelector, useDispatch } from 'react-redux';
-import { useWeb3React } from "@web3-react/core";
 import { useNavigate } from "react-router-dom";
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
+import TextField from "@mui/material/TextField";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Container from "@mui/material/Container";
 import { erc20Abi, network_lower_to_proper, iBridgeAbi } from "../constants";
@@ -43,16 +44,25 @@ import { getBalance } from "../config/app";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CircularProgress from "@mui/material/CircularProgress";
 import ChainATokens from './ChainATokens';
 import ChainBTokens from './ChainBTokens';
+import Dialog from "@mui/material/Dialog";
+import ListItem from "@mui/material/ListItem";
+import DialogTitle from "@mui/material/DialogTitle";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ListItemText from "@mui/material/ListItemText";
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import './swap.css';
 import axios from 'axios';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
+import { Wallets, ConnectedWallet } from "../assets/constants/wallets";
+import { injected, walletconnect } from "../assets/constants/connectors";
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import useStyles from '../assets/styles';
+import { createStyles, DialogContent, makeStyles, Tooltip } from '@mui/material';
 import { Router_address } from "../config/abi/router/dexRouter";
 import { Factory_address } from "../config/abi/router/dexFactory";
 import fren from '../assets/img/common/fren.svg';
@@ -60,6 +70,24 @@ import Filter from '../assets/img/common/filter.png';
 import Refresh from '../assets/img/common/refresh.png';
 import { styled, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
+import {
+    NoEthereumProviderError,
+    UserRejectedRequestError as UserRejectedRequestErrorInjected,
+} from "@web3-react/injected-connector";
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import {
+    URI_AVAILABLE,
+    UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
+} from "@web3-react/walletconnect-connector";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
+import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
+import ReplayIcon from '@mui/icons-material/Replay';
+import { CHANGE_WALLET } from "../redux/constants";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { __NETWORKS } from "../constants.js";
 let approveToken = approve_Token;
 const theme = createTheme({
     shape: {
@@ -138,6 +166,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const [modalTitle, setModalTitle] = useState("");
     const [modalDes, setModalDes] = useState("");
     const [tokenContract, setTokenContract] = useState("");
+    const [options, setOptions] = useState("");
     const [holder, setHolder] = useState("");
     const [subMethod, setSubMethod] = useState("Project Tokens");
     const [bridgeAmount, setLockAmount] = useState(0);
@@ -163,22 +192,245 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const classes = useStyles.base();
     const dashboardClasses = useStyles.dashboard();
     const triedEager = useEagerConnect();
-    const [activatingConnector, setActivatingConnector] = React.useState(undefined);
     const [holderString, setHolderString] = React.useState("");
+    const [tokenIdHolderString, setTokenIdHolderString] = React.useState("");
+    const [loadingError, setLoadingError] = React.useState("");
+    const [isLocalLoading, setLocalLoading] = React.useState(false);
+    const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
+    const [selectionError, setSelectionError] = React.useState("");
+    const openDialog = React.useCallback(() => {
+        setHolderString("");
+        setSelectionError("");
+        setDialogIsOpen(true);
+    }, []);
+    const closeDialog = React.useCallback(() => {
+        setDialogIsOpen(false);
+    }, []);
+    const searchFilter = React.useCallback((option) => {
+        if (!holderString) {
+            return true;
+        }
+        const optionString = ((option.publicKey || "") +
+            " " +
+            (option.mintKey || "") +
+            " " +
+            (option.symbol || "") +
+            " " +
+            (option.name || " ")).toLowerCase();
+        const searchString = holderString.toLowerCase();
+        return optionString.includes(searchString);
+    }, [holderString]);
 
+    const nonFeaturedOptions = React.useMemo(() => {
+        if(options)
+        try {
+            return options.filter((option) => searchFilter(option) // &&
+            //nft
+            );
+        } catch(e) {
+            //
+        };
+    }, [options, searchFilter]);
+
+    const localFind = React.useCallback((address, tokenIdHolderString) => {
+        if(options)
+        try {
+            return options.find((x) => x.mintKey === address &&
+            (!tokenIdHolderString || x.tokenId === tokenIdHolderString));
+        } catch(e){
+            //
+        };
+    }, [options]);
     let networks;
     let networks___ = [];
-    
+    let showLoader = false;
+    let useTokenId = false;
     useEffect(() => {
-        if (activatingConnector && activatingConnector === connector) {
-            setActivatingConnector(undefined);
-        }
-    }, [activatingConnector, connector]);
-   
-    useInactiveListener(!triedEager);
+        const { ethereum } = window;
+        let __id;
+        try {
+            if (chainId || ethereum.chainId) {
+                if (!chainId) {
+                    try {
+                        __id = ethereum.chainId;
+                    } catch(e) {
+                        return;
+                    };
+                } else {
+                    try {
+                        __id = network_dec_to_hex[chainId];
+                    } catch(e) {
+                        return;
+                    };
+                };
+                console.log("__id: ", __id);
+                if (account && __id) {
+                    setNetwork(network_[__id]);
+                    networks = network_[__id];
+                    console.log("network: ", network, network_[__id], networks);
+                    if (network) {
+                        let ran = false;
+                        let WROTE = false;
+                        __NETWORKS.find((item) => item.name == network).chainData.map((each) => {
+                            if (each["rpcUrls"].length > 0 && !WROTE) {
+                                WROTE = true;
+                                console.log("chainData: ", each, each["rpcUrls"]);
+                                ran = each;
+                                setNetworkData(ran);
+                                if (networkData) {
+                                    console.log("networkData: ", networkData);
+                                };
+                            };
+                        });
+                        __NETWORKS.forEach((_network_) => {
+                            let _chainData_ = `${_network_.name}`;
+                            networks___.push(_network_);
+                            console.log("chainData (b): ", _chainData_, _network_);
+                        });
+                    };
+                };
+            };
+        } catch(e) {
+            window.alert("Web3 not detected. Are you connected?");
+            return;
+        };
+    }, [account, network, networkData, networks, chainId]);
+
+    const copyAddress = () => {
+        alert(`Copied to clipboard.`, "info");
+    };
+
+    const viewBlockUrl = (account) => {
+        const { ethereum } = window;
+        console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
+        window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
+    };
+
+    const handleOpenWalletList = () => {
+        setIsOpen(true);
+    };
+    const handleCloseWalletList = () => {
+        setIsOpen(false);
+    };
+    async function startup(token1,token2,connector) {
+        try {
+            const provider = window.ethereum;
+            fetch_Balance(provider, token1.address, account, network).then(results => {
+                console.log("results", results);
+                setTokenBalance(results);
+                return results;
+            });
+        } catch(e) {
+            console.log("error: ", e);
+        };
+    };
     
     let started = false;
+    
+    useEffect(() => {
+        if(!started && chainId && account && network && token1 && token2) {
+            started = true;
+            console.log("networking: ",started, chainId, account, network);
+            startup(token1,token2,connector);
+        };
+        if (importAlert) {
+            setTimeout(function() {
+                setImportAlert({ state1: false, state2: "success", data: "" });
+            }, 5000);
+        };
+        if (chainId&&bridgeAddress) {
+            try {
+                console.log("iBridgeAddress: ", iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
+                setBridgeAddress(iBridgeAddress[network_[network_dec_to_hex[chainId]]]);
+                console.log("bridgeAddress: ", bridgeAddress);
+            } catch (e) {
+                console.log("e: ", e);
+            };
+        };
+    }, [startup, importAlert, connector, bridgeAddress, chainId, account, connector, token1, token2, connector]);
+
+    let t;
+    let sOrders;
+    let num = 0;
     let core_synced;
+    useEffect(() => {
+        if (account && !core_synced) {
+            setSwapSelectData(0);
+            core_synced = true;
+        } else {
+            return;
+        };
+    }, [token1, token2, account, connector, chainId, core_synced])
+
+    const swapTabChange = (newValue) => {
+        setSwapTabValue(newValue);
+        if (newValue === 0) {
+            setActiveRate(4);
+            SwapPaper = styled(Paper)(() => ({
+                position: "absolute",
+                animationName: "paperAnimate1",
+                animationDuration: "0.5s"
+            }));
+            ActiveGrid = styled(Grid)(() => ({
+                animationName: "pageAnimate1",
+                animationDuration: "0.5s"
+            }));
+            ActiveStack = styled(Stack)(() => ({
+                animationName: "pageAnimate1",
+                animationDuration: "0.5s"
+            }));
+            setTimeout(function() {
+                ActiveGrid = styled(Grid)(() => ({
+                    display: "none"
+                }));
+                ActiveStack = styled(Stack)(() => ({
+                    display: "none"
+                }));
+                SwapPaper = styled(Paper)(() => ({
+                    margin: "99px 0 276px"
+                }));
+                setActiveRate(12);
+            }, 500);
+        };
+        if (newValue === 1) {
+            setActiveRate(11);
+            SwapPaper = styled(Paper)(() => ({
+                position: "absolute",
+                animationName: "paperAnimate2",
+                animationDuration: "0.5s"
+            }));
+            ActiveGrid = styled(Grid)(() => ({
+                animationName: "pageAnimate2",
+                animationDuration: "0.5s"
+            }));
+            ActiveStack = styled(Stack)(() => ({
+                animationName: "pageAnimate2",
+                animationDuration: "0.5s"
+            }));
+            setTimeout(function() {
+                SwapPaper = styled(Paper)(() => ({
+                    margin: "80px 0 130px"
+                }));
+                ActiveGrid = styled(Grid)(() => ({
+                    display: ""
+                }));
+                ActiveStack = styled(Stack)(() => ({
+                    display: ""
+                }));
+                setActiveRate(4.8);
+            }, 500);
+        };
+    };
+
+    const handleChange = (event, i_D) => {
+        setNetwork(event.target.value);
+        setChainA(i_D);
+        console.log("tokenChange: ",token1,token2);
+    };
+
+    const TokenSelect3 = (event) => {
+        setToken3(event.target.value);
+    };
 
     async function token_Change(token1,token2) {
         let token_var = token1;
@@ -205,6 +457,17 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         };
     };
 
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const swapSettingDialogOpen = () => {
+        setSwapSettingDialogState(true);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
@@ -215,6 +478,11 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
 
     const fetchEtherBalance = (eb) => {
         setEtherBalance(eb);
+    };
+
+    const handleHolder = async (e) => {
+        setHolder(e.target.value);
+        console.log("holder: ", holder);
     };
 
     const changeNetwork = (name, i_D) => {
@@ -232,13 +500,26 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setChainB(network_hex_to_dec[i_D]);
     };
 
+    async function setSwapping(newValue) {
+        let swapAmount = await setSwappingAmount(newValue);
+        return swapAmount;
+    };
+
     const setSwapAmount = async(newValue) => {
         if (newValue != swappingAmount) {
             console.log("setSwapAmount: ", swappingAmount, newValue);
             let swapAmount = await setSwapping(newValue);
             console.log("setSwapping: ", swapAmount);
             return false;
-        }
+        };
+    };
+
+    const checkAllowance = async (token, account, network) => {
+        allowance(token, account, network).then(results => {
+            setTokenAllowance(results);
+            console.log("allowance: ", results, tokenAllowance);
+            return results;
+        });
     };
 
     const checkEtherBalance = async (provider, account) => {
@@ -282,8 +563,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                }
+                    };
+                };
             } catch (switchError) {
                 try {
                     const params_network_add = {
@@ -322,7 +603,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                 handleOpen();
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
+                            };
                         } else if (activeStep >= 1) {
                             return;
                         } else {
@@ -330,14 +611,14 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        }
-                    }
+                            };
+                        };
+                    };
                 } catch (e) {
                     console.log("err: ", e);
-                }
-            }
-        }
+                };
+            };
+        };
     };
 
     const tokenApprove = async () => {
@@ -345,7 +626,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
             let approve_amount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
             // setSwapBtnState(6);
             try {
-                let provider = await connector.getProvider();
                 approveToken(provider, token1, account, spender, approve_amount).then(async (W3) => {
                     setSwapBtnState(4);
                 });
@@ -392,12 +672,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
 
     const maxSteps = 3;
     const theme = useTheme();
+    let cWallet = ConnectedWallet();
     const mobileClasses = useStyles.mobile();
-    const userBalance = useSelector(state => state.userBalance);
-    const token = useSelector(state => state.tokenData);
-    const data = useSelector(state => state.tokenLists);
-    const test_data = useSelector(state => state);
-    console.log("test_data: ", test_data, test_data.tokenData);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -420,6 +696,39 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     });
 
     return ( <>
+        <div className={classes.alignCenter}>
+          <CircularProgress />
+          <Typography variant="body2">
+            {showLoader ? "Loading available tokens" : "Searching for results"}
+          </Typography>
+        </div>
+        <div className={classes.alignCenter}>
+          <Typography variant="body2" color="error">
+            {loadingError || selectionError}
+          </Typography>
+        </div>
+        <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={dialogIsOpen} maxWidth="sm" fullWidth>
+          <DialogTitle>
+            <div id="simple-dialog-title" className={classes.flexTitle}>
+              <Typography variant="h5">Select a token</Typography>
+              <div className={classes.grower}/>
+            </div>
+          </DialogTitle>
+          <DialogContent className={classes.dialogContent}>
+            <TextField variant="outlined" label="Search name or paste address" value={holderString} onChange={(event) => setHolderString(event.target.value)} fullWidth margin="normal"/>
+            {useTokenId ? (<TextField variant="outlined" label="Token Id" value={tokenIdHolderString} onChange={(event) => setTokenIdHolderString(event.target.value)} fullWidth margin="normal"/>) : null}
+            {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>
+                {nonFeaturedOptions&&nonFeaturedOptions.map((option) => {
+                    return (<ListItem component="div" button onClick={() => handleSelectOption(option)} key={option.publicKey + option.mintKey + (option.tokenId || "")} disabled={getIsTokenTransferDisabled(chainId, chainB, option.mintKey)}>
+                      <RenderOption account={option}/>
+                    </ListItem>);
+                })}
+                {nonFeaturedOptions&&nonFeaturedOptions.length ? null : (<div className={classes.alignCenter}>
+                    <Typography>No results found</Typography>
+                  </div>)}
+              </List>)}
+          </DialogContent>
+        </Dialog>
         <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }} style={{maxHeight:"100%"}}>
                     {<Grid container justifyContent="space-between">
@@ -532,7 +841,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
-                                                            <ChainATokens token={token1&&token1} setToken={setToken1} />
                                                         <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
                                                             <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
@@ -562,6 +870,13 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                             <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B", padding: "2%" }}>
                                                 <br />
                                             </Stack>
+                                            {
+                                              /*
+                                                  <IconButton aria-label="swap" sx={{ color: "white" }} onClick={() => tokenChange(token1,token2)}>
+                                                      <ArrowCircleDownIcon />
+                                                  </IconButton>
+                                              */
+                                            }
                                             <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2  }}>
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -574,7 +889,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token2Balance?token2Balance:0} <a onClick={(e) => handleAmount(e.target.value)} >Max</a></Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
-                                                            <ChainBTokens token={token2&&token2} setToken={setToken2} />
                                                         <Button startIcon={token2.logoURI&&token2.logoURI !== null ?
                                                             <Avatar src={token2.logoURI?token2.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
                                                             :
@@ -621,6 +935,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     </Stack>
                                                 </Stack>
                                             </Paper>
+                                            {/*
+                                                <IconButton aria-label="swap" sx={{ color: "white" }} onClick={() => tokenChange(token1,token2)}>
+                                                    <ArrowCircleDownIcon />
+                                                </IconButton>
+
+                                            */}
                                             <Paper sx={{ margin: "0 0 24px", width: "100%", background: "#101010", borderRadius: "12px" }}>
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#7E8B74" }}>
@@ -731,7 +1051,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                     </Grid>}
                 </Stack>
             </ThemeProvider>  
-            <Cwallet isOpenDialog = { isOpenDialog } setIsOpenDialog = { setIsOpenDialog } chain = { chainState } setChain = { setChainState } tokenDialogState = { tokenDialogState } setTokenDialogState = { setTokenDialogState } selectToken = { selectToken } swapSettingDialogState = { swapSettingDialogState } setSwapSettingDialogState = { setSwapSettingDialogState } poolCreateDialogState = { poolCreateDialogState } setPoolCreateDialogState = { setPoolCreateDialogState } setPools = { setPools } setImportAlert = { setImportAlert }/> 
         < / >
     );
 }

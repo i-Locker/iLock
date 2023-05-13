@@ -1,6 +1,6 @@
 import { CHAIN_ID_ACALA, CHAIN_ID_KARURA, CHAIN_ID_SOLANA, isEVMChain, } from "@certusone/wormhole-sdk";
 import { ethers } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
+import { formatEther, parseUnits } from "@ethersproject/units";
 /*
  * Attest
  */
@@ -191,24 +191,17 @@ export const selectTransferTargetError = (state) => {
     if (!selectTransferTargetAsset(state)) {
         return UNREGISTERED_ERROR_MESSAGE;
     }
-    if (isEVMChain(state.transfer.targetChain) &&
-        selectTransferTargetAsset(state) === ethers.constants.AddressZero) {
+    if (isEVMChain(state.transfer.targetChain) && selectTransferTargetAsset(state) === ethers.constants.AddressZero) {
         return UNREGISTERED_ERROR_MESSAGE;
     }
     if (!state.transfer.targetAddressHex) {
         return "Target account unavailable";
     }
-    if (state.transfer.useRelayer &&
-        state.transfer.relayerFee === undefined &&
-        // Acala offers relaying without a fee for qualified tokens
-        state.transfer.targetChain !== CHAIN_ID_ACALA &&
-        state.transfer.targetChain !== CHAIN_ID_KARURA) {
+    if (state.transfer.useRelayer && state.transfer.relayerFee === undefined && state.transfer.targetChain !== CHAIN_ID_ACALA && state.transfer.targetChain !== CHAIN_ID_KARURA) {
         return "Invalid relayer fee.";
     }
     if (state.transfer.useRelayer &&
-        (state.transfer.targetChain === CHAIN_ID_ACALA ||
-            state.transfer.targetChain === CHAIN_ID_KARURA) &&
-        !state.transfer.acalaRelayerInfo.data?.shouldRelay) {
+        (state.transfer.targetChain === CHAIN_ID_ACALA || state.transfer.targetChain === CHAIN_ID_KARURA) && !state.transfer.acalaRelayerInfo.data?.shouldRelay) {
         return "Token is ineligible for relay.";
     }
     if (state.transfer.relayerFee && state.transfer.sourceParsedTokenAccount) {
@@ -218,15 +211,14 @@ export const selectTransferTargetError = (state) => {
                 .add(parseUnits(state.transfer.relayerFee.toString(), state.transfer.sourceParsedTokenAccount.decimals))
                 .gt(parseUnits(state.transfer.sourceParsedTokenAccount.uiAmountString, state.transfer.sourceParsedTokenAccount.decimals))) {
                 return "The amount being transferred plus fees exceeds the wallet's balance.";
-            }
-        }
-        catch (e) {
+            };
+        } catch (e) {
             if (e?.message) {
                 return e.message.substring(0, e.message.indexOf("("));
-            }
+            };
             return "Invalid amount";
-        }
-    }
+        };
+    };
 };
 export const selectTransferIsTargetComplete = (state) => !selectTransferTargetError(state);
 export const selectTransferIsSendComplete = (state) => !!selectTransferSignedVAAHex(state);

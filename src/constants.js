@@ -14,7 +14,7 @@ export const iMigrator_status = {
     "Binance":false,
     "Binance_testnet": false,
     "Avalanche":false,
-    "Avalanche_testnet": false,
+    "Avalanche_testnet": false,	
     "Frenchain_testnet":false,
     "Frenchain":false,
     "Polygon_testnet": false,
@@ -214,7 +214,7 @@ export const network_dec_to_hex = {
 export const explorer_ = {
     "0x1": explorer["Ethereum"],
     "0x5": explorer["Goerli"],
-    "0x38": explorer["Binance"],
+    "0x38": explorer["	"],
     "0x19": explorer["Cronos"],
     "0x152": explorer["Cronos_testnet"],
     "0x61": explorer["Binance_testnet"],
@@ -288,6 +288,23 @@ export const tokens_data = {
    "Avalanche_testnet" : { name: "Avalanche_testnet", currency: "tAVAX", subtitle: `Choose if the proejct is deployed Avalanche (testnet)`, url: "/networks/avax.svg", chainData: { chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { name: "Avalanche", symbol: 'tAVAX', decimals: 18 }, tokens: [{ name: "Avalanche", symbol: "tAVAX", decimals: 18 , contract: "0x1d308089a2d1ced3f1ce36b1fcaf815b07217be3" }] }  },
    "Frenchain_testnet" : { name: "Frenchain_testnet", currency: "tFREN", subtitle: `Choose if the proejct is deployed FrenChain (testnet)`, url: "/networks/fren.svg", chainData: { chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { name: "FrenChain", symbol: 'tFREN', decimals: 18 }, tokens: [{ name: "FrenChain", symbol: "tFREN", decimals: 18 , contract: "0xd0d049E19D35c7c32Dc37933950D6615AE43Fb61" }] }  },
    "Kekchain_testnet" : { name: "Kekchain_testnet", currency: "tKEK", subtitle: `Choose if the proejct is deployed to KekChain (testnet)`, url: "/networks/kek.png", chainData: { chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { name: "KekChain", symbol: 'tKEK', decimals: 18 }, tokens: [{ name: "KekChain", symbol: "tKEK", decimals: 18 , contract: "0x7806c2744c08deea4e048d825f1962f1159e7f8c" }] } }
+};
+export const wrappedAddress = {
+    "Ethereum": "",
+    "Goerli": "",
+    "Binance": "",
+    "Binance Smart Chain": "",
+    "Binance_testnet": "",
+    "Cronos": "",
+    "Cronos_testnet": "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23",
+    "Avalanche": "",
+    "Avalanche_testnet": "",
+    "Polygon": "",
+    "Polygon_testnet": "",
+    "Frenchain": "",
+    "Frenchain_testnet": "",
+    "Kekchain": "",
+    "Kekchain_testnet": ""
 };
 export const lockerAddress = {
     "Ethereum": "",

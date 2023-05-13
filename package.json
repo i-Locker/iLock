@@ -23,6 +23,7 @@
     "url": "https://github.com/i-Lockers/iLock/issues"
   },
   "dependencies": {
+    "@certusone/wormhole-sdk": "^0.9.16",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.0",
     "@emotion/react": "latest",

@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { useWeb3React } from '@web3-react/core';
 import { styled } from '@mui/material/styles';
-
 // ** Import Material UI Components
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -21,9 +20,7 @@ import Link from "@mui/material/Link";
 // ** Import Assets
 import useStyles from '../assets/styles';
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-
 import { explorer_, networks_data, network_dec_to_hex, network_to_chain, network_lower_to_proper, rpc_, icons_, network_, network_symbols, network_decimals, network_hex_to_dec, lockerAddress } from '../constants';
 import Loader from '../components/Loader';
 import { alterLoaderText } from '../components/Loader';

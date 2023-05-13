@@ -244,19 +244,18 @@ export const calculateSuggestedDonation = async (provider, amount, isEth, accoun
 };
 
 
-export const bridgeToken = async (provider, index, amount, isEth, account, network) => {
-    let result; let result_iBridge;
+export const bridgeToken = async (provider, token, account, amount, chainB, network, gasLimit) => {
+    let result_iBridge;
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
-        console.log("get_iVault_byIndex: ", account, index, network);
         let contract_iBridge = new web3.eth.Contract(iBridgeAbi, iBridgeAddress[network]);
-        result_iBridge = await contract_iBridge.methods["bridgeTOKEN"](amount,index,isEth).call({ from: account });
-        let feeInETH = feeInETH["donation_in_ETH"];
-            console.log("feeInETH: ",feeInETH);
-        feeInETH = feeInETH * 2;
+        let feeInETH = await contract_iBridge.methods["minDonation"]().call({ from: account });
+        console.log("bridgeToken: ", feeInETH, token, account, amount, chainB, network);
         if (feeInETH) {
-            console.log("bridge: ", feeInETH, amount, account, network)
+            feeInETH = feeInETH * 2;
+            result_iBridge = await contract_iBridge.methods["coinIn"](token,account,chainB).send({ from: account, value: feeInETH, gasLimit: gasLimit });
+            console.log("result_iBridge: ", result_iBridge);
         };
     } catch (e) {
         console.log(e);
@@ -370,12 +369,24 @@ export const approve = async (provider, token, account, lockAmount, network) => 
     };
 };
 
-export const approveToken = async (provider, token, account, deployedContract) => {
+export const approveToken = async (provider, token, account, spender) => {
     let result;
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(erc20Abi, token, account);
-        result = await contract.methods["approve"](deployedContract, web3.utils.toBN("115792089237316195423570985008687907853269984665640564039457584007913129639935")).send({ from: account });
+        result = await contract.methods["approve"](spender, web3.utils.toBN("115792089237316195423570985008687907853269984665640564039457584007913129639935")).send({ from: account });
+        return result.status;
+    } catch (e) {
+        console.log(e);
+    };
+};
+
+export const approve_Token = async (provider, token, account, spender, amount) => {
+    let result;
+    try {
+        let web3 = new Web3(provider);
+        let contract = new web3.eth.Contract(erc20Abi, token, account);
+        result = await contract.methods["approve"](spender, amount).send({ from: account });
         return result.status;
     } catch (e) {
         console.log(e);
@@ -395,6 +406,7 @@ export const allowance = async (token, account, network) => {
 };
 
 export const fetch_Balance = async (provider, token, account, network) => {
+    console.log("fetch: ",token, account, network);
     let result;
     try {
         let web3 = new Web3(provider);

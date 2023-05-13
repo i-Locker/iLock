@@ -25,7 +25,6 @@ import FormControl from '@mui/material/FormControl';
 import { Router_address } from "../config/abi/router/dexRouter";
 import { Factory_address } from "../config/abi/router/dexFactory";
 import Search from '@mui/icons-material/Search';
-import { Snackbar } from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Box, IconButton } from "@mui/material";
 import Link from "@mui/material/Link";
@@ -33,18 +32,19 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, iBridgeAddress, network_dec_to_hex, tokens_data } from "../constants";
+import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
 import { getTokenMetadata, getERC20Metadata } from "../api";
+import MenuListSpecial from '../components/MenuListSpecial';
 import { toggleDrawer } from '../components/Header';
+import { alterLoaderText } from '../components/Loader';
 import Loader from '../components/Loader';
 import DateTime from '../components/DateTime';
-import { alterLoaderText } from '../components/Loader';
 import BridgeV2 from '../components/BridgeV2';
-import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
-export let handle_Date;
-export let chainHook;
-let Bridge = BridgeV2;   
 export let handle_dispatch;
+export let handle_Date;
+let Bridge = BridgeV2;   
+export let chainHook;
 const CrossChainV2 = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();
@@ -112,6 +112,7 @@ const CrossChainV2 = (props) => {
     const selectToken = async () => {
         console.log("activeStep: ", activeStep);
     };
+
     const checkAllowance = async (token, account, network) => {
         allowance(token, account, network).then(results => {
             setTokenAllowance(results);
@@ -119,6 +120,7 @@ const CrossChainV2 = (props) => {
             return results;
         });
     };
+
     let checked = false;
     const checkEtherBalance = async (provider, account) => {
         if(!checked) {
@@ -127,107 +129,6 @@ const CrossChainV2 = (props) => {
                 console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
                 fetchEtherBalance(ebf[2]);
             });
-        };
-    };
-    const handleNext = async () => {
-        if (account) {
-            const provider = window.ethereum;
-            checkEtherBalance(provider, account);
-            const currentNetworkData = networkData.filter((each) => each.name === network);
-            try {
-                let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
-                console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
-                if (NETWORK) {
-                    console.log("You are already on the proper network:  ", network);
-                } else {
-                    await provider.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: currentNetworkData[0].chainData.chainId }],
-                    });
-                    console.log("You have successfully switched to ", network);
-                }
-                if (activeStep == 0) {
-                    if (account === undefined) {
-                        setModalTitle("Please connect Wallet");
-                        setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        handleOpen();
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                } else if (activeStep >= 2) {
-                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                        setModalTitle("Please select Token");
-                        setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        handleOpen();
-                    } else {
-                        console.log(activeStep);
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                } else {
-                    console.log("activeStep: ", activeStep);
-                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                        // 
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 2);
-                    };
-                }
-            } catch (switchError) {
-                try {
-                    const params_network_add = {
-                        chainId: currentNetworkData[0].chainData.chainId,
-                        rpcUrls: [rpc_[currentNetworkData[0].chainData.chainId]],
-                        chainName: network_[currentNetworkData[0].chainData.chainId],
-                        nativeCurrency: { name: network_symbols[currentNetworkData[0].chainData.chainId], decimals: network_decimals[currentNetworkData[0].chainData.chainId], symbol: network_symbols[currentNetworkData[0].chainData.chainId] },
-                        blockExplorerUrls: [explorer_[currentNetworkData[0].chainData.chainId]],
-                        iconUrls: [icons_[currentNetworkData[0].chainData.chainId]]
-                    };
-                    console.log("params_network_add: ", switchError.code, params_network_add);
-                    if (switchError.code === 4902) {
-                        console.log("This network is not available in your metamask, please add it");
-                        let provider = await connector.getProvider();
-                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
-                        console.log("chainId: ", chainId);
-                        provider.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{ ...params_network_add }]
-                        }).catch((error) => {
-                            console.log("provider_err: ", error);
-                        });
-                    } else if (switchError.code === 4001) {
-                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    } else if (switchError.code === 4200) {
-                        console.log("You have succefully switched to ", network);
-                        if (activeStep == 0) {
-                            if (account === undefined) {
-                                setModalTitle("Please connect Wallet");
-                                setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                                handleOpen();
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        } else if (activeStep == 2) {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                setModalTitle("Please select Token");
-                                setModalDes(`Before you can create a lock on ${network}, you must select token on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                                handleOpen();
-                            } else {
-                                console.log(activeStep);
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        } else {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 2);
-                            };
-                        };
-                    };
-                } catch (e) {
-                    console.log("err: ", e);
-                };
-            };
         };
     };
 
@@ -645,14 +546,7 @@ const CrossChainV2 = (props) => {
     }
     return (
         <Container className={classes.root} maxWidth="fluid" style={{margin:'auto', backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)"}}>
-            <Bridge token1={token1} token2={token2} setToken1={setToken1} setToken2={setToken2} factoryAddress={factoryAddress} routerAddress={routerAddress} setFactoryAddress={setFactoryAddress} setRouterAddress={setRouterAddress} chainState={chainState?chainState:{"tokens":[{},{}]}}setChainState={setChainState} /> 
-            <Snackbar
-                open={snackbar}
-                autoHideDuration={600}
-                style={{width:100}}
-                onClose={()=>handleSnackbarClose(true)}
-                message="Successfully Copied to Clipboard"
-            />
+            <Bridge token1={token1} token2={token2} setToken1={setToken1} setToken2={setToken2} chainState={chainState?chainState:{"tokens":[{},{}]}}setChainState={setChainState} /> 
         </Container>
     )
 }
