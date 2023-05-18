@@ -1,0 +1,7 @@
+iMigrator (testnet Binance): 0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c
+iBridge (testnet Binance): 0x4ADddcEB000A23F613F8E1300938b703226f4064
+iBridge (testnet Cronos): 0x55652dea07d52D020E6ae4043E4B37bECc435006
+iTokenFarm (testnet Cronos): 0x2dB0cD1deC3228FB985B04814e76B17cD7e63d26
+iBridge (testnet Binance): 0xBCae51873a3FC8B782DC2981Ddb98a5be8c9ADe3
+iMigrator (testnet Cronos): 0x11755Dc7e0b3CEF7277a8Dd3C0dc2b39881ec958
+iBridge (testnet Cronos): 0x639E8bDEA73d1cA098AA4775B38102b0D1bb37b7

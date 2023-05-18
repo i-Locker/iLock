@@ -1,0 +1,1 @@
+yarn build && mv srv/prod/build srv/prod/v1 && mv srv/devel/build srv/devel/v1 && cp -r -f build srv/prod/build && cp -r -f build srv/devel/build

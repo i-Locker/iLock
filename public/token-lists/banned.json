@@ -1,0 +1,22 @@
+{
+  "name": "BANNED Default List",
+  "timestamp": "2023-04-28T00:00:00Z",
+  "version": {
+    "major": 3,
+    "minor": 0,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "nologo.png",
+  "keywords": ["banned","protocol"],
+  "tokens": [
+    {
+      "symbol": "BANNED",
+      "name": "BANNED Protocol",
+      "chainId":13371024,
+      "decimals":18,
+      "logoURI": "BANNED.png",
+      "address": "0xFAd89C379319212F2624f9CC66f35507F303Aa24"
+    }
+  ]
+}
