@@ -47,6 +47,7 @@ export default function ChainATokens({ token, setToken }) {
     const { activate, active, account, deactivate, connector, error, setError, chainId } = useWeb3React();
     const dashboardClasses = useStyles.dashboard();
     const [activatingConnector, setActivatingConnector] = React.useState(undefined);
+    const [tokenMap, setTokenMap] = React.useState(undefined);
     const [network, setNetwork] = React.useState("");
     const [networkData, setNetworkData] = React.useState("");
     const [holderString, setHolderString] = React.useState("");
@@ -59,7 +60,7 @@ export default function ChainATokens({ token, setToken }) {
     const triedEager = useEagerConnect();
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
-    
+
     const openDialog = React.useCallback(() => {
         setHolderString("");
         setSelectionError("");
@@ -161,7 +162,8 @@ export default function ChainATokens({ token, setToken }) {
     useEffect(() => {
         if(chainId) {
             _token_map[chainId.toString()];
-            console.log("chainId: ", _token_map[chainId.toString()], chainId, ethereum.chainId, chainId == ethereum.chainId)
+            setTokenMap(_token_map[chainId.toString()]);
+            console.log("chainId: ", _token_map[chainId.toString()], _token_map[chainId.toString()].tokens, chainId, ethereum.chainId, chainId == ethereum.chainId);
         };
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);

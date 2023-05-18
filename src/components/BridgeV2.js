@@ -217,18 +217,33 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     };
 
     const changeNetwork = (name, i_D) => {
+        console.log("network: ", network, name, i_D);
         setNetwork(name);
-        chainA_Network(name, i_D);
+        set_Chain("A",network_hex_to_dec[i_D]);
     };
 
-    const chainA_Network = (name, i_D) => {
-        console.log("networking (A): ", name, i_D,network_hex_to_dec[i_D]);
-        setChainA(network_hex_to_dec[i_D]);
+    async function set_Chain(chain__,chain__id) {
+        let chain_state;
+        console.log("networking: (fi) ", chain__,chain__id);
+        switch(chain__) {
+            case "A":
+                chain_state = await setChainA(chain__id);
+                break;
+            case "B":
+                chain_state = await setChainB(chain__id);
+                break;
+            default:
+                break;
+        };
+        return chain_state;
     };
 
-    const chainB_Network = (i_D) => {
-        console.log("networking (B): ", i_D,network_hex_to_dec[i_D]);
-        setChainB(network_hex_to_dec[i_D]);
+    const chainA_Network = async(name, i_D) => {
+        return await set_Chain("A",network_hex_to_dec[i_D]);
+    };
+
+    const chainB_Network = async(name, i_D) => {
+        return await set_Chain("B",network_hex_to_dec[i_D]);
     };
 
     async function setSwapping(newValue) {
@@ -461,7 +476,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     style={{padding:0, borderRadius:'5px'}}
                                                     value={item.chainData.chainId}
                                                     key={item.name}
-                                                    onClick = {()=>changeNetwork(item.chainData.chainId)} 
+                                                    onClick = {()=>changeNetwork(item.name,item.chainData.chainId)} 
                                                 >
                                                 <Grid item xs={12} sm={12} md={12}>
                                                         <Grid 
@@ -481,7 +496,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                                 </p>
                                                             </Grid>
                                                         </Grid>
-                                                        {item.chainData.chainId==network ? <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} /> : <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
+                                                        {item.name==network ? <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} /> : <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
                                                     </Grid>
                                                 </Grid>
                                                 )
