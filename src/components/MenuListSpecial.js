@@ -12,14 +12,16 @@ export default function MenuListSpecial({items,setItems}) {
     setItems(newValue);
   };
   return (
-   items ? items.map((item)=>
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      <Tabs value={value} onChange={handleChange} centered>
-        <Tab label="Item">
-          {item}
-        </Tab>
-      </Tabs>
+    {
+      items ? items.map((item)=>
+        <Tabs key={item.name} value={value} onChange={handleChange} centered>
+          <Tab label="Item">
+            {item}
+          </Tab>
+        </Tabs>
+      ) : <></>
+    }
     </Box>
-    ) : <></> 
   );
 };

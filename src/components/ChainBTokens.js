@@ -55,6 +55,7 @@ export default function ChainBTokens({ token, setToken }) {
     const [holderString, setHolderString] = React.useState("");
     const [tokenIdHolderString, setTokenIdHolderString] = React.useState("");
     const [loadingError, setLoadingError] = React.useState("");
+    const [isOpen, setIsOpen] = React.useState(false);
     const [isLocalLoading, setLocalLoading] = React.useState(false);
     const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
     const [selectionError, setSelectionError] = React.useState("");

@@ -242,9 +242,9 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
             )}
             {!active ? (
                 <List className="wallet-list">
-                                            <p style={{textAlign:'center'}} color="textSecondary">
-                                                Connect via Web3
-                                            </p>
+                    <p style={{textAlign:'center'}} color="textSecondary">
+                        Connect via Web3
+                    </p>
                     {Wallets.map((item, idx) => {
                         const activating =
                             item.connector === activatingConnector;
@@ -257,36 +257,30 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                         return (
                             activating ? <></> : <ListItem
                                 button
-                                key={idx}
+                                key={item.name}
                                 className="item"
                                 disabled={disabled}
                                 onClick={() => onConnectWallet(item)}
                             >
-
-                                                <Grid item
-                                                className={classes.networkSelector}
-                                                container
-                                                direction="row"
-                                                justifyContent="space-evenly"
-                                                alignItems="center"
-                                                style={{padding:"10px 0px", border:"1px solid transparent", borderRadius:'5px'}}
-                                                onClick = {
-                                                    ()=>{
-                                                        //
-                                                    }
-                                                }
-                                            >
-                                                        <Grid item className="text-center" xs={3} sm={2} md={2}>
-                                                            <img className={dashboardClasses.networkImage} style={{width:"150%",height:"150%"}} src={item.logo1} alt={item.logo1} />
-                                                        </Grid>
-                                                </Grid>
+                                <Grid item
+                                   className={classes.networkSelector}
+                                   container
+                                   direction="row"
+                                   justifyContent="space-evenly"
+                                    alignItems="center"
+                                    style={{padding:"10px 0px", border:"1px solid transparent", borderRadius:'5px'}}
+                                >
+                                    <Grid item className="text-center" xs={3} sm={2} md={2}>
+                                        <img className={dashboardClasses.networkImage} style={{width:"150%",height:"150%"}} src={item.logo1} alt={item.logo1} />
+                                    </Grid>
+                                </Grid>
                                 <ListItemIcon className="symbol">
                                     {activating ? (
                                         <CircularProgress />
                                     ) : (
-                                                <Grid item  className="text-center" xs={3} sm={2} md={2}>
-                                                    {subMethod ? <div className={dashboardClasses.fillCircle} />: <div className={dashboardClasses.emptyCircle} />}
-                                                </Grid>
+                                        <Grid item  className="text-center" xs={3} sm={2} md={2}>
+                                            {subMethod ? <div className={dashboardClasses.fillCircle} />: <div className={dashboardClasses.emptyCircle} />}
+                                        </Grid>
                                     )}
                                 </ListItemIcon>
                                 <ListItemText

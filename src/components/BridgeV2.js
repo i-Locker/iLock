@@ -268,10 +268,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     };
 
     const handleNext = async () => {
-        if (account) {
+        if (account&&networkData) {
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
-            const currentNetworkData = networkData.filter((each) => each.chainData.chainId === network);
+            const currentNetworkData = networkData.filter((each) => each.name === network);
             console.log("NET: ",currentNetworkData);
             try {
                 let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
@@ -289,7 +289,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                     if (account === undefined) {
                         setModalTitle("Please connect Wallet");
                         setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        handleOpen();
+                        // handleOpen();
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     }
@@ -338,7 +338,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                             if (account === undefined) {
                                 setModalTitle("Please connect Wallet");
                                 setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                                handleOpen();
+                                // handleOpen();
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
                             }
@@ -360,20 +360,16 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     };
 
     const tokenApprove = async () => {
-        if(token1) {
+        if(token1 && network) {
             let approve_amount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token1.decimals)))).toString();
-            // setSwapBtnState(6);
             try {
                 let provider = await connector.getProvider();
-                approveToken(provider, token1, account, spender, approve_amount).then(async (W3) => {
+                approveToken(provider, token1, account, iBridgeAddress[network], approve_amount).then(async (W3) => {
                     setSwapBtnState(4);
                 });
                 setSwapBtnState(5);
             } catch(e) {
-                approveToken(provider, token1.address, account, spender, approve_amount).then(async (W3) => {
-                    setSwapBtnState(4);
-                });
-                setSwapBtnState(5);
+                setSwapBtnState(6);
             };
         };
     };

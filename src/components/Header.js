@@ -18,8 +18,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Link from "@mui/material/Link";
 
-// ** Import Redux
-
 // ** Import Icons
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import WifiProtectedSetupIcon from '@mui/icons-material/WifiProtectedSetup';
