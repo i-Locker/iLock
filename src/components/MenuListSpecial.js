@@ -18,11 +18,15 @@ import { network_, network_hex_to_dec } from '../constants';
 export default function MenuListSpecial({items,setItems,chainB_Networks,chainB}) {
   const [value, setValue] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(false);
+  const [networkName, setNetworkName] = React.useState("");
   const handleChange = (newValue, networkName) => {
     setItems(network_hex_to_dec[newValue.toString()]);
     setValue(newValue);
     chainB_Networks(networkName,newValue.toString());
     setOpen(!open);
+    setSelected(true);
+    setNetworkName(networkName);
     console.log("events: ", value, newValue, networkName);
   };
   const handleItems = (event, newValue) => {
@@ -30,7 +34,7 @@ export default function MenuListSpecial({items,setItems,chainB_Networks,chainB})
   };
   return (<>
       <ListItemButton value={chainB} onClick={() => setOpen(!open)} >
-        <ListItemText primary="Networks" />
+        <ListItemText primary={selected ? networkName : "Select a Destination Network"} />
           {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
     { items ? items.map((item)=>

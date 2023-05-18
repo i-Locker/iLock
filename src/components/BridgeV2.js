@@ -523,7 +523,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 centered
                                                 sx={{ width: '100%', bgcolor: 'background.paper' }}
                                                 component="nav"
-                                                fullWidth
+                                                fullwidth="true"
                                                 menuprops={{
                                                   PaperProps: {
                                                     sx: {
@@ -537,7 +537,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 aria-labelledby="nested-list-subheader"
                                                 subheader={
                                                   <ListSubheader component="div" id="nested-list-subheader">
-                                                    Nested List Items
+                                                    Compatible Networks
                                                   </ListSubheader>
                                                 }
                                               > 
