@@ -520,7 +520,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         </Stack>
                                         <Box m={3} sx={{ minWidth: 120 }}>
                                             <List
-                                                centered
                                                 sx={{ width: '100%', bgcolor: 'background.paper' }}
                                                 component="nav"
                                                 fullwidth="true"

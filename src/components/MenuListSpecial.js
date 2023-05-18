@@ -13,7 +13,7 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import SendIcon from '@mui/icons-material/Send';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
+import PublicRounded from "@mui/icons-material/PublicRounded";
 import { network_, network_hex_to_dec } from '../constants';
 export default function MenuListSpecial({items,setItems,chainB_Networks,chainB}) {
   const [value, setValue] = React.useState("");
@@ -34,18 +34,18 @@ export default function MenuListSpecial({items,setItems,chainB_Networks,chainB})
   };
   return (<>
       <ListItemButton value={chainB} onClick={() => setOpen(!open)} >
-        <ListItemText primary={selected ? networkName : "Select a Destination Network"} />
+        <ListItemText style={{ alignItems:'center', textAlign:'center' }} primary={selected ? networkName : "Select a Destination Network"} />
           {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
     { items ? items.map((item)=>
       <div key={item.name} >
-         <Collapse in={open} timeout="auto" unmountOnExit centered>
+         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
-                <StarBorder />
+                <PublicRounded />
               </ListItemIcon>
-              <ListItemText onClick={() => handleChange(item.chainData.chainId,item.name)} primary={ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` } value={item.chainData.chainId} label={ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` } centered />
+              <ListItemText onClick={() => handleChange(item.chainData.chainId,item.name)} primary={ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` } value={item.chainData.chainId} label={ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` } style={{ alignItems:'center', textAlign:'center' }}/>
             </ListItemButton>
           </List>
         </Collapse>
