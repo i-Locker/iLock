@@ -29,16 +29,17 @@ import { CustomTab } from '../config/style';
 import { useTheme } from '@mui/material/styles';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { useWeb3React } from "@web3-react/core";
-import { useNavigate } from "react-router-dom";
+import List from '@mui/material/List';
+import { useNavigate } from "react-router-dom"
+import ListSubheader from '@mui/material/ListSubheader';
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Container from "@mui/material/Container";
-import { erc20Abi, network_lower_to_proper, iBridgeAbi } from "../constants";
 import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, calculateSuggestedDonation, getEtherBalance, allowance, bridgeToken, w3, approve_Token } from "../web3";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, wrappedAddress, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
+import { erc20Abi, network_lower_to_proper, iBridgeAbi, CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, wrappedAddress, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
 import { getBalance } from "../config/app";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -50,6 +51,7 @@ import './swap.css';
 import axios from 'axios';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
+import MenuListSpecial from './MenuListSpecial';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import useStyles from '../assets/styles';
@@ -116,44 +118,46 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const [open, setOpen] = React.useState(false);
     const [bridgeAddress, setBridgeAddress] = React.useState("");
     const [activeStep, setActiveStep] = React.useState(0);
-    const [isOpenDialog, setIsOpenDialog] = useState(false);
-    const [tokenDialogState, setTokenDialogState] = useState(false);
-    const [poolCreateDialogState, setPoolCreateDialogState] = useState(false);
-    const [swapSettingDialogState, setSwapSettingDialogState] = useState(false);
-    const [pools, setPools] = useState([]);
-    const [token1Balance, setToken1Balance] = useState(0);
-    const [token2Balance, setToken2Balance] = useState(0);
-    const [token3, setToken3] = useState('WETH');
-    const [swapSelectState, setSwapSelectState] = useState(false);
-    const [dexsOrder, setDexsOrder] = useState("");
-    const [swapSelectData, setSwapSelectData] = useState(0);
-    const [swapBtnState, setSwapBtnState] = useState(0);
-    const [maxAmount, setMaxAmount] = useState(0);
-    const [importAlert, setImportAlert] = useState({ state1: false, state2: "success", data: "" });
-    const [rateState, setRateState] = useState(0);
-    const [slippage, setSlippage] = useState(1);
-    const [network, setNetwork] = useState("");
+    const [isOpenDialog, setIsOpenDialog] = React.useState(false);
+    const [tokenDialogState, setTokenDialogState] = React.useState(false);
+    const [poolCreateDialogState, setPoolCreateDialogState] = React.useState(false);
+    const [swapSettingDialogState, setSwapSettingDialogState] = React.useState(false);
+    const [pools, setPools] = React.useState([]);
+    const [token1Balance, setToken1Balance] = React.useState(0);
+    const [token2Balance, setToken2Balance] = React.useState(0);
+    const [token3, setToken3] = React.useState('WETH');
+    const [swapSelectState, setSwapSelectState] = React.useState(false);
+    const [dexsOrder, setDexsOrder] = React.useState("");
+    const [swapSelectData, setSwapSelectData] = React.useState(0);
+    const [swapBtnState, setSwapBtnState] = React.useState(0);
+    const [maxAmount, setMaxAmount] = React.useState(0);
+    const [importAlert, setImportAlert] = React.useState({ state1: false, state2: "success", data: "" });
+    const [rateState, setRateState] = React.useState(0);
+    const [slippage, setSlippage] = React.useState(1);
+    const [network, setNetwork] = React.useState("");
     const [chainA, setChainA] = useState("");
     const [chainB, setChainB] = useState("");
-    const [modalTitle, setModalTitle] = useState("");
-    const [modalDes, setModalDes] = useState("");
-    const [tokenContract, setTokenContract] = useState("");
-    const [holder, setHolder] = useState("");
-    const [subMethod, setSubMethod] = useState("Project Tokens");
-    const [bridgeAmount, setLockAmount] = useState(0);
-    const [tokenDecimals, setTokenDecimals] = useState(0);
-    const [tokenSymbol, setTokenSymbol] = useState("");
-    const [tokenName, setTokenName] = useState("");
-    const [tokenBalanceString, setTokenBalanceString] = useState("");
-    const [etherBalance, setEtherBalance] = useState(0);
-    const [swappingAmount, setSwappingAmount] = useState(0);
-    const [tokenBalance, setTokenBalance] = useState(0);
-    const [tokenAllowance, setTokenAllowance] = useState(0);
-    const [withdrawDate, setWithdrawDate] = useState(undefined);
-    const [dateUseful, setDateUseful] = useState(false);
-    const [addressDemand, setAddressDemand] = useState(false);
-    const [isAllowed, setIsAllowed] = useState(0);
-    const [lockAmountMax, setLockAmountMax] = useState(false);
+    const [modalTitle, setModalTitle] = React.useState("");
+    const [modalDes, setModalDes] = React.useState("");
+    const [tokenContract, setTokenContract] = React.useState("");
+    const [holder, setHolder] = React.useState("");
+    const [subMethod, setSubMethod] = React.useState("Project Tokens");
+    const [bridgeAmount, setLockAmount] = React.useState(0);
+    const [tokenDecimals, setTokenDecimals] = React.useState(0);
+    const [tokenSymbol, setTokenSymbol] = React.useState("");
+    const [tokenName, setTokenName] = React.useState("");
+    const [tokenBalanceString, setTokenBalanceString] = React.useState("");
+    const [etherBalance, setEtherBalance] = React.useState(0);
+    const [swappingAmount, setSwappingAmount] = React.useState(0);
+    const [tokenBalance, setTokenBalance] = React.useState(0);
+    const [tokenAllowance, setTokenAllowance] = React.useState(0);
+    const [withdrawDate, setWithdrawDate] = React.useState(undefined);
+    const [dateUseful, setDateUseful] = React.useState(false);
+    const [addressDemand, setAddressDemand] = React.useState(false);
+    const [isAllowed, setIsAllowed] = React.useState(0);
+    const [lockAmountMax, setLockAmountMax] = React.useState(false);
+    const [activatingConnector, setActivatingConnector] = React.useState(undefined);
+    const [holderString, setHolderString] = React.useState("");
 
     const web3 = new Web3(window.ethereum);
     const BN = web3.utils.BN;
@@ -163,13 +167,11 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const classes = useStyles.base();
     const dashboardClasses = useStyles.dashboard();
     const triedEager = useEagerConnect();
-    const [activatingConnector, setActivatingConnector] = React.useState(undefined);
-    const [holderString, setHolderString] = React.useState("");
 
     let networks;
     let networks___ = [];
-    let core_synced;
     let started = false;
+    let core_synced;
     
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
@@ -238,11 +240,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         return chain_state;
     };
 
-    const chainA_Network = async(name, i_D) => {
+    async function chainA_Network(name, i_D) {
         return await set_Chain("A",network_hex_to_dec[i_D]);
     };
 
-    const chainB_Network = async(name, i_D) => {
+    async function chainB_Network(name, i_D) {
+            console.log("chainB_Network: ", chainB);
         return await set_Chain("B",network_hex_to_dec[i_D]);
     };
 
@@ -516,9 +519,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                             </p>
                                         </Stack>
                                         <Box m={3} sx={{ minWidth: 120 }}>
-                                              <Select
+                                            <List
+                                                centered
+                                                sx={{ width: '100%', bgcolor: 'background.paper' }}
+                                                component="nav"
                                                 fullWidth
-                                                MenuProps={{
+                                                menuprops={{
                                                   PaperProps: {
                                                     sx: {
                                                       bgcolor: 'green',
@@ -528,12 +534,16 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     },
                                                   },
                                                 }}
-                                              >
-                                                { networkData ? networkData.map((item)=>
-                                                    <MenuItem sx={{textAlign:"center"}} key={item.chainData.chainId} onClick = {()=>chainB_Network(item.chainData.chainId)} value={item.chainData.chainId} >{ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` }</MenuItem>
-                                                    )
+                                                aria-labelledby="nested-list-subheader"
+                                                subheader={
+                                                  <ListSubheader component="div" id="nested-list-subheader">
+                                                    Nested List Items
+                                                  </ListSubheader>
+                                                }
+                                              > 
+                                                { networkData ? <MenuListSpecial items={networkData} setItems={setChainB} chainB_Networks={chainB_Network} chainB={chainB} sx={{textAlign:"center"}} />
                                                 : <></> }
-                                        </Select>
+                                            </List>
                                         </Box>
                                     {!isMobile&&swapTabValue === 0 && <FlexibleContainer direction="column" alignItems="center" style={{maxHeight:"1200px",height:"44%"}}>
                                             <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2 }}>
@@ -545,11 +555,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}></Typography>
-                                                        {
-                                                            /*
-                                                            <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token1Balance?token1Balance:0} <a onClick={() => setMaxAmount(token1Balance, setSwapAmount(token1Balance))}>Max</a></Typography>
-                                                            */
-                                                        }
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
                                                             <ChainATokens token={token1&&token1} setToken={setToken1} />
@@ -591,9 +596,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     </Stack>
                                                     <Stack direction="row" justifyContent="space-between">
                                                         <Typography sx={{ fontSize: "14px" }}></Typography>
-                                                        {/*
-                                                            <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}>Balance: {token2Balance?token2Balance:0} <a onClick={(e) => handleAmount(e.target.value)} >Max</a></Typography>
-                                                        */}
                                                     </Stack>
                                                     <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
                                                             <ChainBTokens token={token2&&token2} setToken={setToken2} />
