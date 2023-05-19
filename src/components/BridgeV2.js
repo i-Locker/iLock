@@ -586,8 +586,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                             <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B", padding: "2%" }}>
                                                 <br />
                                             </Stack>
-                                            <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2  }}>
-                                                <Stack direction="column" sx={{ p: "12px 24px" }}>
+                                            <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "275px", height: "100%", padding: 2  }}>
+                                                <Stack direction="column" sx={{ p: "12px 24px", minHeight: "280px" }}>
                                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                                         <p style={{margin:'auto', alignItems:"center"}}>
                                                             Chain B 
