@@ -4,7 +4,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
 import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS, _token_map, tokens_data, token_lists } from "../constants.js";
 
-export default function GroupOrientation({items, token, setToken}) {
+export default function GroupOrientationB({items, token, setToken}) {
   const handleChange = (symbol,address,name) => {
     const token___ = {
       "name": name,

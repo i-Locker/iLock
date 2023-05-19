@@ -432,3 +432,19 @@ export const CHAINDATA = [
     { name: "Kekchain", chain: '0x66A44' },
     { name: "Kekchain_testnet", chain: '0x66B3A' }
 ];
+export const token_lists = {
+    1: ETH_TOKENLIST,
+    5: [],
+    25: [],
+    56: BSC_TOKENLIST,
+    97: [],
+    137: POLYGON_TOKENLIST,
+    338: CRONOS_TOKENLIST,
+    444: [],
+    43113: [],
+    43114: AVAX_TOKENLIST,
+    44444: [],
+    80001: [],
+    420420: [],
+    420666: []
+};

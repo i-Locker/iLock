@@ -71,8 +71,8 @@ const CrossChainV2 = (props) => {
     const [routerAddress, setRouterAddress] = useState("");
     const [factoryAddress, setFactoryAddress] = useState("");
     const [tokenAllowance, setTokenAllowance] = useState(0);
-    const [token1, setToken1] = useState("");
-    const [token2, setToken2] = useState("");
+    const [token1, setToken1] = React.useState("");
+    const [token2, setToken2] = React.useState("");
     const [withdrawDate, setWithdrawDate] = useState(undefined);
     const [dateUseful, setDateUseful] = useState(false);
     const [addressDemand, setAddressDemand] = useState(false);
@@ -111,6 +111,16 @@ const CrossChainV2 = (props) => {
 
     const selectToken = async () => {
         console.log("activeStep: ", activeStep);
+    };
+
+    async function changeTokenA(tokenA) {
+        setToken1(tokenA);
+        console.log("changeToken (A): ", tokenA, token1);
+    };
+
+    async function changeTokenB(tokenB) {
+        setToken2(tokenB);
+        console.log("changeToken (B): ", tokenB, token2);
     };
 
     const checkAllowance = async (token, account, network) => {
@@ -546,7 +556,7 @@ const CrossChainV2 = (props) => {
     }
     return (
         <Container className={classes.root} maxWidth="fluid" style={{margin:'auto', backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)"}}>
-            <Bridge token1={token1} token2={token2} setToken1={setToken1} setToken2={setToken2} chainState={chainState?chainState:{"tokens":[{},{}]}}setChainState={setChainState} /> 
+            <Bridge token1={token1} token2={token2} setToken1={changeTokenA} setToken2={changeTokenB} chainState={chainState?chainState:{"tokens":[{},{}]}}setChainState={setChainState} /> 
         </Container>
     )
 }

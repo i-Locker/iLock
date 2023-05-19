@@ -13,39 +13,50 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import SendIcon from '@mui/icons-material/Send';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import PublicRounded from "@mui/icons-material/PublicRounded";
-import { network_, network_hex_to_dec } from '../constants';
+import { network_, network_hex_to_dec, ui_friendly_networks } from '../constants';
 export default function MenuListSpecial({items,setItems,chainB_Networks,chainB}) {
+  const { chainId } = useWeb3React();
   const [value, setValue] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(false);
   const [networkName, setNetworkName] = React.useState("");
   const handleChange = (newValue, networkName) => {
+    if(newValue == chainId) {
+        window.alert("Selected : "+ui_friendly_networks[networkName]+", Current network: "+ui_friendly_networks[networkName]+". Select another destination chain, or change networks to proceed.");
+        return;
+    }
     setItems(network_hex_to_dec[newValue.toString()]);
     setValue(newValue);
     chainB_Networks(networkName,newValue.toString());
     setOpen(!open);
     setSelected(true);
     setNetworkName(networkName);
-    console.log("events: ", value, newValue, networkName);
+    console.log("events: ", value, chainB, chainId, newValue, networkName);
   };
   const handleItems = (event, newValue) => {
     setItems(newValue);
   };
   return (<>
       <ListItemButton value={chainB} onClick={() => setOpen(!open)} >
-        <ListItemText style={{ alignItems:'center', textAlign:'center' }} primary={selected ? networkName : "Select a Destination Network"} />
+        <ListItemText style={{ alignItems:'center', textAlign:'center' }} primary={selected ? ui_friendly_networks[networkName] : "Select a Destination Network"} />
           {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
     { items ? items.map((item)=>
-      <div key={item.name} >
+      <div key={item.name} alignitems="center">
          <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
+          <List component="div" disablePadding alignitems="center">
+            <ListItemButton sx={{ pl: 4, margin: "auto" }}>
+              <ListItemIcon alignitems="center">
                 <PublicRounded />
               </ListItemIcon>
-              <ListItemText onClick={() => handleChange(item.chainData.chainId,item.name)} primary={ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` } value={item.chainData.chainId} label={ network_[item.chainData.chainId] +`           (`+ item.chainData.chainId+`)` } style={{ alignItems:'center', textAlign:'center' }}/>
+              <ListItemText 
+              onClick={() => handleChange(item.chainData.chainId,item.name)} 
+              primary={ ui_friendly_networks[network_[item.chainData.chainId]] +`           [`+ item.chainData.chainId+`]` } 
+              value={item.chainData.chainId} 
+              label={ ui_friendly_networks[network_[item.chainData.chainId]] +`           [`+ item.chainData.chainId+`]` } 
+              style={{ alignItems:'center', textAlign:'left' }}/>
             </ListItemButton>
           </List>
         </Collapse>

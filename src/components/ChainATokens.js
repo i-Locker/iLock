@@ -240,23 +240,27 @@ export default function ChainATokens({ token, setToken }) {
         {loadingError || selectionError}
       </Typography>
     </div>);
-    const dialog = (<Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={dialogIsOpen} maxWidth="sm" fullWidth>
+    const dialog = (<Dialog style={{margin:'auto', alignItems:"center"}} onClose={closeDialog} aria-labelledby="simple-dialog-title" open={dialogIsOpen} maxWidth="sm" fullWidth>
       <DialogTitle>
         <div id="simple-dialog-title" className={classes.flexTitle}>
           <Typography variant="h5">Select a token</Typography>
           <div className={classes.grower}/>
         </div>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent style={{margin:'auto', alignItems:"center"}} className={classes.dialogContent}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" style={{margin:'auto', alignItems:"center"}}>
-            {<GroupOrientation items={""} />}
+            {<GroupOrientation items={chainId&&_token_map[chainId.toString()].tokens} token={token} setToken={setToken} />}
         </Stack>
       </DialogContent> 
-      <DialogContent className={classes.dialogContent}>
-        <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => handleContract(event.target.value)} fullWidth margin="normal"/>
-        {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>
-          </List>)}
-      </DialogContent>
+      {
+        /*
+        <DialogContent className={classes.dialogContent}>
+            <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => handleContract(event.target.value)} fullWidth margin="normal"/>
+            {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>
+              </List>)}
+        </DialogContent>
+        */
+      }
     </Dialog>);
     const selectionChip = (<div className={classes.selectionButtonContainer}>
       <Button onClick={openDialog} disabled={false} variant="outlined" startIcon={<KeyboardArrowDownIcon />} className={classes.selectionButton}>
