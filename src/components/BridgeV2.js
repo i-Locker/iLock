@@ -161,11 +161,11 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setEtherBalance(eb);
     };
 
-    const changeNetwork = (name, i_D) => {
-        handleNext();
-        console.log("network: ", network, name, i_D);
-        setNetwork(name);
-        set_Chain("A",network_hex_to_dec[i_D]);
+    const changeNetwork = (item) => {
+        setNetwork(item.name);
+        setChainA(network_hex_to_dec[item.chainData.chainId]);
+        console.log("changeNetwork: ", network, item, network_hex_to_dec[item.chainData.chainId]);
+        return handleNext();
     };
 
     async function set_Chain(chain__,chain__id) {
@@ -184,7 +184,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         return chain_state;
     }
 
-    async function chainA_Network(name, i_D) {
+    async function chainA_Network(i_D) {
         return await set_Chain("A",network_hex_to_dec[i_D]);
     }
 
@@ -215,6 +215,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     };
 
     const handleNext = async () => {
+        console.log("activeStep: ", activeStep);
         if (account&&networkData) {
             const provider = window.ethereum;
             checkEtherBalance(provider, account);
@@ -378,7 +379,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         <ThemeProvider theme={theme}>
                 <Stack direction="column" sx={{ p: "0 5.2%" }} style={{maxHeight:"100%", height:'100%'}}>
                     <Grid container justifyContent="space-between">
-                    {isTiny ? <GridLeaderMin item xs={12} sm={12} md={12} >
+                    {isTiny ? <GridLeaderMin item xs={12} sm={12} md={12} lg={12} xl={12} >
                         <Card className="card" style={{width: '100%', height:'100%'}}>
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
@@ -411,15 +412,15 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                     value={item.chainData.chainId}
                                                     key={item.name}
-                                                    onClick={()=>changeNetwork(item.name,item.chainData.chainId)} 
+                                                    onClick={()=>changeNetwork(item)} 
                                                 >
-                                                <Grid item xs={12} sm={12} md={12} style={{margin: 'auto', paddingLeft:1, paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}>
+                                                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} style={{margin: 'auto', paddingLeft:1, paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}>
                                                         <Grid 
                                                             container
                                                             direction="row"
                                                             alignItems="center"
                                                         >
-                                                            <Grid item xs={12} sm={12} md={12} style={{margin: 'auto', padding: 5, wordWrap: 'break-word', textAlign:'center', alignItems: 'center' }}>
+                                                            <Grid item xs={12} sm={12} md={12} lg={12} xl={12} style={{margin: 'auto', padding: 5, wordWrap: 'break-word', textAlign:'center', alignItems: 'center' }}>
                                                                 <div style={{padding:6}}>
                                                                     <img className={dashboardClasses.networkImage} src={item.url} alt="network" />
                                                                 </div>
@@ -438,7 +439,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                             : <></> }
                                         </div>
                     <div key={2} style={{paddingLeft:1, paddingRight:1,maxHeight:"800px",height:"44%"}}>
-                        <Grid xs={12} lg={12} md={12} item={true} container direction="column" alignItems="center" style={{textAlign:'center', alignItems:'center', borderColor: "white"}} >
+                        <Grid xs={12} sm={12} md={12} lg={12} xl={12} item={true} container direction="column" alignItems="center" style={{textAlign:'center', alignItems:'center', borderColor: "white"}} >
                             <Collapse in={importAlert.state1} sx={{ mb: "-50px", mt: "50px" }}>
                                 <Alert variant="filled" severity={importAlert.state2} sx={{ mb: 2 }}>{importAlert.data}</Alert>
                             </Collapse>
@@ -686,13 +687,15 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                         </CardContent>
                         </Card>
                       </GridLeaderMin> : 
-                      <GridLeader item xs={12} sm={12} md={12} >
-                        <Card className="card" style={{width: '100%', height:'100%'}}>
+                      <GridLeader item xs={12} sm={12} md={12} lg={12} xl={12} xxl={12} style={{width: '100%', maxHeight: 1000, height: '60%', minHeight: 555}}>
+                        <Card className="card" style={{width: '100%', height: '60%'}}>
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
                                 title="Cross-Chain"
                             />
-                            <CardContent>
+                            <CardContent
+                                sx={{maxHeight: 1000, height: '60%', minHeight: 555}}
+                            >
                                 <RadioGroup
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     defaultValue="female"
@@ -706,7 +709,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         <div key={1} style={{margin: 'auto'}}>
                                                 <Grid 
                                                     container
-                                                    spacing={5}
+                                                    spacing={100}
                                                     alignItems="center"
                                                     className={classes.networkSelector}
                                                     justifyContent="space-evenly"
@@ -725,7 +728,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                             container
                                                             direction="row"
                                                             className={classes.networkSelector}
-                                                            style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
+                                                            style={{margin: 'auto',maxHeight: 1000, height: '60%', minHeight: 555, textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                         >
                                                         { networkData ? networkData.map((item)=>
                                                             <Grid
@@ -733,11 +736,11 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                                 direction="row"
                                                                 item
                                                                 className={classes.networkSelector}
-                                                                xs={4} sm={4} md={4} lg={4} xl={4} xxl={4}
+                                                                xs={6} sm={4} md={3} lg={3} xl={4} xxl={4}
                                                                 style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                                 value={item.chainData.chainId}
                                                                 key={item.name}
-                                                                onClick={()=>changeNetwork(item.name,item.chainData.chainId)}
+                                                                onClick={()=>changeNetwork(item)}
                                                             >
                                                                 <Grid 
                                                                     item
