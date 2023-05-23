@@ -58,7 +58,6 @@ export default function ChainATokens({ token, setToken }) {
     const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
     const [selectionError, setSelectionError] = React.useState("");
 
-    const triedEager = useEagerConnect();
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
 
@@ -87,68 +86,7 @@ export default function ChainATokens({ token, setToken }) {
         return optionString.includes(searchString);
     }, [holderString]);
 
-    let networks;
-    let networks___ = [];
-    let subMethod = false;
     let showLoader = false;
-    let useTokenId = false;
-
-    useEffect(() => {
-        if (account) {
-            dispatch({
-                type: CHANGE_WALLET,
-                payload: account
-            })
-        };
-        const { ethereum } = window;
-        let __id;
-        try {
-            if (chainId || ethereum.chainId) {
-                if (!chainId) {
-                    try {
-                        __id = ethereum.chainId;
-                    } catch(e) {
-                        return;
-                    };
-                } else {
-                    try {
-                        __id = network_dec_to_hex[chainId];
-                    } catch(e) {
-                        return;
-                    };
-                };
-                console.log("__id: ", __id);
-                if (account && __id) {
-                    setNetwork(network_[__id]);
-                    networks = network_[__id];
-                    console.log("network: ", network, network_[__id], networks);
-                    if (network) {
-                        let ran = false;
-                        let WROTE = false;
-                        __NETWORKS.find((item) => item.name == network).chainData.map((each) => {
-                            if (each["rpcUrls"].length > 0 && !WROTE) {
-                                WROTE = true;
-                                console.log("chainData: ", each, each["rpcUrls"]);
-                                ran = each;
-                                setNetworkData(ran);
-                                if (networkData) {
-                                    console.log("networkData: ", networkData);
-                                };
-                            };
-                        });
-                        __NETWORKS.forEach((_network_) => {
-                            let _chainData_ = `${_network_.name}`;
-                            networks___.push(_network_);
-                            console.log("chainData (b): ", _chainData_, _network_);
-                        });
-                    };
-                };
-            };
-        } catch(e) {
-            window.alert("Web3 not detected. Are you connected?");
-            return;
-        };
-    }, [account, network, networkData, networks, chainId]);
 
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
@@ -167,49 +105,12 @@ export default function ChainATokens({ token, setToken }) {
             setTokenMap(_token_map[chainId.toString()]);
             console.log("chainId: ", _token_map[chainId.toString()], _token_map[chainId.toString()].tokens, chainId, ethereum.chainId, chainId == ethereum.chainId);
         };
-        if (activatingConnector && activatingConnector === connector) {
-            setActivatingConnector(undefined);
-        };
-    }, [activatingConnector, connector]);
+    }, [chainId, _token_map]);
 
-    useEffect(() => {
-        const logURI = (uri) => {
-            console.log("WalletConnect URI", uri);
-        };
-        walletconnect.on(URI_AVAILABLE, logURI);
-        return () => {
-            walletconnect.off(URI_AVAILABLE, logURI);
-        };
-    }, []);
-
-    console.log("token: ",token);
-
-    useInactiveListener(!triedEager);
-
-    const retryConnect = () => {
-        setError(false);
-    };
 
     const handleContract = (event) => {
         setHolderString(event);
         console.log("holderString: ",event, holderString);
-    };
-
-    const onConnectWallet = async (item) => {
-        setActivatingConnector(item.connector);
-        await activate(item.connector);
-    };
-
-    const onDeactiveWallet = () => {
-        deactivate();
-    };
-
-    const handleOpenWalletList = () => {
-        setIsOpen(true);
-    };
-
-    const handleCloseWalletList = () => {
-        setIsOpen(false);
     };
 
     const getErrorMessage = (error) => {
@@ -249,18 +150,11 @@ export default function ChainATokens({ token, setToken }) {
       </DialogTitle>
       <DialogContent style={{margin:'auto', alignItems:"center"}} className={classes.dialogContent}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" style={{margin:'auto', alignItems:"center"}}>
-            {<GroupOrientation items={chainId&&_token_map[chainId.toString()].tokens} token={token} setToken={setToken} />}
+            <Button className={classes.selectionButton} onClick={closeDialog} >
+                {<GroupOrientation items={chainId&&_token_map[chainId.toString()].tokens} token={token} setToken={setToken}/>}
+            </Button>
         </Stack>
       </DialogContent> 
-      {
-        /*
-        <DialogContent className={classes.dialogContent}>
-            <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => handleContract(event.target.value)} fullWidth margin="normal"/>
-            {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>
-              </List>)}
-        </DialogContent>
-        */
-      }
     </Dialog>);
     const selectionChip = (<div className={classes.selectionButtonContainer}>
       <Button onClick={openDialog} disabled={false} variant="outlined" startIcon={<KeyboardArrowDownIcon />} className={classes.selectionButton}>
