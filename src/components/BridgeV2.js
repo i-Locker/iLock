@@ -477,9 +477,9 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         index={activeStep}
                                         onChangeIndex={handleStepChange}
                                     >
-                                        <div key={1} style={{paddingLeft:1, paddingRight:1}}>
-                                            <p style={{margin: 'auto', paddingLeft:1, paddingRight:1, textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}} color="textSecondary">
-                                                <Typography sx={{ fontSize: '0.9rem', textAlign:'center', padding: "6.66%", marginBottom: 3, wordWrap: 'break-word', maxWidth: '88%' }}>
+                                        <div key={1} style={{margin: 'auto'}}>
+                                            <p style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}} color="textSecondary">
+                                                <Typography sx={{ fontSize: '0.9rem', marginBottom: -3, wordWrap: 'break-word' }}>
                                                         Select Chain A blockchain network.
                                                 </Typography>
                                             </p>
@@ -492,7 +492,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     justifyContent="space-evenly"
                                                     alignItems="center"
                                                     spacing={5}
-                                                    style={{textAlign:'center', wordWrap: 'break-word', marginLeft: '-10%'}}
+                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                     value={item.chainData.chainId}
                                                     key={item.name}
                                                     onClick = {()=>changeNetwork(item.name,item.chainData.chainId)} 
