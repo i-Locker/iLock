@@ -244,17 +244,18 @@ export const calculateSuggestedDonation = async (provider, amount, isEth, accoun
 };
 
 
-export const bridgeToken = async (provider, token, account, amount, chainB, network, gasLimit) => {
+export const bridgeToken = async (provider, token1, token2, account, amount, chainA, chainB, network, gasLimit) => {
     let result_iBridge;
     try {
         let web3 = new Web3(provider);
         let contract = new web3.eth.Contract(lockerContractAbi, lockerAddress[network]);
         let contract_iBridge = new web3.eth.Contract(iBridgeAbi, iBridgeAddress[network]);
         let feeInETH = await contract_iBridge.methods["minDonation"]().call({ from: account });
-        console.log("bridgeToken: ", feeInETH, token, account, amount, chainB, network);
+        feeInETH-feeInETH*1.5;
+        console.log("bridgeToken: ", feeInETH, token1, token2, account, amount, chainA, chainB, network, gasLimit);
         if (feeInETH) {
             feeInETH = feeInETH * 2;
-            result_iBridge = await contract_iBridge.methods["coinIn"](token,account,chainB).send({ from: account, value: feeInETH, gasLimit: gasLimit });
+            result_iBridge = await contract_iBridge.methods["coinIn"](token1,account,chainB).send({ from: account, value: feeInETH, gasLimit: gasLimit });
             console.log("result_iBridge: ", result_iBridge);
         };
     } catch (e) {

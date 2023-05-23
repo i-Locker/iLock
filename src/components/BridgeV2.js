@@ -1,33 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Grid,
     Stack,
     Typography,
     Button,
     Paper,
-    FormControl,
-    InputLabel,
     CardHeader,
     Input,
-    IconButton,
     Chip,
     Avatar,
     Alert,
     Collapse,
-    AspectRatio,
     Card,
     RadioGroup,
-    Divider,
-    CardContent,
-    CardOverflow,
-    Link
+    CardContent
 } from '@mui/material';
 import Web3 from 'web3';
 import SwipeableViews from 'react-swipeable-views';
 import Cwallet from "../assets/constants/Cwallet";
 import { CustomTab } from '../config/style';
 import { useTheme } from '@mui/material/styles';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useWeb3React } from "@web3-react/core";
 import List from '@mui/material/List';
 import { useNavigate } from "react-router-dom"
@@ -36,46 +29,19 @@ import { useEagerConnect, useInactiveListener } from "../hooks";
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MobileStepper from '@mui/material/MobileStepper';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Container from "@mui/material/Container";
 import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, calculateSuggestedDonation, getEtherBalance, allowance, bridgeToken, w3, approve_Token } from "../web3";
 import { erc20Abi, network_lower_to_proper, iBridgeAbi, CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, wrappedAddress, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
-import { getBalance } from "../config/app";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ChainATokens from './ChainATokens';
-import ChainBTokens from './ChainBTokens';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import './swap.css';
-import axios from 'axios';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import MenuListSpecial from './MenuListSpecial';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import useStyles from '../assets/styles';
-import { Router_address } from "../config/abi/router/dexRouter";
-import { Factory_address } from "../config/abi/router/dexFactory";
 import fren from '../assets/img/common/fren.svg';
-import Filter from '../assets/img/common/filter.png';
-import Refresh from '../assets/img/common/refresh.png';
 import { styled, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 let approveToken = approve_Token;
-const theme = createTheme({
-    shape: {
-        borderRadius: 16,
-    },
-    palette: {
-        primary: {
-            main: "#34F14B",
-        },
-        secondary: {
-            main: '#191919',
-        }
-    }
-});
 const SwapButton = styled(Button)(() => ({
     width: "100%",
     color: "white",
@@ -87,15 +53,13 @@ const SwapButton = styled(Button)(() => ({
 let SwapPaper = styled(Paper)(() => ({
     margin: "99px 0 0"
 }));
-let ActiveGrid = styled(Grid)(() => ({
-    display: "none"
-}));
 let GridLeaderMin = styled(Grid)(() => ({
     alignItems:'center',
     textAlign:'center',
     fontSize: '.375rem',
     padding: 'auto',
-    maxHeight:'100%',
+    height:'100%',
+    maxHeight:'93%',
     maxWidth: '98%',
     minWidth: '50%',
     width: '100%',
@@ -104,25 +68,14 @@ let GridLeaderMin = styled(Grid)(() => ({
 let GridLeader = styled(Grid)(() => ({
     alignItems:'center',
     textAlign:'center',
-    maxHeight:'88%',
+    maxHeight:'93%',
+    height:'100%',
     maxWidth: '100%',
     marginTop:40
-}));
-let ActiveStack = styled(Stack)(() => ({
-    display: "none"
-}));
-let BlockedDisplay = styled(Stack)(() => ({
-    display: "none"
-}));
-let ActiveDisplay = styled(Stack)(() => ({
-    display: "block"
 }));
 let BasicStack = styled(Stack)(() => ({
     margin: 'auto'
 }));
-let basicStyle = {
-    padding: 1
-};
 let FlexibleContainer = styled(Stack)(() => ({
     display: 'flex',
     flexDirection: 'row',
@@ -130,52 +83,31 @@ let FlexibleContainer = styled(Stack)(() => ({
     margin: 'auto'
 }));
 export default function BridgeV2({ token1, token2, setToken1, setToken2, chainState, setChainState }) {
-    const { activate, active, account, deactivate, connector, error, setError, chainId } = useWeb3React();
+    const { active, account, connector, chainId } = useWeb3React();
     const [swapTabValue, setSwapTabValue] = useState(0);
-    const [activeRate, setActiveRate] = useState(12);
-    const [open, setOpen] = React.useState(false);
-    const [bridgeAddress, setBridgeAddress] = React.useState("");
     const [activeStep, setActiveStep] = React.useState(0);
     const [isOpenDialog, setIsOpenDialog] = React.useState(false);
     const [tokenDialogState, setTokenDialogState] = React.useState(false);
     const [poolCreateDialogState, setPoolCreateDialogState] = React.useState(false);
     const [swapSettingDialogState, setSwapSettingDialogState] = React.useState(false);
-    const [pools, setPools] = React.useState([]);
     const [token1Balance, setToken1Balance] = React.useState(0);
     const [token2Balance, setToken2Balance] = React.useState(0);
-    const [token3, setToken3] = React.useState('WETH');
-    const [swapSelectState, setSwapSelectState] = React.useState(false);
-    const [dexsOrder, setDexsOrder] = React.useState("");
     const [swapSelectData, setSwapSelectData] = React.useState(0);
+    const [etherBalance, setEtherBalance] = React.useState(0);
     const [swapBtnState, setSwapBtnState] = React.useState(0);
+    const [pools, setPools] = React.useState([]);
     const [maxAmount, setMaxAmount] = React.useState(0);
     const [importAlert, setImportAlert] = React.useState({ state1: false, state2: "success", data: "" });
-    const [rateState, setRateState] = React.useState(0);
-    const [slippage, setSlippage] = React.useState(1);
     const [network, setNetwork] = React.useState("");
     const [chainA, setChainA] = useState("");
     const [chainB, setChainB] = useState("");
     const [modalTitle, setModalTitle] = React.useState("");
     const [modalDes, setModalDes] = React.useState("");
+    const [swapSelectState, setSwapSelectState] = React.useState("");
     const [tokenContract, setTokenContract] = React.useState("");
-    const [holder, setHolder] = React.useState("");
-    const [subMethod, setSubMethod] = React.useState("Project Tokens");
-    const [bridgeAmount, setLockAmount] = React.useState(0);
-    const [tokenDecimals, setTokenDecimals] = React.useState(0);
-    const [tokenSymbol, setTokenSymbol] = React.useState("");
-    const [tokenName, setTokenName] = React.useState("");
-    const [tokenBalanceString, setTokenBalanceString] = React.useState("");
-    const [etherBalance, setEtherBalance] = React.useState(0);
     const [swappingAmount, setSwappingAmount] = React.useState(0);
-    const [tokenBalance, setTokenBalance] = React.useState(0);
-    const [tokenAllowance, setTokenAllowance] = React.useState(0);
-    const [withdrawDate, setWithdrawDate] = React.useState(undefined);
-    const [dateUseful, setDateUseful] = React.useState(false);
     const [addressDemand, setAddressDemand] = React.useState(false);
-    const [isAllowed, setIsAllowed] = React.useState(0);
-    const [lockAmountMax, setLockAmountMax] = React.useState(false);
     const [activatingConnector, setActivatingConnector] = React.useState(undefined);
-    const [holderString, setHolderString] = React.useState("");
 
     const web3 = new Web3(window.ethereum);
     const BN = web3.utils.BN;
@@ -184,14 +116,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const isTiny = useMediaQuery('(max-width:374px)');
 
     const classes = useStyles.base();
+    const V2_classes = useStyles.footer();
     const dashboardClasses = useStyles.dashboard();
     const triedEager = useEagerConnect();
 
-    let networks;
-    let networks___ = [];
-    let started = false;
-    let core_synced;
-    
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
@@ -205,24 +133,20 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setToken1(token2);
         setToken2(token_var);
         console.log("tokenChange: ",token1,token2);
-    };
-
-    const tokenChange = (token1,token2) => {
-        token_Change(token1,token2);
-    };
+    }
 
     const selectToken = async (data) => {
         if (tokenDialogState === 1) {
             if (data.address === token2.address) {
                 setToken2(token1);
-            };
+            }
             setToken1(data);
         } else if (tokenDialogState === 2) {
             if (data.address === token1.address) {
                 setToken1(token2);
-            };
+            }
             setToken2(data);
-        };
+        }
     };
 
     const handleBack = () => {
@@ -238,6 +162,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     };
 
     const changeNetwork = (name, i_D) => {
+        handleNext();
         console.log("network: ", network, name, i_D);
         setNetwork(name);
         set_Chain("A",network_hex_to_dec[i_D]);
@@ -255,23 +180,23 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                 break;
             default:
                 break;
-        };
+        }
         return chain_state;
-    };
+    }
 
     async function chainA_Network(name, i_D) {
         return await set_Chain("A",network_hex_to_dec[i_D]);
-    };
+    }
 
     async function chainB_Network(name, i_D) {
             console.log("chainB_Network: ", chainB);
         return await set_Chain("B",network_hex_to_dec[i_D]);
-    };
+    }
 
     async function setSwapping(newValue) {
         let swapAmount = await setSwappingAmount(newValue);
         return swapAmount;
-    };
+    }
 
     const setSwapAmount = async(newValue) => {
         if (newValue != swappingAmount) {
@@ -311,7 +236,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                     if (account === undefined) {
                         setModalTitle("Please connect Wallet");
                         setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                        // handleOpen();
                     } else {
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     }
@@ -360,7 +284,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                             if (account === undefined) {
                                 setModalTitle("Please connect Wallet");
                                 setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                                // handleOpen();
                             } else {
                                 setActiveStep((prevActiveStep) => prevActiveStep + 1);
                             }
@@ -392,17 +315,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                 setSwapBtnState(5);
             } catch(e) {
                 setSwapBtnState(6);
-            };
-        };
-    };
-
-    async function handleAmount(e) {
-        setSwapAmount(e.target.value);
-        setMaxAmount(e.target.value);
-    };
+            }
+        }
+    }
 
     const tokenSwap = async () => {
-        let swap_amount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token2.decimals)))).toString();
+        let bridgeAmount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token2.decimals)))).toString();
         try {
             let provider = await connector.getProvider();
             w3(provider, network).then(async (W3) => {
@@ -410,7 +328,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                 console.log("(w3) block: ", block);
                 console.log("(w3) gasLimit: ", block.gasLimit);
                 let gasLimit = block.gasLimit;
-                bridgeToken(provider, token2.address, account, swap_amount, chainB, network).then(results =>{
+                bridgeToken(provider, token1.address, token1.address, token2.address, account, bridgeAmount, chainA, chainB, network, gasLimit).then(results =>{
                     if (!results) {
                         setSwapBtnState(5);
                     } else {
@@ -426,8 +344,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setSwapBtnState(6);
         setSwapBtnState(4);
     };
-
     const maxSteps = 3;
+    let networking = [];
     const theme = useTheme();
     const mobileClasses = useStyles.mobile();
     const test_data = useSelector(state => state);
@@ -458,10 +376,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
 
     return (<>
         <ThemeProvider theme={theme}>
-                <Stack direction="column" sx={{ p: "0 5.2%" }} style={{maxHeight:"100%"}}>
+                <Stack direction="column" sx={{ p: "0 5.2%" }} style={{maxHeight:"100%", height:'100%'}}>
                     <Grid container justifyContent="space-between">
                     {isTiny ? <GridLeaderMin item xs={12} sm={12} md={12} >
-                        <Card className="card" style={{width: '100%'}}>
+                        <Card className="card" style={{width: '100%', height:'100%'}}>
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
                                 title="Cross-Chain"
@@ -478,11 +396,9 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         onChangeIndex={handleStepChange}
                                     >
                                         <div key={1} style={{margin: 'auto'}}>
-                                            <p style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}} color="textSecondary">
-                                                <Typography sx={{ fontSize: '0.9rem', marginBottom: -3, wordWrap: 'break-word' }}>
-                                                        Select Chain A blockchain network.
-                                                </Typography>
-                                            </p>
+                                            <Typography color="textSecondary" sx={{ height: '100%', maxHeight: 50, minHeight: '100%', fontSize: '0.9rem', margin: 'auto', marginBottom: -3, textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}}>
+                                                Select Chain A blockchain network.
+                                            </Typography>
                                             {
                                                 networkData ? networkData.map((item)=>
                                                 <Grid
@@ -495,7 +411,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                     value={item.chainData.chainId}
                                                     key={item.name}
-                                                    onClick = {()=>changeNetwork(item.name,item.chainData.chainId)} 
+                                                    onClick={()=>changeNetwork(item.name,item.chainData.chainId)} 
                                                 >
                                                 <Grid item xs={12} sm={12} md={12} style={{margin: 'auto', paddingLeft:1, paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}>
                                                         <Grid 
@@ -735,48 +651,48 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                             </SwapPaper>
                         </Grid>
                     </div>
-                                    </SwipeableViews>
-                                    <MobileStepper
-                                        className={dashboardClasses.mobileStepper}
-                                        steps={maxSteps}
-                                        position="static"
-                                        activeStep={activeStep}
-                                        nextButton={
-                                        <Button
-                                            size="small"
-                                            onClick={handleNext}
-                                            disabled={activeStep === maxSteps - 1}
-                                        >
-                                            Next
-                                            {theme.direction === 'rtl' ? (
-                                            <KeyboardArrowLeft />
-                                            ) : (
-                                            <KeyboardArrowRight />
-                                            )}
-                                        </Button>
-                                        }
-                                        backButton={
-                                        <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-                                            {theme.direction === 'rtl' ? (
-                                            <KeyboardArrowRight />
-                                            ) : (
-                                            <KeyboardArrowLeft />
-                                            )}
-                                            Back
-                                        </Button>
-                                        }
-                                    />
-                                </RadioGroup>
-                            </CardContent>
+                        </SwipeableViews>
+                            <MobileStepper
+                                className={dashboardClasses.mobileStepper}
+                                steps={maxSteps}
+                                position="static"
+                                activeStep={activeStep}
+                                nextButton={
+                                <Button
+                                    size="small"
+                                    onClick={handleNext}
+                                    disabled={activeStep === maxSteps - 1}
+                                >
+                                    Next
+                                    {theme.direction === 'rtl' ? (
+                                    <KeyboardArrowLeft />
+                                    ) : (
+                                    <KeyboardArrowRight />
+                                    )}
+                                </Button>
+                                }
+                                backButton={
+                                <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                                    {theme.direction === 'rtl' ? (
+                                    <KeyboardArrowRight />
+                                    ) : (
+                                    <KeyboardArrowLeft />
+                                    )}
+                                    Back
+                                </Button>
+                                }
+                            />
+                            </RadioGroup>
+                        </CardContent>
                         </Card>
                       </GridLeaderMin> : 
                       <GridLeader item xs={12} sm={12} md={12} >
-                        <Card className="card" style={{width: '100%'}}>
+                        <Card className="card" style={{width: '100%', height:'100%'}}>
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
                                 title="Cross-Chain"
                             />
-                            <CardContent >
+                            <CardContent>
                                 <RadioGroup
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     defaultValue="female"
@@ -787,48 +703,68 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         index={activeStep}
                                         onChangeIndex={handleStepChange}
                                     >
-                                        <div key={1} style={{paddingLeft:1, paddingRight:1}}>
-                                            <p style={{textAlign:'center', alignItems:'center'}} color="textSecondary">
-                                                Select Chain A blockchain network.
-                                            </p>
-                                            {
-                                                networkData ? networkData.map((item)=>
-                                                <Grid
-                                                    className={classes.networkSelector}
+                                        <div key={1} style={{margin: 'auto'}}>
+                                                <Grid 
                                                     container
-                                                    direction="row"
-                                                    justifyContent="space-evenly"
-                                                    alignItems="center"
                                                     spacing={5}
-                                                    style={{padding:0, borderRadius:'5px'}}
-                                                    value={item.chainData.chainId}
-                                                    key={item.name}
-                                                    onClick = {()=>changeNetwork(item.name,item.chainData.chainId)} 
-                                                >
-                                                <Grid item xs={12} sm={12} md={12}>
-                                                        <Grid 
+                                                    alignItems="center"
+                                                    className={classes.networkSelector}
+                                                    justifyContent="space-evenly"
+                                                    direction="row"
+                                                    style={{margin: 'auto', paddingLeft:1, height: '100%', maxHeight: '100%', paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}
+                                                >  
+                                                    <Paper className={classes.paper}>
+                                                        <Grid item xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
+                                                          <Paper className={classes.paper}>
+                                                                <Typography color="textSecondary" sx={{ fontSize: '0.9rem', height: '80%', minHeight: 50, margin: 'auto', marginBottom: -3, textAlign:'center', wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}>
+                                                                    Select Chain A blockchain network.
+                                                                </Typography>
+                                                          </Paper>
+                                                        </Grid>
+                                                        <Grid
                                                             container
                                                             direction="row"
-                                                            alignItems="center"
+                                                            className={classes.networkSelector}
+                                                            style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                         >
-                                                            <Grid item xs={12} sm={12} md={12} style={{padding:6}}>
-                                                                <div style={{padding:6}}>
-                                                                    <img className={dashboardClasses.networkImage} src={item.url} alt="network" />
-                                                                </div>
-                                                                <p color="textSecondary" className={dashboardClasses.networkTitle}>
-                                                                    {ui_friendly_networks[item.name]}
-                                                                </p>
-                                                                <p color="textSecondary" className={dashboardClasses.networkDes}>
-                                                                    {item.subtitle}
-                                                                </p>
+                                                        { networkData ? networkData.map((item)=>
+                                                            <Grid
+                                                                container
+                                                                direction="row"
+                                                                item
+                                                                className={classes.networkSelector}
+                                                                xs={4} sm={4} md={4} lg={4} xl={4} xxl={4}
+                                                                style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
+                                                                value={item.chainData.chainId}
+                                                                key={item.name}
+                                                                onClick={()=>changeNetwork(item.name,item.chainData.chainId)}
+                                                            >
+                                                                <Grid 
+                                                                    item
+                                                                    className={classes.networkSelector}
+                                                                    xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}
+                                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
+                                                                >
+                                                                    <div style={{padding:6}}>
+                                                                        <img className={dashboardClasses.networkImage} src={item.url} alt="network" />
+                                                                    </div>
+                                                                    <p color="textSecondary" className={dashboardClasses.networkTitle}>
+                                                                        {ui_friendly_networks[item.name]}
+                                                                    </p>
+                                                                    <p color="textSecondary" className={dashboardClasses.networkDes}>
+                                                                        {item.subtitle}
+                                                                    </p>
+                                                                    <div style={{padding:6}}>
+                                                                        {item.name==network ? <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} /> : <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
+                                                                    </div>
+                                                                </Grid>
                                                             </Grid>
-                                                        </Grid>
-                                                        {item.name==network ? <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", backgroundColor:'#fff', display:'inline-block'}} /> : <div value={chainA} style={{width:"20px", height:'20px', borderRadius:"10px", border:'1px solid #fff', display:'inline-block'}} />}
-                                                    </Grid>
+                                                        )
+                                                    : <></> }
+                                                      </Grid>
+                                                  </Paper>
                                                 </Grid>
-                                                )
-                                            : <></> }
-                                        </div>
+                                        </div>   
                     <div key={2} style={{paddingLeft:1, paddingRight:1,maxHeight:"800px",height:"44%"}}>
                         <Grid xs={12} lg={12} md={12} item={true} container direction="column" alignItems="center" style={{textAlign:'center', alignItems:'center', borderColor: "white"}} >
                             <Collapse in={importAlert.state1} sx={{ mb: "-50px", mt: "50px" }}>
