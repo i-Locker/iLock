@@ -149,12 +149,124 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         }
     };
 
+    const setSwapAmount = async(newValue) => {
+        if (newValue != swappingAmount) {
+            console.log("setSwapAmount: ", swappingAmount, newValue);
+            let swapAmount = await setSwapping(newValue);
+            console.log("setSwapping: ", swapAmount);
+            return false;
+        }
+    };
+
+    const checkEtherBalance = async (provider, account) => {
+        getEtherBalance(provider, account, network).then(async (ebf) => {
+            console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
+            fetchEtherBalance(ebf[2]);
+        });
+    };
+
+    const handleNext = async (activeStep, chain__A) => {
+        console.log("activeStep: ", activeStep, chain__A);
+        if (account&&chainId) {
+            const provider = window.ethereum;
+            checkEtherBalance(provider, account);
+            let NETWORK = chainId == chain__A ? true : false;
+            console.log("handleNext: ",chainId,chain__A,NETWORK,network_dec_to_hex[chainId]);
+            try {
+                console.log("NETWORK: ", NETWORK, "\n existing: ", chainId);
+                if (NETWORK) {
+                    console.log("You are already on the proper network:  ", network);
+                } else {
+                    await provider.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: network_dec_to_hex[chainId] }],
+                    });
+                    console.log("You have successfully switched to ", network);
+                }
+                if (activeStep == 0) {
+                    if (account === undefined) {
+                        setModalTitle("Please connect Wallet");
+                        setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
+                    } else {
+                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                    }
+                } else if (activeStep >= 2) {
+                    return;
+                } else {
+                    console.log("activeStep: ", activeStep);
+                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
+                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                    } else {
+                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                    }
+                }
+            } catch (switchError) {
+                try {
+                    const params_network_add = {
+                        chainId: network_dec_to_hex[chainId],
+                        rpcUrls: [rpc_[network_dec_to_hex[chainId]]],
+                        chainName: network_[network_dec_to_hex[chainId]],
+                        nativeCurrency: { name: network_symbols[network_dec_to_hex[chainId]], decimals: network_decimals[network_dec_to_hex[chainId]], symbol: network_symbols[network_dec_to_hex[chainId]] },
+                        blockExplorerUrls: [explorer_[network_dec_to_hex[chainId]]],
+                        iconUrls: [icons_[network_dec_to_hex[chainId]]]
+                    };
+                    console.log("params_network_add: ", switchError.code, params_network_add);
+                    if (switchError.code === 4902) {
+                        console.log("This network is not available in your metamask, please add it");
+                        try {
+                            let provider = await connector.getProvider();
+                            console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId, network_dec_to_hex[chainId]);
+                            provider.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{ ...params_network_add }]
+                            }).catch((error) => {
+                                console.log("provider_err: ", error);
+                            });
+                        } catch(e) {
+                            //
+                        }
+                    } else if (switchError.code === 4001) {
+                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId, network_dec_to_hex[chainId]);
+                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                    } else if (switchError.code === 4200) {
+                        console.log("You have succefully switched to ", network);
+                        if (activeStep == 0) {
+                            if (account === undefined) {
+                                setModalTitle("Please connect Wallet");
+                                setModalDes(`Before you can bridge digital assets from ${network}, you must connect your wallet to ${network} network.`);
+                            } else {
+                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                            }
+                        } else if (activeStep >= 1) {
+                            return;
+                        } else {
+                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
+                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                            } else {
+                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.log("err: ", e);
+                }
+            }
+        }
+    }
+
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
     const handleStepChange = (step) => {
-        setActiveStep(step);
+        if(!account || !chainId) {
+            event.preventDefault();
+            return true;
+        } else {
+            if (addressDemand&&activeStep < 4 || !addressDemand&&activeStep < 3) {
+                handleNext(step);
+            };
+        };
     };
 
     const fetchEtherBalance = (eb) => {
@@ -164,8 +276,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const changeNetwork = (item) => {
         setNetwork(item.name);
         setChainA(network_hex_to_dec[item.chainData.chainId]);
-        console.log("changeNetwork: ", network, item, network_hex_to_dec[item.chainData.chainId]);
-        return handleNext();
+        console.log("changeNetwork: ", chainA, network, item, network_hex_to_dec[item.chainData.chainId]);
+        return handleNext(activeStep,network_hex_to_dec[item.chainData.chainId]);
     };
 
     async function set_Chain(chain__,chain__id) {
@@ -189,7 +301,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     }
 
     async function chainB_Network(name, i_D) {
-            console.log("chainB_Network: ", chainB);
+        console.log("chainB_Network: ", chainB);
         return await set_Chain("B",network_hex_to_dec[i_D]);
     }
 
@@ -197,113 +309,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         let swapAmount = await setSwappingAmount(newValue);
         return swapAmount;
     }
-
-    const setSwapAmount = async(newValue) => {
-        if (newValue != swappingAmount) {
-            console.log("setSwapAmount: ", swappingAmount, newValue);
-            let swapAmount = await setSwapping(newValue);
-            console.log("setSwapping: ", swapAmount);
-            return false;
-        }
-    };
-
-    const checkEtherBalance = async (provider, account) => {
-        getEtherBalance(provider, account, network).then(async (ebf) => {
-            console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
-            fetchEtherBalance(ebf[2]);
-        });
-    };
-
-    const handleNext = async () => {
-        console.log("activeStep: ", activeStep);
-        if (account&&networkData) {
-            const provider = window.ethereum;
-            checkEtherBalance(provider, account);
-            const currentNetworkData = networkData.filter((each) => each.name === network);
-            console.log("NET: ",currentNetworkData);
-            try {
-                let NETWORK = chainId == network_hex_to_dec[currentNetworkData[0].chainData.chainId] ? true : false;
-                console.log("NETWORK: ", NETWORK, "\n existing: ", chainId, "\n requested ", network_hex_to_dec[currentNetworkData[0].chainData.chainId]);
-                if (NETWORK) {
-                    console.log("You are already on the proper network:  ", network);
-                } else {
-                    await provider.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: currentNetworkData[0].chainData.chainId }],
-                    });
-                    console.log("You have successfully switched to ", network);
-                }
-                if (activeStep == 0) {
-                    if (account === undefined) {
-                        setModalTitle("Please connect Wallet");
-                        setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                } else if (activeStep >= 1) {
-                    return;
-                } else {
-                    console.log("activeStep: ", activeStep);
-                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                }
-            } catch (switchError) {
-                try {
-                    const params_network_add = {
-                        chainId: currentNetworkData[0].chainData.chainId,
-                        rpcUrls: [rpc_[currentNetworkData[0].chainData.chainId]],
-                        chainName: network_[currentNetworkData[0].chainData.chainId],
-                        nativeCurrency: { name: network_symbols[currentNetworkData[0].chainData.chainId], decimals: network_decimals[currentNetworkData[0].chainData.chainId], symbol: network_symbols[currentNetworkData[0].chainData.chainId] },
-                        blockExplorerUrls: [explorer_[currentNetworkData[0].chainData.chainId]],
-                        iconUrls: [icons_[currentNetworkData[0].chainData.chainId]]
-                    };
-                    console.log("params_network_add: ", switchError.code, params_network_add);
-                    if (switchError.code === 4902) {
-                        console.log("This network is not available in your metamask, please add it");
-                        try {
-                            let provider = await connector.getProvider();
-                            console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
-                            console.log("chainId: ", chainId);
-                            provider.request({
-                                method: 'wallet_addEthereumChain',
-                                params: [{ ...params_network_add }]
-                            }).catch((error) => {
-                                console.log("provider_err: ", error);
-                            });
-                        } catch(e) {
-                            //
-                        }
-                    } else if (switchError.code === 4001) {
-                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId);
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    } else if (switchError.code === 4200) {
-                        console.log("You have succefully switched to ", network);
-                        if (activeStep == 0) {
-                            if (account === undefined) {
-                                setModalTitle("Please connect Wallet");
-                                setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        } else if (activeStep >= 1) {
-                            return;
-                        } else {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.log("err: ", e);
-                }
-            }
-        }
-    };
 
     const tokenApprove = async () => {
         if(token1 && network) {
@@ -394,7 +399,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        onChangeIndex={handleStepChange}
+                                        onChangeIndex={()=>handleStepChange(activeStep)}
                                     >
                                         <div key={1} style={{margin: 'auto'}}>
                                             <Typography color="textSecondary" sx={{ height: '100%', maxHeight: 50, minHeight: '100%', fontSize: '0.9rem', margin: 'auto', marginBottom: -3, textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}}>
@@ -661,7 +666,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                 nextButton={
                                 <Button
                                     size="small"
-                                    onClick={handleNext}
+                                    onClick={()=>handleStepChange(activeStep)}
                                     disabled={activeStep === maxSteps - 1}
                                 >
                                     Next
@@ -704,7 +709,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        onChangeIndex={handleStepChange}
+                                        onChangeIndex={()=>handleStepChange(activeStep)}
                                     >
                                         <div key={1} style={{margin: 'auto'}}>
                                                 <Grid 
@@ -719,7 +724,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     <Paper className={classes.paper}>
                                                         <Grid item xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
                                                           <Paper className={classes.paper}>
-                                                                <Typography color="textSecondary" sx={{ fontSize: '0.9rem', height: '80%', minHeight: 50, margin: 'auto', marginBottom: -3, textAlign:'center', wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}>
+                                                                <Typography color="textSecondary" sx={{ fontSize: '0.9rem', height: '80%', minHeight: 50, paddingTop: 2, margin: 'auto', textAlign:'center', wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}>
                                                                     Select Chain A blockchain network.
                                                                 </Typography>
                                                           </Paper>
@@ -991,7 +996,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         nextButton={
                                         <Button
                                             size="small"
-                                            onClick={handleNext}
+                                            onClick={()=>handleStepChange(activeStep)}
                                             disabled={activeStep === maxSteps - 1}
                                         >
                                             Next
