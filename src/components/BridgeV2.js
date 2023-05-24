@@ -37,6 +37,7 @@ import './swap.css';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import MenuListSpecial from './MenuListSpecial';
+import Elevated from './Elevated';
 import useStyles from '../assets/styles';
 import fren from '../assets/img/common/fren.svg';
 import { styled, createTheme } from '@mui/material/styles';
@@ -549,16 +550,23 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "100%" }} />
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
-                                                        <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
+                                                        <Chip 
+                                                            size='small' 
+                                                            label='Transaction Details' 
+                                                            sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} 
+                                                        />
                                                     </Stack>
                                                     <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>{maxAmount}</Typography>
+                                                                <Typography gutterBottom>Chain A: {`${chainA}`}</Typography>
+                                                                <Typography gutterBottom>Chain B: {`${chainB !== "" ? chainB : "Select Destination Chain"}`}</Typography>
                                                                 <Typography gutterBottom>{token1.symbol ? token1.symbol : "FrenChain"}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
+                                                                <Typography 
+                                                                    sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}
+                                                                />
                                                             </Stack>
                                                         </Stack>
                                                     </Paper>
@@ -602,16 +610,23 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:""}</Typography>
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
-                                                        <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
+                                                        <Chip 
+                                                            size='small' 
+                                                            label='Transaction Details' 
+                                                            sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} 
+                                                        />
                                                     </Stack>
                                                     <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>{maxAmount}</Typography>
-                                                                <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
+                                                                <Typography gutterBottom>Chain A: {`${chainA}`}</Typography>
+                                                                <Typography gutterBottom>Chain B: {`${chainB !== "" ? chainB : "Select Destination Chain"}`}</Typography>
+                                                                <Typography gutterBottom>{token1.symbol ? token1.symbol : "FrenChain"}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
+                                                                <Typography 
+                                                                    sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}
+                                                                />
                                                             </Stack>
                                                         </Stack>
                                                     </Paper>
@@ -879,20 +894,29 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => setSwapAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "100%" }} />
                                                     </Stack>
                                                     <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
-                                                        <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
+                                                    <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
+                                                        <Chip 
+                                                            size='small' 
+                                                            label='Transaction Details' 
+                                                            sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} 
+                                                        />
                                                     </Stack>
                                                     <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
                                                         <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>{maxAmount}</Typography>
+                                                                <Typography gutterBottom>Chain A: {`${chainA}`}</Typography>
+                                                                <Typography gutterBottom>Chain B: {`${chainB !== "" ? chainB : "Select Destination Chain"}`}</Typography>
                                                                 <Typography gutterBottom>{token1.symbol ? token1.symbol : "FrenChain"}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" justifyContent="space-between">
-                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
+                                                                <Typography 
+                                                                    sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}
+                                                                />
                                                             </Stack>
                                                         </Stack>
                                                     </Paper>
                                                 </Stack>
+                                            </Stack>
                                             </Paper>                                            
                                         </FlexibleContainer>
                                     }
@@ -916,6 +940,9 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     </Stack>
                                                 </Stack>
                                             </Paper>
+                                            <Typography justifyContent="space-between">
+                                                <br />
+                                            </Typography>
                                             <Paper sx={{ margin: "0 0 24px", width: "100%", background: "#101010", borderRadius: "12px" }}>
                                                 <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                     <Stack direction="row" justifyContent="space-between" sx={{ color: "#7E8B74" }}>
@@ -931,22 +958,31 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                             <Typography sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):""}</Typography>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
                                                         <Typography sx={{ fontSize: "14px" }}>{token1.name?token1.name:""}</Typography>
                                                     </Stack>
-                                                    <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "2" }}>
-                                                        <Chip size='small' label='Receiving' sx={{ color: "white", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} /> 
-                                                    </Stack>
-                                                    <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
-                                                        <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
-                                                            <Stack direction="row" justifyContent="space-between">
-                                                                <Typography gutterBottom>{maxAmount}</Typography>
-                                                                <Typography gutterBottom>{token2.symbol ? token2.symbol : "FrenChain"}</Typography>
-                                                            </Stack>
-                                                            <Stack direction="row" justifyContent="space-between">
-                                                                <Typography sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}></Typography>
-                                                            </Stack>
-                                                        </Stack>
-                                                    </Paper>
+                                                   
                                                 </Stack>
                                             </Paper>
+                                            <Stack alignItems="flex-start" sx={{ pt: "4px", zIndex: "3", width: "100%" }}>
+                                                `${chainB !== "" ? <Elevated token1={token1} token2={token2} chainA={chainA} chainB={chainB} bridgeAmount={""} /> : ""}`
+                                                <Chip 
+                                                    size='small' 
+                                                    label='Transaction Details' 
+                                                    sx={{ color: "white", zIndex: "4", background: "#37AF43", borderRadius: "10px 10px 10px 0px" }} 
+                                                />
+                                                <Paper sx={{ margin: "-12px 0 8px", cursor: "pointer", background: "#161714", color: "white", border: `1px solid ${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}`, borderRadius: "12px" }} onClick={() => setSwapSelectData(0, setSwapSelectState(false))}>
+                                                    <Stack direction="column" sx={{ p: "14px 8px", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
+                                                        <Stack direction="row" justifyContent="space-between">
+                                                            <Typography gutterBottom>Origin: {`${chainA}`}</Typography>
+                                                            <Typography gutterBottom>{token1.symbol !== "" ? token1.symbol : "token1"}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" justifyContent="space-between">
+                                                            <Typography gutterBottom>Destination: {`${chainB !== "" ? chainB : "Select Destination Chain"}`}</Typography>
+                                                            <Typography 
+                                                                sx={{ fontSize: "14px", color: `${swapSelectData === 0 ? "#34F14B" : "#7E8B74"}` }}
+                                                            />
+                                                        </Stack>
+                                                    </Stack>
+                                                </Paper>
+                                            </Stack>
                                             <Box component="ul" sx={{textAlign: 'center', alignItems:'center', margin: 'auto', display: 'flex', padding: 1, flexDirection: 'row' }}>
                                                 <CardContent>
                                                 {

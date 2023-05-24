@@ -1,0 +1,3 @@
+[submodule "devel/mui-treasury"]
+	path = devel/mui-treasury
+	url = https://github.com/siriwatknp/mui-treasury/

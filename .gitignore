@@ -14,7 +14,8 @@ lerna-debug.log*
 src/assets/constants/*.md
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
+devel/mui-treasury
+/devel/mui-treasury
 # Runtime data
 pids
 *.pid
