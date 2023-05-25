@@ -32,9 +32,7 @@ const Loader = ({ isLoading }) => {
             <br />
             <br />
           <Stack spacing={1} style={{padding:50,margin:50}}>
-          {/* For variant="text", adjust the height via font-size */}
             <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-          {/* For other variants, adjust the size with `width` and `height` */}
           <Typography component="span" style={{margin:'auto', alignItems:'center', textAlign:'center'}}>
             <div dangerouslySetInnerHTML={{ __html: loaderText ? loaderText : 'SCANNING BLOCKCHAIN' }} />
           </Typography>

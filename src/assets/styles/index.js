@@ -5,7 +5,7 @@ import footerStyles from "./_footer";
 import poolStyles from "./_pool";
 import mobileStyles from "./_mobile";
 import dashboardStyles from './_dashboard';
-
+import bridgeStyles from './_bridge';
 const useStyles = {
     header: headerStyles,
     base: baseStyles,
@@ -13,7 +13,7 @@ const useStyles = {
     footer: footerStyles,
     pool: poolStyles,
     mobile: mobileStyles,
-    dashboard: dashboardStyles
+    dashboard: dashboardStyles,
+    bridge: bridgeStyles
 };
-
 export default useStyles;

@@ -158,7 +158,7 @@ export default function ChainATokens({ token, setToken }) {
     </Dialog>);
     const selectionChip = (<div className={classes.selectionButtonContainer}>
       <Button onClick={openDialog} disabled={false} variant="outlined" startIcon={<KeyboardArrowDownIcon />} className={classes.selectionButton}>
-        {<Typography color="textSecondary">Digital Asset</Typography>}
+        {<Typography color="textSecondary"></Typography>}
       </Button>
     </div>);
     return (<>

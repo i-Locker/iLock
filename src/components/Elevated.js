@@ -1,29 +1,12 @@
 import React from 'react';
 import cx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import { CardHeader, CardContent, TableBody, Button, TableCell, TableRow, TableHead, Card, Table } from '@mui/material';
-import { useContainedCardHeaderStyles } from '@mui-treasury/styles/cardHeader/contained';
-import { useSoftRiseShadowStyles } from '@mui-treasury/styles/shadow/softRise';
-import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
-
-const useStyles = makeStyles(({ spacing }) => ({
-  card: {
-    marginTop: 40,
-    borderRadius: spacing(0.5),
-    transition: '0.3s',
-    width: '90%',
-    overflow: 'initial',
-    background: '#ffffff',
-  },
-  content: {
-    paddingTop: 0,
-    textAlign: 'left',
-    overflowX: 'auto',
-    '& table': {
-      marginBottom: 0,
-    }
-  },
-}));
+import { createStyles, DialogContent, IconButton, makeStyles, Tooltip } from '@mui/material';
+import { CardHeader, CardContent, TableBody, Button, TableCell, TableRow, TableHead, Card, Table, Chip, Avatar } from '@mui/material';
+import useStyles from '../assets/styles';
+import { styled, createTheme } from '@mui/material/styles';
+import SpinnerLogoWhite from "../assets/img/spinner-logo-white.png";
+import Checkbox from '@mui/material/Checkbox';
+const label = { inputProps: { 'aria-label': 'Checkbox' } };
 
 let id = 0;
 function createData(name, fat, price) {
@@ -37,41 +20,57 @@ const rows = [
   createData('Eclair', 16.0, 6.0),
   createData('Cupcake', 3.7, 4.3),
   createData('Gingerbread', 16.0, 3.9),
-];
+]
 
-export default function Elevated({ token1, token2, chainA, chainB, bridgeAmount }) {
-  console.log("Elevated: ",token1, token2, chainA, chainB, bridgeAmount);
-  const classes = useStyles();
-  const cardHeaderStyles = useContainedCardHeaderStyles();
-  const cardShadowStyles = useSoftRiseShadowStyles({ inactive: true });
-  const cardHeaderShadowStyles = useFadedShadowStyles();
+export let coreAdjust = async function() {
+  //
+}
+export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }) {
+  console.log("Elevate: ",token1, token2, chainA, chainB, bridgeAmount);
+  const classes = useStyles.bridge();
+  const [processingHandling,setProcessingHandling] = React.useState(0);
+  const [checkboxState,setCheckboxState] = React.useState("success");
+  coreAdjust = async function(rate) {
+    console.log("rate: ",rate);
+    await setProcessingHandling(rate);
+    return processingHandling;
+  };
   return (
-    <Card className={cx(classes.card, cardShadowStyles.root)}>
+    <Card>
       <CardHeader
-        className={cardHeaderShadowStyles.root}
-        classes={cardHeaderStyles}
-        title={'Desserts'}
-        subheader={'Select your favourite'}
+        classes={classes}
+        title={'Transaction'}
+        subheader={'Details'}
       />
       <CardContent className={classes.content}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Dessert</TableCell>
-              <TableCell align="right">Fat (g)</TableCell>
-              <TableCell align="right">Price ($)</TableCell>
+              <TableCell>Token Fees</TableCell>
+              <TableCell>
+                <Checkbox {...label} defaultChecked color={checkboxState} />
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">
-                  {row.name}
+              <TableRow>
+                <TableCell component="th">
+                  Digital Asset: 
                 </TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="left"> {token1.name} ({token1.symbol})</TableCell>
               </TableRow>
-            ))}
+              <TableRow>
+                <TableCell component="th">
+                  Network Path: 
+                </TableCell>
+                <TableCell align="left">{chainA} => {chainB}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th">
+                  Processing & Handling
+                </TableCell>
+                <TableCell align="left">{processingHandling!==0?processingHandling:<Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />}</TableCell>
+              </TableRow>
           </TableBody>
         </Table>
       </CardContent>
