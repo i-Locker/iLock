@@ -38,11 +38,16 @@ import './swap.css';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Elevate from './Elevated';
+import { coreAdjust } from './Elevated';
 import MenuListSpecial from './MenuListSpecial';
 import useStyles from '../assets/styles';
 import fren from '../assets/img/common/fren.svg';
 import { styled, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
+
+export let baseFee = async function() {
+  //
+}
 let approveToken = approve_Token;
 const SwapButton = styled(Button)(() => ({
     width: "100%",
@@ -122,6 +127,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const V2_classes = useStyles.footer();
     const dashboardClasses = useStyles.dashboard();
     const triedEager = useEagerConnect();
+
+    baseFee = async function(rate) {
+      console.log("rate: ",rate);
+      await setProcessingHandling(rate);
+      return processingHandling;
+    };
 
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
@@ -802,6 +813,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                             >   
                                                 {chainB!==""?<Elevate token1={token1} token2={token2} chainA={chainA} chainB={chainB} bridgeAmount={bridgeAmount} /> :
+                                                
                                                 <LoopIcon sx={{ position: 'relative', top: '-10%', animation: "spin 2s linear infinite", "@keyframes spin": { "0%": { transform: "rotate(360deg)", },"100%": { transform: "rotate(0deg)", }, }, }} />}
                                             </Grid>   
                                             <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B", padding: "2%" }}>
@@ -818,48 +830,48 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                         <Stack direction="column" alignItems="center" sx={{ p: "14px 8px", width: "100%", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                                                 <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2 }}>
-                                                    <Stack direction="column" sx={{ p: "12px 24px" }}>
-                                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                            <p style={{margin:'auto', alignItems:"center", padding: "2%"}}>
-                                                                Chain A
-                                                            </p>
-                                                        </Stack>
-                                                        <Stack direction="row" justifyContent="space-between">
-                                                            <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}></Typography>
-                                                        </Stack>
-                                                        <Stack direction="row" alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
-                                                            <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
-                                                                <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
-                                                                :
-                                                                <Typography sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):""}</Typography>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
-                                                        </Stack>
-                                                        <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
-                                                                <ChainATokens token={token1&&token1} setToken={setToken1} />
-                                                           <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => changeBridgeAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
-                                                        </Stack>
-                                                        <Typography sx={{ fontSize: "14px" }}><br/></Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}><br/></Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}><br/></Typography>
-                                                        <Typography sx={{ fontSize: "14px" }}><br/></Typography>
-                                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                            <p style={{margin:'auto', alignItems:"center"}}>
-                                                                Chain B 
-                                                            </p>
-                                                        </Stack>
-                                                        <Stack direction="row" justifyContent="space-between">
-                                                            <Typography sx={{ fontSize: "14px" }}></Typography>
-                                                        </Stack>
-                                                        <Stack direction="row" alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
-                                                            <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
-                                                                <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
-                                                                :
-                                                                <Typography sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):""}</Typography>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
-                                                        </Stack>
-                                                        <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
-                                                            <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => changeBridgeAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "100%" }} />
-                                                        </Stack>
-                                                    </Stack>
-                                                        </Paper>
+                                                                <Stack direction="column" sx={{ p: "12px 24px" }}>
+                                                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                                                        <p style={{margin:'auto', alignItems:"center", padding: "2%"}}>
+                                                                            Chain A
+                                                                        </p>
+                                                                    </Stack>
+                                                                    <Stack direction="row" justifyContent="space-between">
+                                                                        <Typography sx={{ fontSize: "14px", color: "#7E8B74" }}></Typography>
+                                                                    </Stack>
+                                                                    <Stack direction="row" alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
+                                                                        <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
+                                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                                            :
+                                                                            <Typography sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):""}</Typography>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
+                                                                    </Stack>
+                                                                    <Stack direction="row" spacing={2} alignItems="center" sx={{ p: "10px 0" }}>
+                                                                            <ChainATokens token={token1&&token1} setToken={setToken1} />
+                                                                       <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => changeBridgeAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "88.8%" }} />
+                                                                    </Stack>
+                                                                    <Typography sx={{ fontSize: "14px" }}><br/></Typography>
+                                                                    <Typography sx={{ fontSize: "14px" }}><br/></Typography>
+                                                                    <Typography sx={{ fontSize: "14px" }}><br/></Typography>
+                                                                    <Typography sx={{ fontSize: "14px" }}><br/></Typography>
+                                                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                                                        <p style={{margin:'auto', alignItems:"center"}}>
+                                                                            Chain B 
+                                                                        </p>
+                                                                    </Stack>
+                                                                    <Stack direction="row" justifyContent="space-between">
+                                                                        <Typography sx={{ fontSize: "14px" }}></Typography>
+                                                                    </Stack>
+                                                                    <Stack direction="row" alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
+                                                                        <Button startIcon={token1.logoURI&&token1.logoURI !== null ?
+                                                                            <Avatar src={token1.logoURI?token1.logoURI:fren} sx={{ width: "30px", height: "30px" }} />
+                                                                            :
+                                                                            <Typography sx={{ width: "30px", height: "30px", color: "white" }}>{token1.symbol?token1.symbol.substring(0, 1):""}</Typography>} sx={{ fontSize: "16px", color: "white" }} >{token1.symbol}</Button>
+                                                                    </Stack>
+                                                                    <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ p: "10px 0 6px" }}>
+                                                                        <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => changeBridgeAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "100%" }} />
+                                                                    </Stack>
+                                                                </Stack>
+                                                                </Paper>
                                                             </Stack>
                                                         </Stack>
                                                         <Chip 

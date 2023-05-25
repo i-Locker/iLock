@@ -38,7 +38,7 @@ export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }
     await setProcessingHandling(rate);
     return processingHandling;
   };
-  return (
+  return (<React.Fragment>
     <Card sx={{width: '88.8%', minWidth: '300px'}}>
       <CardHeader
         classes={classes}
@@ -49,44 +49,45 @@ export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell component="th">
+                Cryptocurrency: 
+              </TableCell>
+              <TableCell align="left">
+                  { token1 !=="" ? token1.symbol : <LoopIcon sx={{ animation: "spin 2s linear infinite", "@keyframes spin": { "0%": { transform: "rotate(360deg)", },"100%": { transform: "rotate(0deg)", }, }, }} />}
+                  </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell component="th">
+                Network Path: 
+              </TableCell>
+              <TableCell align="left">
+                {chainA !==0 && chainB !==0 ? 
+                  chainA+"   "+ui_friendly_networks[network_[network_dec_to_hex[chainA.toString()]]]+" to "+chainB+"   "+ui_friendly_networks[network_[network_dec_to_hex[chainB.toString()]]] : 
+                  <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />
+                }
+                  <br/>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th">
+                Processing & Handling
+              </TableCell>
+              <TableCell align="left">
+                  {processing ? processingHandling !==0 ? processingHandling : "5 USDT" : !processing ? <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} /> : <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />  }
+              </TableCell>
+            </TableRow>
+            <TableRow>
               <TableCell>Fungible P&H</TableCell>
               <TableCell>
                 <Checkbox defaultChecked color={checkboxState} />
               </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-              <TableRow>
-                <TableCell component="th">
-                  Cryptocurrency: 
-                </TableCell>
-                <TableCell align="left">
-                    { token1 !=="" ? token1.symbol : <LoopIcon sx={{ animation: "spin 2s linear infinite", "@keyframes spin": { "0%": { transform: "rotate(360deg)", },"100%": { transform: "rotate(0deg)", }, }, }} />}
-                    </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th">
-                  Network Path: 
-                </TableCell>
-                <TableCell align="left">
-                  {chainA !==0 && chainB !==0 ? 
-                    chainA+"   "+ui_friendly_networks[network_[network_dec_to_hex[chainA.toString()]]]+" to "+chainB+"   "+ui_friendly_networks[network_[network_dec_to_hex[chainB.toString()]]] : 
-                    <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />
-                  }
-                    <br/>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th">
-                  Processing & Handling
-                </TableCell>
-                <TableCell align="left">
-                    {processing ? processingHandling !==0 ? processingHandling : "5 USDT" : !processing ? <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} /> : <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />  }
-                </TableCell>
-              </TableRow>
           </TableBody>
         </Table>
       </CardContent>
     </Card>
+    </React.Fragment>
   );
 };
