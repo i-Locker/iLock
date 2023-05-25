@@ -24,6 +24,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useWeb3React } from "@web3-react/core";
 import List from '@mui/material/List';
 import { useNavigate } from "react-router-dom"
+import LoopIcon from '@mui/icons-material/Loop';
 import ListSubheader from '@mui/material/ListSubheader';
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
@@ -800,7 +801,23 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 xs={6} sm={6} md={6} lg={6} xl={6} xxl={6}
                                                 style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                             >   
-                                                <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2 }}>
+                                                {chainB!==""?<Elevate token1={token1} token2={token2} chainA={chainA} chainB={chainB} bridgeAmount={bridgeAmount} /> :
+                                                <LoopIcon sx={{ position: 'relative', top: '-10%', animation: "spin 2s linear infinite", "@keyframes spin": { "0%": { transform: "rotate(360deg)", },"100%": { transform: "rotate(0deg)", }, }, }} />}
+                                            </Grid>   
+                                            <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B", padding: "2%" }}>
+                                                <br />
+                                            </Stack>
+                                                <Grid 
+                                                    item
+                                                    direction="row"
+                                                    className={classes.networkSelector}
+                                                    xs={6} sm={6} md={6} lg={6} xl={6} xxl={6}
+                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
+                                                >
+                                                    <Stack alignItems="center" direction="column" sx={{ marginTop: "-12px", zIndex: "5", width: "100%" }}>
+                                                        <Stack direction="column" alignItems="center" sx={{ p: "14px 8px", width: "100%", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
+                                                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                                                <Paper sx={{ margin: "auto", width: "100%", background: "#101010", borderRadius: "12px", minHeight: "225px", padding: 2 }}>
                                                     <Stack direction="column" sx={{ p: "12px 24px" }}>
                                                         <Stack direction="row" justifyContent="space-between" alignItems="center">
                                                             <p style={{margin:'auto', alignItems:"center", padding: "2%"}}>
@@ -842,22 +859,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                             <Input className='swap_input' color="primary" placeholder='0.0' type='number' variant="standard" value={maxAmount} onChange={(e) => changeBridgeAmount(e.target.value, setMaxAmount(e.target.value))} sx={{ color: "white", fontSize: "20px", width: "100%" }} />
                                                         </Stack>
                                                     </Stack>
-                                                </Paper>
-                                            </Grid>   
-                                            <Stack direction="row" justifyContent="space-between" sx={{ color: "#34F14B", padding: "2%" }}>
-                                                <br />
-                                            </Stack>
-                                                <Grid 
-                                                    item
-                                                    direction="row"
-                                                    className={classes.networkSelector}
-                                                    xs={6} sm={6} md={6} lg={6} xl={6} xxl={6}
-                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
-                                                >
-                                                    <Stack alignItems="center" direction="column" sx={{ marginTop: "-12px", zIndex: "5", width: "100%" }}>
-                                                        <Stack direction="column" alignItems="center" sx={{ p: "14px 8px", width: "100%", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
-                                                            <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                                <Elevate token1={token1} token2={token2} chainA={chainA} chainB={chainB} bridgeAmount={bridgeAmount} />
+                                                        </Paper>
                                                             </Stack>
                                                         </Stack>
                                                         <Chip 

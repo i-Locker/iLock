@@ -5,7 +5,10 @@ import { CardHeader, CardContent, TableBody, Button, TableCell, TableRow, TableH
 import useStyles from '../assets/styles';
 import { styled, createTheme } from '@mui/material/styles';
 import SpinnerLogoWhite from "../assets/img/spinner-logo-white.png";
+import LoopIcon from '@mui/icons-material/Loop';
 import Checkbox from '@mui/material/Checkbox';
+import Typography from '@mui/material/Typography';
+import { ui_friendly_networks, network_, network_dec_to_hex } from '../constants';
 const label = { inputProps: { 'aria-label': 'Checkbox' } };
 
 let id = 0;
@@ -13,7 +16,6 @@ function createData(name, fat, price) {
   id += 1;
   return { id, name, fat, price };
 }
-
 const rows = [
   createData('Frozen yoghurt', 159, 4.0),
   createData('Ice cream sandwich', 237, 4.3),
@@ -28,6 +30,7 @@ export let coreAdjust = async function() {
 export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }) {
   console.log("Elevate: ",token1, token2, chainA, chainB, bridgeAmount);
   const classes = useStyles.bridge();
+  const [processing,setProcessing] = React.useState(false);
   const [processingHandling,setProcessingHandling] = React.useState(0);
   const [checkboxState,setCheckboxState] = React.useState("success");
   coreAdjust = async function(rate) {
@@ -36,40 +39,50 @@ export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }
     return processingHandling;
   };
   return (
-    <Card>
+    <Card sx={{width: '88.8%', minWidth: '300px'}}>
       <CardHeader
         classes={classes}
-        title={'Transaction'}
-        subheader={'Details'}
+        title={'Transaction Details'}
+        subheader={'Cross-Chain Transport'}
       />
       <CardContent className={classes.content}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Token Fees</TableCell>
+              <TableCell>Fungible P&H</TableCell>
               <TableCell>
-                <Checkbox {...label} defaultChecked color={checkboxState} />
+                <Checkbox defaultChecked color={checkboxState} />
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
               <TableRow>
                 <TableCell component="th">
-                  Digital Asset: 
+                  Cryptocurrency: 
                 </TableCell>
-                <TableCell align="left"> {token1.name} ({token1.symbol})</TableCell>
+                <TableCell align="left">
+                    { token1 !=="" ? token1.symbol : <LoopIcon sx={{ animation: "spin 2s linear infinite", "@keyframes spin": { "0%": { transform: "rotate(360deg)", },"100%": { transform: "rotate(0deg)", }, }, }} />}
+                    </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th">
                   Network Path: 
                 </TableCell>
-                <TableCell align="left">{chainA} => {chainB}</TableCell>
+                <TableCell align="left">
+                  {chainA !==0 && chainB !==0 ? 
+                    chainA+"   "+ui_friendly_networks[network_[network_dec_to_hex[chainA.toString()]]]+" to "+chainB+"   "+ui_friendly_networks[network_[network_dec_to_hex[chainB.toString()]]] : 
+                    <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />
+                  }
+                    <br/>
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th">
                   Processing & Handling
                 </TableCell>
-                <TableCell align="left">{processingHandling!==0?processingHandling:<Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />}</TableCell>
+                <TableCell align="left">
+                    {processing ? processingHandling !==0 ? processingHandling : "5 USDT" : !processing ? <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} /> : <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />  }
+                </TableCell>
               </TableRow>
           </TableBody>
         </Table>
