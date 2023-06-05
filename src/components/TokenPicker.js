@@ -1,50 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import {
     NoEthereumProviderError,
     UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from "@web3-react/injected-connector";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import {
-    URI_AVAILABLE,
     UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
 } from "@web3-react/walletconnect-connector";
 import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3-react/frame-connector";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import Alert from "@mui/lab/Alert";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 import DialogTitle from "@mui/material/DialogTitle";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch } from 'react-redux';
-import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
-import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
-import ReplayIcon from '@mui/icons-material/Replay';
 import useStyles from "../assets/styles";
-import { Wallets, ConnectedWallet } from "../assets/constants/wallets";
-import { injected, walletconnect } from "../assets/constants/connectors";
-import { useEagerConnect, useInactiveListener } from "../hooks";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { ConnectedWallet } from "../assets/constants/wallets";
 import { CHANGE_WALLET } from "../redux/constants";
-import { createStyles, DialogContent, IconButton, makeStyles, Tooltip } from '@mui/material';
+import { DialogContent } from '@mui/material';
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { useSelector } from "react-redux";
-import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS } from "../constants.js";
+import { network_, network_dec_to_hex, __NETWORKS } from "../constants.js";
 
 export default function TokenPicker({ tokens, options, setToken }) {
     const classes = useStyles.base();
     const { activate, active, account, deactivate, connector, error, setError, chainId } = useWeb3React();
     const dashboardClasses = useStyles.dashboard();
-    const triedEager = useEagerConnect();
     const [activatingConnector, setActivatingConnector] = React.useState(undefined);
     const [network, setNetwork] = React.useState("");
     const [networkData, setNetworkData] = React.useState("");
@@ -89,19 +72,12 @@ export default function TokenPicker({ tokens, options, setToken }) {
         }
     }, [options, searchFilter]);
 
-    const localFind = React.useCallback((address, tokenIdHolderString) => {
-        try {
-            return options.find((x) => x.mintKey === address &&
-            (!tokenIdHolderString || x.tokenId === tokenIdHolderString));
-        } catch(e){
-            //
-        }
-    }, [options]);
     let networks;
     let networks___ = [];
     let subMethod = false;
     let showLoader = false;
     let useTokenId = false;
+
     useEffect(() => {
         if (account) {
             dispatch({
@@ -158,47 +134,7 @@ export default function TokenPicker({ tokens, options, setToken }) {
             return;
         };
     }, [account, network, networkData, networks, chainId])
-    const copyAddress = () => {
-        alert(`Copied to clipboard.`, "info");
-    };
-    const viewBlockUrl = (account) => {
-        const { ethereum } = window;
-        console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
-        window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
-    };
-    useEffect(() => {
-        if (activatingConnector && activatingConnector === connector) {
-            setActivatingConnector(undefined);
-        }
-    }, [activatingConnector, connector]);
-    useEffect(() => {
-        const logURI = (uri) => {
-            console.log("WalletConnect URI", uri);
-        };
-        walletconnect.on(URI_AVAILABLE, logURI);
 
-        return () => {
-            walletconnect.off(URI_AVAILABLE, logURI);
-        };
-    }, []);
-
-    useInactiveListener(!triedEager);
-    const retryConnect = () => {
-        setError(false);
-    };
-    const onConnectWallet = async (item) => {
-        setActivatingConnector(item.connector);
-        await activate(item.connector);
-    };
-    const onDeactiveWallet = () => {
-        deactivate();
-    };
-    const handleOpenWalletList = () => {
-        setIsOpen(true);
-    };
-    const handleCloseWalletList = () => {
-        setIsOpen(false);
-    };
     const getErrorMessage = (error) => {
         if (error instanceof NoEthereumProviderError) {
             return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";

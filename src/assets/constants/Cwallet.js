@@ -69,7 +69,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import { styled } from '@mui/material/styles';
 import { walletconnect } from "./connectors";
-import { useEagerConnect, useInactiveListener } from "../../config";
 import { IOSSwitch, CAccordion, CAccordionDetails, CAccordionSummary, BootstrapDialog, BootstrapDialogTitle } from "../../config/style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { create_pool, get_pools } from "../../services/pool/liquidity.service";
@@ -96,7 +95,6 @@ const MenuProps = {
 };
 
 const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogState, setTokenDialogState, selectToken, swapSettingDialogState, setSwapSettingDialogState, poolCreateDialogState, setPoolCreateDialogState, setPools, setImportAlert }) => {
-    const triedEager = useEagerConnect();
     const {
         activate,
         active,
@@ -266,8 +264,10 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 }
             }
         };
-        setTimeout(__FREE, 5000, token1, token2, poolCreateDialogState);
-    }, [token1, token2])
+        if(token1.length>0&&token2.length>0) {
+            setTimeout(__FREE, 5000, token1, token2, poolCreateDialogState);
+        };
+    }, [token1, token2, chain])
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -293,7 +293,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             walletconnect.off(URI_AVAILABLE, logURI);
         };
     }, []);
-    useInactiveListener(!triedEager);
+
     const onConnectWallet = async (item, chain) => {
         setActivatingConnector(item.connector);
         setIsSelectingWallet(false);
@@ -303,14 +303,17 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             params: [{ chainId: `0x${Number(chain.chainId).toString(16)}` }],
         })
     };
+
     const onDeactiveWallet = () => {
         setIsSelectingWallet(true);
         deactivate();
     };
+
     const retryConnect = (activating) => {
         setError(null);
         onConnectWallet(activating);
     };
+
     const changeWallet = (error) => {
         if (!error) {
             return true;
@@ -318,14 +321,17 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             setError(null);
             setIsSelectingWallet(true);
         }
-    }
+    };
+
     const bumpDialog = () => {
         setDialogState_(5);
         () => setTokenDialogState(5);
     };
+
     const walletDialog = (newValue) => {
         setIsOpenDialog(newValue);
     };
+
     const tokenDialogClose = (event, data) => {
         console.log("event: ", event);
         console.log("data: ", data,data.contract);
@@ -362,9 +368,11 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
             };
         };
     };
+
     const swapSettingDialogClose = () => {
         setSwapSettingDialogState(false);
     };
+
     const swapSettingDialogOpen = () => {
         setSwapSettingDialogState(true);
     };
@@ -402,7 +410,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
         const newChecked = [...checked];
-
         if (currentIndex === -1) {
             newChecked.push(value);
         } else {
@@ -520,7 +527,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 from: account
             });
         }
-
         setPoolBtnState(true);
         setApproveBtnState(false);
     };
@@ -690,24 +696,20 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                         !active && (() => {
                             if (isSelectingWallet) {
                                 return (
-                                    <Grid container direction="column">
-                                        <Stack direction="row" alignItems="center" spacing={1} sx={{ padding: "10px" }}>
-                                            <Avatar sx={{ width: "36px", height: "36px" }}>1</Avatar>
-                                            <Stack direction="row">
-                                                <Typography>Accept&nbsp;</Typography>
-                                                <Link underline="none"><Typography sx={{ color: "#34F14B" }}>Terms of Service</Typography></Link>
-                                                <Typography>&nbsp;and&nbsp;</Typography>
-                                                <Link underline="none"><Typography sx={{ color: "#34F14B" }}>Privacy Policy</Typography></Link>
-                                            </Stack>
+                                    <><setBridgeAmount direction="column" /><Stack direction="row" alignItems="center" spacing={1} sx={{ padding: "10px" }}>
+                                        <Avatar sx={{ width: "36px", height: "36px" }}>1</Avatar>
+                                        <Stack direction="row">
+                                            <Typography>Accept&nbsp;</Typography>
+                                            <Link underline="none"><Typography sx={{ color: "#34F14B" }}>Terms of Service</Typography></Link>
+                                            <Typography>&nbsp;and&nbsp;</Typography>
+                                            <Link underline="none"><Typography sx={{ color: "#34F14B" }}>Privacy Policy</Typography></Link>
                                         </Stack>
-                                        <Stack direction="column" sx={{ marginLeft: "40px" }}>
+                                    </Stack><Stack direction="column" sx={{ marginLeft: "40px" }}>
                                             <FormControlLabel control={<Checkbox />} label="I read and accept" />
-                                        </Stack>
-                                        <Stack direction="row" alignItems="center" spacing={1} sx={{ padding: "10px" }}>
+                                        </Stack><Stack direction="row" alignItems="center" spacing={1} sx={{ padding: "10px" }}>
                                             <Avatar sx={{ width: "36px", height: "36px" }}>2</Avatar>
                                             <Typography>Choose Network</Typography>
-                                        </Stack>
-                                        <Grid container>
+                                        </Stack><Grid container>
                                             {Chains.map((data, index) => {
                                                 return (
                                                     <Grid item lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
@@ -720,27 +722,23 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                                                     <Typography sx={{ width: "66px", height: "66px" }} component="img" src={data.logo2}></Typography>
                                                                 </Badge>
                                                                 :
-                                                                <Typography sx={{ width: "66px", height: "66px" }} component="img" src={data.logo2}></Typography>
-                                                            }
+                                                                <Typography sx={{ width: "66px", height: "66px" }} component="img" src={data.logo2}></Typography>}
                                                         </Button>
                                                     </Grid>
-                                                )
+                                                );
                                             })}
-                                        </Grid>
-                                        <Stack direction="row" alignItems="center" spacing={1} sx={{ padding: "10px" }}>
+                                        </Grid><Stack direction="row" alignItems="center" spacing={1} sx={{ padding: "10px" }}>
                                             <Avatar sx={{ width: "36px", height: "36px" }}>3</Avatar>
                                             <Typography>Choose Wallet</Typography>
-                                        </Stack>
-                                        <Grid container>
+                                        </Stack><Grid container>
                                             {Wallets.map((data, index) => {
                                                 return (
                                                     <Grid item lg={2.4} key={index} container justifyContent="center" sx={{ margin: "10px 0" }}>
                                                         <Button className="netButton" onClick={() => onConnectWallet(data, chain)} sx={{ padding: "10px 20px", borderRadius: "12px" }}><Typography component="img" sx={{ width: "66px", height: "66px" }} src={data.logo1}></Typography></Button>
                                                     </Grid>
-                                                )
+                                                );
                                             })}
-                                        </Grid>
-                                    </Grid>
+                                        </Grid></>
                                 )
                             } else if (!isSelectingWallet) {
                                 const activating = Wallets.find(item => (item.connector === activatingConnector || item.connector === connector));
@@ -796,7 +794,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 </DialogContent>
             </BootstrapDialog>
 
-            {chain.tokens&&chain.tokens.length ?
+            {chain.tokens&&chain.tokens.length > 0?
                 <BootstrapDialog
                     onClose={(e) => tokenDialogClose(e,chain.tokens[0])}
                     aria-labelledby="customized-dialog-title1"
@@ -820,7 +818,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                 onKeyUp={(e) => changeCustomToken(e.target.value.toLowerCase())}
                             />
                             <Typography sx={{ fontSize: "18px", margin: "10px 0" }}>Common bases</Typography>
-                            <Grid container sx={{ margin: "0 0 16px" }} spacing={1}>
+                            <setBridgeAmount sx={{ margin: "0 0 16px" }} spacing={1} />
                                 {baseToken.map((data, index) => (
                                     <Button key={index} onClick={(e) => tokenDialogClose(e, chain.tokens[0])} color="inherit" sx={{ margin: "4px 4px", border: "1px solid #7E8B74", borderRadius: "14px" }}
                                         startIcon={chain.tokens[0].logoURI !== null ?
@@ -831,7 +829,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                     >{chain.tokens[0].symbol}</Button>
                                 ))
                                 }
-                            </Grid>
                             <Divider sx={{ mb: "14px" }} />
                             <Box sx={{ overflow: "auto" }} onScroll={onScroll} ref={listInnerRef}>
                                 <Box sx={{ maxHeight: "200px" }}>
@@ -960,213 +957,68 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                 :
                 <></>
             }
-            <BootstrapDialog
-                onClose={()=>setSwapSettingDialogState(false)} 
-                onOpen={()=>setSwapSettingDialogState(true)}
-                aria-labelledby="customized-dialog-title1"
-                open={swapSettingDialogState}
-            >
-                <BootstrapDialogTitle onClose={()=>setSwapSettingDialogState(false)} id="customized-dialog-title1" sx={{ maxWidth: "476px" }}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <IconButton onClick={swapSettingDialogClose}><ChevronLeftIcon /></IconButton>
-                        <Typography>Advanced Settings</Typography>
-                        <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
-                    </Stack>
-                </BootstrapDialogTitle>
-                <DialogContent sx={{ maxWidth: "476px" }}>
-                    {/*
-                        <CAccordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ background: "transparent" }}>
-                            <CAccordionSummary
-                                aria-controls="panel1bh-content"
-                                id="panel1bh-header"
-                            >
-                                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                    <Typography>Gas Price</Typography>
-                                    <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{`${gasState.name} (${gasState.min} - ${gasState.max} Gwei)`}&nbsp;</Typography>
-                                </Stack>
-                            </CAccordionSummary>
-                            <CAccordionDetails>
-                                <Stack direction="row" justifyContent="space-between" sx={{ padding: "0 30px" }}>
-                                    <Button sx={{ borderRadius: "29px", color: "white" }} variant={button === 1 ? "contained" : "inherit"} onClick={() => buttonState(1)}>Basic</Button>
-                                    <Button sx={{ borderRadius: "29px", color: "white" }} variant={button === 2 ? "contained" : "inherit"} onClick={() => buttonState(2)}>Advanced</Button>
-                                </Stack>
-                                <Box sx={{ mt: "25px" }}>
-                                    {button === 1 &&
-                                        <RadioGroup sx={{ width: "100%" }} defaultValue={gasState.name} >
-                                            <Paper sx={{ borderRadius: "14px", background: "#101010 !important" }}>
-                                                {gasMenu.map((data, index) => (
-                                                    <Stack key={index}>
-                                                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ padding: "8px 16px" }}>
-                                                            <Stack direction="row" alignItems="center">
-                                                                <FormControlLabel value={data.name} control={<Radio />} label={data.name} onChange={() => setgasState(data)} />
-                                                                <Typography align="left" sx={{ color: "#7E8B74", fontSize: "14px" }}>{data.time}</Typography>
-                                                            </Stack>
-                                                            <Typography align="right" sx={{ fontSize: "14px" }}>{`${data.min}-${data.max}`} Gwei</Typography>
-                                                        </Stack>
-                                                        {index < gasMenu.length - 1 &&
-                                                            <Divider />
-                                                        }
-                                                    </Stack>
-                                                ))
-                                                }
-                                            </Paper>
-                                        </RadioGroup>
-                                    }
-                                    {button === 2 &&
-                                        <Box>
-                                            <Alert sx={{ background: "rgba(55, 175, 67, 0.1) !important" }} severity="info">
-                                                <Typography align="right">Current base fee is {gasState.min} Gwei</Typography>
-                                            </Alert>
-                                            <Stack direction="row" justifyContent="space-between" sx={{ mt: "24px" }}>
-                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>MAX priority fee</Typography>
-                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>Estimated high: {Math.floor(gasState.max - gasState.min)} Gwei</Typography>
-                                            </Stack>
-                                            <Paper sx={{ background: "#101010 !important", borderRadius: "12px" }}>
-                                                <InputBase
-                                                    type="number"
-                                                    sx={{ flex: 1, color: "white", width: "100%", padding: "15px 20px" }}
-                                                    defaultValue={5.00}
-                                                    endAdornment={<InputAdornment position="end">Gwei</InputAdornment>}
-                                                />
-                                            </Paper>
-                                            <Stack direction="row" justifyContent="space-between" sx={{ mt: "24px" }}>
-                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>MAX fee</Typography>
-                                                <Typography sx={{ color: "#7E8B74", fontSize: "14px" }}>Estimated high: {Math.ceil(gasState.max)}Gwei</Typography>
-                                            </Stack>
-                                            <Paper sx={{ background: "#101010 !important", borderRadius: "12px", border: `${errorState ? "2px solid #ff8078" : "none"}` }}>
-                                                <InputBase
-                                                    type="number"
-                                                    sx={{ flex: 1, color: "white", width: "100%", padding: "15px 20px" }}
-                                                    defaultValue={maxFee}
-                                                    endAdornment={<InputAdornment position="end">Gwei</InputAdornment>}
-                                                    onChange={(e) => changeMaxFee(e.target.value)}
-                                                />
-                                            </Paper>
-                                            {errorState &&
-                                                <Typography sx={{ fontSize: "14px", color: "#ff8078", margin: "5px" }}>{`Max price can't be lower than base fee`}</Typography>
-                                            }
-                                            <Paper variant="outlined" sx={{ padding: "23px", background: "transparent", mt: "24px", borderRadius: "14px", borderColor: "#FFFFFF" }}>
-                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: "15px" }}>
-                                                    <Typography>Wait time</Typography>
-                                                    <Typography>~12 sec</Typography>
-                                                </Stack>
-                                                <Stack direction="row" justifyContent="space-between">
-                                                    <Typography>Fee range</Typography>
-                                                    <Typography>{(maxFee <= Math.ceil(gasState.max) && maxFee >= gasState.min) ? maxFee : `${gasState.max}–${maxFee}`} Gwei</Typography>
-                                                </Stack>
-                                            </Paper>
-                                        </Box>
-                                    }
-                                </Box>
-                            </CAccordionDetails>
-                        </CAccordion>
-                    */}
-                    {/*
-                        <CAccordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ background: "transparent" }}>
-                            <CAccordionSummary
-                                aria-controls="panel2bh-content"
-                                id="panel2bh-header"
-                            >
-                                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                    <Typography>Slippage tolerance</Typography>
-                                    <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>{activeSlipageButton}%&nbsp;</Typography>
-                                </Stack>
-                            </CAccordionSummary>
-                            <CAccordionDetails>
-                                <Paper sx={{ padding: "4px", margin: "0 30px", background: "#101010 !important" }}>
-                                    <Stack direction="row" justifyContent="space-between">
-                                        {[0.1, 0.5, 1, 3].map((data, index) => (
-                                            <Button key={index} onClick={() => setActiveSlipageButton(data)} sx={{ padding: "8px", borderRadius: "5px", color: "white", background: `${data === activeSlipageButton && "#7E8B74"}` }}>{data}%</Button>
-                                        ))}
-                                        <Stack>
-                                            <TextField
-                                                id="outlined-textarea"
-                                                placeholder="Custom"
-                                                size="small"
-                                                type="number"
-                                                onChange={(e) => setActiveSlipageButton(e.target.value ? e.target.value : 0.1)}
-                                                sx={{ color: "white", width: "85px" }}
-                                            />
-                                        </Stack>
-                                    </Stack>
-                                </Paper>
-                            </CAccordionDetails>
-                        </CAccordion>
-                    */}
-                    {/*
-                        <Stack direction="row" justifyContent="space-between" sx={{ margin: "20px 0 0 16px" }}>
-                            <Typography>Partial fill</Typography>
-                            <IOSSwitch />
+            {
+            <><BootstrapDialog
+                    onClose={() => setSwapSettingDialogState(false)}
+                    onOpen={() => setSwapSettingDialogState(true)}
+                    aria-labelledby="customized-dialog-title1"
+                    open={swapSettingDialogState}
+                >
+                    <BootstrapDialogTitle onClose={() => setSwapSettingDialogState(false)} id="customized-dialog-title1" sx={{ maxWidth: "476px" }}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                            <IconButton onClick={swapSettingDialogClose}><ChevronLeftIcon /></IconButton>
+                            <Typography>Advanced Settings</Typography>
+                            <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
                         </Stack>
-                    */}
-                    {/*
-                        <CAccordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} sx={{ background: "transparent" }}>
-                            <CAccordionSummary
-                                aria-controls="panel4bh-content"
-                                id="panel4bh-header"
-                            >
-                                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                                    <Typography>Custom Tokens</Typography>
-                                    <Typography sx={{ color: 'text.secondary', fontSize: "14px" }}>0&nbsp;</Typography>
-                                </Stack>
-                            </CAccordionSummary>
-                            <CAccordionDetails>
-                                <Typography>
-                                </Typography>
-                            </CAccordionDetails>
-                        </CAccordion>
-                    */}
-                </DialogContent>
-            </BootstrapDialog>
-
-            <BootstrapDialog
-                onOpen={() => setLiquidityDialogState(true)}
-                onClose={() => setLiquidityDialogState(false)}
-                className="ls_dialog"
-                open={liquidityDialogState}
-            >
-                <BootstrapDialogTitle onClose={() => setLiquidityDialogState(false)} id="customized-dialog-title2">
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <IconButton onClick={() => liquidityDialogClose()}><ChevronLeftIcon /></IconButton>
-                        <Typography>Liquidity Sources</Typography>
-                        <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
-                    </Stack>
-                </BootstrapDialogTitle>
-                <DialogContent className="ls_dialog_content" sx={{ margin: "10px" }}>
-                    <TextField
-                        id="input-with-icon-textfield"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="end"><SearchIcon sx={{ fontSize: "30px" }} />&nbsp;&nbsp;</InputAdornment>
-                            ),
-                        }}
-                        sx={{ width: "100%", background: "black", borderRadius: "12px" }}
-                    />
-                    <List sx={{ background: 'transparent' }}>
-                        {liquiditySources.map((value, index) => {
-                            const labelId = `checkbox-list-secondary-label-${index}`;
-                            return (
-                                <Stack key={index}>
-                                    {index % 10 === 0 &&
-                                        <Divider orientation="horizontal" textAlign="left"><Typography sx={{ fontSize: "18px" }}>{index}-{index + 9 > liquiditySources.length - 1 ? liquiditySources.length - 1 : index + 9}</Typography></Divider>
-                                    }
-                                    <ListItem sx={{ padding: "0" }}>
-                                        <ListItemButton sx={{ padding: "8px 10px" }} onClick={handleToggle(index)}>
-                                            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: "100%" }}>
-                                                <Stack direction="row">
-                                                    <Typography component="img" src={Inch} sx={{ mr: "10px", width: "24px", height: "24px" }} />
-                                                    <Typography sx={{ fontSize: "18px" }}>1INCH LP v1.0</Typography>
-                                                </Stack>
-                                                <Checkbox edge="end" onChange={handleToggle(index)} checked={checked.indexOf(index) !== -1} inputProps={{ 'aria-labelledby': labelId }} />
-                                            </Stack>
-                                        </ListItemButton>
-                                    </ListItem>
-                                </Stack>
-                            );
-                        })}
-                    </List>
-                </DialogContent>
-            </BootstrapDialog>
+                    </BootstrapDialogTitle>
+                    <DialogContent sx={{ maxWidth: "476px" }}></DialogContent>
+                </BootstrapDialog><BootstrapDialog
+                    onOpen={() => setLiquidityDialogState(true)}
+                    onClose={() => setLiquidityDialogState(false)}
+                    className="ls_dialog"
+                    open={liquidityDialogState}
+                >
+                        <BootstrapDialogTitle onClose={() => setLiquidityDialogState(false)} id="customized-dialog-title2">
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <IconButton onClick={() => liquidityDialogClose()}><ChevronLeftIcon /></IconButton>
+                                <Typography>Liquidity Sources</Typography>
+                                <Link underline="none" sx={{ color: "#7E8B74 !important", fontSize: "14px" }}>Reset</Link>
+                            </Stack>
+                        </BootstrapDialogTitle>
+                        <DialogContent className="ls_dialog_content" sx={{ margin: "10px" }}>
+                            <TextField
+                                id="input-with-icon-textfield"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="end"><SearchIcon sx={{ fontSize: "30px" }} />&nbsp;&nbsp;</InputAdornment>
+                                    ),
+                                }}
+                                sx={{ width: "100%", background: "black", borderRadius: "12px" }} />
+                            <List sx={{ background: 'transparent' }}>
+                                {liquiditySources.map((value, index) => {
+                                    const labelId = `checkbox-list-secondary-label-${index}`;
+                                    return (
+                                        <Stack key={index}>
+                                            {index % 10 === 0 &&
+                                                <Divider orientation="horizontal" textAlign="left"><Typography sx={{ fontSize: "18px" }}>{index}-{index + 9 > liquiditySources.length - 1 ? liquiditySources.length - 1 : index + 9}</Typography></Divider>}
+                                            <ListItem sx={{ padding: "0" }}>
+                                                <ListItemButton sx={{ padding: "8px 10px" }} onClick={handleToggle(index)}>
+                                                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: "100%" }}>
+                                                        <Stack direction="row">
+                                                            <Typography component="img" src={Inch} sx={{ mr: "10px", width: "24px", height: "24px" }} />
+                                                            <Typography sx={{ fontSize: "18px" }}>1INCH LP v1.0</Typography>
+                                                        </Stack>
+                                                        <Checkbox edge="end" onChange={handleToggle(index)} checked={checked.indexOf(index) !== -1} inputProps={{ 'aria-labelledby': labelId }} />
+                                                    </Stack>
+                                                </ListItemButton>
+                                            </ListItem>
+                                        </Stack>
+                                    );
+                                })}
+                            </List>
+                        </DialogContent>
+                    </BootstrapDialog></>
+            }
 
             {poolCreateDialogState &&
                 <BootstrapDialog
@@ -1183,7 +1035,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                     </BootstrapDialogTitle>
                     <DialogContent sx={{ m: "5px" }}>
                         <Grid container>
-                            <Grid xs={10}>
+                            <Grid item xs={10}>
                                 <Select
                                     fullWidth
                                     value={token1}
@@ -1191,8 +1043,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                     sx={{ background: "black" }}
                                     MenuProps={MenuProps}
                                 >
-                                    {/* {chain.test_tokens.map((data, index) => ( */}
-                                    {chain.tokens.map((data, index) => (
+                                    {chain.tokens.length && chain.tokens.map((data, index) => (
                                         <MenuItem value={data} key={index}>
                                             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: "100%" }}>
                                                 <Stack direction="row" alignItems="center" spacing={1}>
@@ -1203,7 +1054,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                                     }
                                                     <Typography>{data.symbol}</Typography>
                                                 </Stack>
-                                                <Typography>{data.name.length > 25 ? `${data.name.slice(0, 8)}...${data.name.slice(-8)}` : data.name}</Typography>
+                                                <Typography>{data.length&&data.name.length > 25 ? `${data.name.slice(0, 8)}...${data.name.slice(-8)}` : data.name}</Typography>
                                             </Stack>
                                         </MenuItem>
                                     ))
@@ -1216,7 +1067,6 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                     sx={{ my: "20px", background: "black" }}
                                     MenuProps={MenuProps}
                                 >
-                                    {/* {chain.test_tokens.map((data, index) => ( */}
                                     {chain.tokens.map((data, index) => (
                                         <MenuItem value={data} key={index}>
                                             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: "100%" }}>
@@ -1228,7 +1078,7 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                                                     }
                                                     <Typography>{data.symbol}</Typography>
                                                 </Stack>
-                                                <Typography>{data.name.length > 18 ? `${data.name.slice(0, 8)}...${data.name.slice(-8)}` : data.name}</Typography>
+                                                <Typography>{data.length&&data.name.length > 18 ? `${data.name.slice(0, 8)}...${data.name.slice(-8)}` : data.name}</Typography>
                                             </Stack>
                                         </MenuItem>
                                     ))

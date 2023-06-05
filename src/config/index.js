@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { injected } from "../assets/constants/connectors";
 import * as actions from "./_api";
-
 export function useEagerConnect() {
     const { activate, active } = useWeb3React();
-
     const [tried, setTried] = useState(false);
-
     useEffect(() => {
         injected.isAuthorized().then((isAuthorized) => {
             if (isAuthorized) {
@@ -24,10 +21,8 @@ export function useEagerConnect() {
             setTried(true);
         }
     }, [tried, active]);
-
     return tried;
-}
-
+};
 export function useInactiveListener(suppress = false) {
     const { active, error, activate } = useWeb3React();
 
@@ -72,8 +67,7 @@ export function useInactiveListener(suppress = false) {
 
         return () => { };
     }, [active, error, suppress, activate]);
-}
-
+};
 export const useApi = () => {
     return actions;
 };

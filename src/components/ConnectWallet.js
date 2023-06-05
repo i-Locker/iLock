@@ -26,22 +26,17 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch } from 'react-redux';
-
-// ** Import Material Icons
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import ReplayIcon from '@mui/icons-material/Replay';
-
-// ** Import Assets
 import useStyles from "../assets/styles";
 import { Wallets, ConnectedWallet } from "../assets/constants/wallets";
-import { injected, walletconnect } from "../assets/constants/connectors";
+import { walletconnect } from "../assets/constants/connectors";
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CHANGE_WALLET } from "../redux/constants";
-import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS } from "../constants.js";
-
+import { explorer_, network_, network_dec_to_hex, __NETWORKS } from "../constants.js";
 const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const classes = useStyles.base();
     const dashboardClasses = useStyles.dashboard();
@@ -134,7 +129,6 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
             walletconnect.off(URI_AVAILABLE, logURI);
         };
     }, []);
-
     useInactiveListener(!triedEager);
     const retryConnect = () => {
         setError(false);

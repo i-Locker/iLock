@@ -509,50 +509,6 @@ const CrossChainV2 = (props) => {
 
     const changeNetwork = (name) => {
         setNetwork(name);
-    };
-    const Row = (props) => {
-        const { index, row } = props;
-        let nextUnlock, lockedTokenAmount = 0,
-            lockedLiquidity = false;
-        const currentTime = Date.now();
-        row.data.map(each => {
-            if (each.timestamp > currentTime / 1000) {
-                if (!nextUnlock) nextUnlock = each.timestamp;
-                else if (nextUnlock > each.timestamp) nextUnlock = each.timestamp;
-            }
-            if (!each.isWithdrawn && !each.isLiquidity) lockedTokenAmount += each.amount / Math.pow(10, each.decimals);
-            if (!each.isWithdrawn && each.isLiquidity) lockedLiquidity = true;
-        })
-
-        return ( <
-            >
-            <TableRow
-                sx={{ '& > *': { borderBottom: 'unset' } }}
-                > 
-                    <TableCell>
-                        {index + 1}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                        <span style={{cursor: "pointer"}} onClick={()=>showLockup(row.token.address,index + 1)}>{row.token.symbol}</span>
-                        <CopyToClipboard text={row.token.address} onCopy={()=>handleSnackbarOpen(true)}>
-                            <Tooltip title="copy">
-                                <IconButton>
-                                    <ContentCopyIcon/>
-                                </IconButton>
-                            </Tooltip>
-                        </CopyToClipboard>
-                    </TableCell>
-                    <TableCell align="right">{lockedTokenAmount.toFixed(2)}</TableCell>
-                    <TableCell align="right">{lockedLiquidity && <CheckIcon />}</TableCell>
-                    <TableCell align="right">
-                        {nextUnlock ? new Date(nextUnlock).toDateString() : ''}
-                    </TableCell>
-                    <TableCell align="right">
-                        <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>View</Button>
-                    </TableCell>
-                </TableRow> <
-            />
-        )
     }
     return (
         <Container className={classes.root} maxWidth="fluid" style={{margin:'auto', backgroundColor: "green", width: "100 vw", height: "100 vh", background: "linear-gradient(45deg, rgba(12,38,16,1) 0%, rgba(6,23,11,0.9948354341736695) 20%, rgba(17,38,21,1) 64%, rgba(0,0,0,1) 100%)"}}>

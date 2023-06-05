@@ -1,64 +1,41 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import {
     NoEthereumProviderError,
     UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from "@web3-react/injected-connector";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import {
-    URI_AVAILABLE,
     UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
 } from "@web3-react/walletconnect-connector";
 import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3-react/frame-connector";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import Alert from "@mui/lab/Alert";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 import DialogTitle from "@mui/material/DialogTitle";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch } from 'react-redux';
-import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
-import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
-import ReplayIcon from '@mui/icons-material/Replay';
 import useStyles from "../assets/styles";
-import { Wallets, ConnectedWallet } from "../assets/constants/wallets";
-import { injected, walletconnect } from "../assets/constants/connectors";
-import { useEagerConnect, useInactiveListener } from "../hooks";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { ConnectedWallet } from "../assets/constants/wallets";
 import { CHANGE_WALLET } from "../redux/constants";
 import GroupOrientationB from './GroupButtonsB';
-import { createStyles, DialogContent, IconButton, makeStyles, Tooltip } from '@mui/material';
+import { DialogContent } from '@mui/material';
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { useSelector } from "react-redux";
-import { explorer_, network_, network_dec_to_hex, network_hex_to_dec, __NETWORKS, _token_map } from "../constants.js";
+import { explorer_, network_, network_dec_to_hex, __NETWORKS, _token_map } from "../constants.js";
 
 export default function ChainBTokens({ token, setToken, chain_B }) {
     const classes = useStyles.base();
-    const { activate, active, account, deactivate, connector, error, setError, chainId } = useWeb3React();
+    const { connector, chainId } = useWeb3React();
     const dashboardClasses = useStyles.dashboard();
     const [activatingConnector, setActivatingConnector] = React.useState(undefined);
     const [network, setNetwork] = React.useState("");
     const [networkData, setNetworkData] = React.useState("");
     const [holderString, setHolderString] = React.useState("");
-    const [tokenIdHolderString, setTokenIdHolderString] = React.useState("");
     const [loadingError, setLoadingError] = React.useState("");
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [isLocalLoading, setLocalLoading] = React.useState(false);
     const [dialogIsOpen, setDialogIsOpen] = React.useState(false);
     const [selectionError, setSelectionError] = React.useState(""); 
     const [tokenMap, setTokenMap] = React.useState(undefined);
 
-    const triedEager = useEagerConnect();
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
 
@@ -150,10 +127,6 @@ export default function ChainBTokens({ token, setToken, chain_B }) {
         };
     }, [account, network, networkData, networks, chainId]);
 
-    const copyAddress = () => {
-        alert(`Copied to clipboard.`, "info");
-    };
-
     const viewBlockUrl = (account) => {
         const { ethereum } = window;
         console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
@@ -172,44 +145,9 @@ export default function ChainBTokens({ token, setToken, chain_B }) {
         };
     }, [activatingConnector, connector]);
 
-    useEffect(() => {
-        const logURI = (uri) => {
-            console.log("WalletConnect URI", uri);
-        };
-        walletconnect.on(URI_AVAILABLE, logURI);
-        return () => {
-            walletconnect.off(URI_AVAILABLE, logURI);
-        };
-    }, []);
-
-    console.log("token: ",token);
-
-    useInactiveListener(!triedEager);
-
-    const retryConnect = () => {
-        setError(false);
-    };
-
     const handleContract = (event) => {
         setHolderString(event);
         console.log("holderString: ",event, holderString);
-    };
-
-    const onConnectWallet = async (item) => {
-        setActivatingConnector(item.connector);
-        await activate(item.connector);
-    };
-
-    const onDeactiveWallet = () => {
-        deactivate();
-    };
-
-    const handleOpenWalletList = () => {
-        setIsOpen(true);
-    };
-
-    const handleCloseWalletList = () => {
-        setIsOpen(false);
     };
 
     const getErrorMessage = (error) => {
@@ -237,7 +175,7 @@ export default function ChainBTokens({ token, setToken, chain_B }) {
     </div>);
     const displayLocalError = (<div className={classes.alignCenter}>
       <Typography variant="body2" color="error">
-        {loadingError || selectionError}
+        {loaingError&&loadingError || selectionError&&selectionError}
       </Typography>
     </div>);
     const dialog = (<Dialog style={{margin:'auto', alignItems:"center"}} onClose={closeDialog} aria-labelledby="simple-dialog-title" open={dialogIsOpen} maxWidth="sm" fullWidth>
@@ -252,15 +190,6 @@ export default function ChainBTokens({ token, setToken, chain_B }) {
             {<GroupOrientationB items={chainId&&_token_map[chainId.toString()].tokens} token={token} setToken={setToken} />}
         </Stack>
       </DialogContent> 
-      {
-        /*
-        <DialogContent className={classes.dialogContent}>
-            <TextField variant="outlined" label="Enter contract address" value={holderString} onChange={(event) => handleContract(event.target.value)} fullWidth margin="normal"/>
-            {isLocalLoading || showLoader ? (localLoader) : loadingError || selectionError ? (displayLocalError) : (<List component="div" className={classes.tokenList}>
-              </List>)}
-        </DialogContent>
-        */
-      }
     </Dialog>);
     const selectionChip = (<div className={classes.selectionButtonContainer}>
       <Button onClick={openDialog} disabled={false} variant="outlined" startIcon={<KeyboardArrowDownIcon />} className={classes.selectionButton}>

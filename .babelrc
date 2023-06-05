@@ -4,17 +4,17 @@
         "default":
         {
             "presets": ["@babel/env", "@babel/preset-typescript"],
-            "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread"]
+            "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread",[ "babel-plugin-transform-import-ignore", { "patterns": [".css", ".scss", "wildcard/*/match.css"] } ]]
         },
         "production":
         {
             "presets": ["@babel/env", "@babel/preset-typescript"],
-            "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread"]
+            "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread",[ "babel-plugin-transform-import-ignore", { "patterns": [".css", ".scss", "wildcard/*/match.css"] } ]]
         },
         "development":
         {
             "presets": ["@babel/env", "@babel/preset-typescript"],
-            "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread"]
+            "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread",[ "babel-plugin-transform-import-ignore", { "patterns": [".css", ".scss", "wildcard/*/match.css"] } ]]
         }
     }
 }
