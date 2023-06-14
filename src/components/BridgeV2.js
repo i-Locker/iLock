@@ -15,39 +15,40 @@ import {
     RadioGroup,
     CardContent
 } from '@mui/material';
+import './swap.css';
 import Web3 from 'web3';
-import SwipeableViews from 'react-swipeable-views';
-import Cwallet from "../assets/constants/Cwallet";
-import { CustomTab } from '../config/style';
-import { useTheme } from '@mui/material/styles';
-import { useSelector, useDispatch } from 'react-redux';
-import { useWeb3React } from "@web3-react/core";
+import Elevate from './Elevated';
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
-import { useNavigate } from "react-router-dom"
+import useStyles from '../assets/styles';
+import { coreAdjuster } from './Elevated';
+import ChainATokens from './ChainATokens';
+import { CustomTab } from '../config/style';
+import { useNavigate } from "react-router-dom";
+import { ThemeProvider } from '@emotion/react';
+import MenuListSpecial from './MenuListSpecial';
+import { useTheme } from '@mui/material/styles';
+import { useWeb3React } from "@web3-react/core";
 import LoopIcon from '@mui/icons-material/Loop';
+import fren from '../assets/img/common/fren.svg';
+import Cwallet from "../assets/constants/Cwallet";
+import SwipeableViews from 'react-swipeable-views';
+import { useSelector, useDispatch } from 'react-redux';
 import ListSubheader from '@mui/material/ListSubheader';
+import MobileStepper from '@mui/material/MobileStepper';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { styled, createTheme } from '@mui/material/styles';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import MobileStepper from '@mui/material/MobileStepper';
 import { fetch_Balance, get_iVault_Quote_EthToToken, get_iVault_Quote_TokenToEth, calculateSuggestedDonation, getEtherBalance, allowance, bridgeToken, w3, approve_Token } from "../web3";
 import { erc20Abi, network_lower_to_proper, iBridgeAbi, CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, wrappedAddress, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ChainATokens from './ChainATokens';
-import './swap.css';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Box from '@mui/material/Box';
-import Elevate from './Elevated';
-import { coreAdjust } from './Elevated';
-import MenuListSpecial from './MenuListSpecial';
-import useStyles from '../assets/styles';
-import fren from '../assets/img/common/fren.svg';
-import { styled, createTheme } from '@mui/material/styles';
-import { ThemeProvider } from '@emotion/react';
 
 export let baseFee = async function() {
   //
-}
+};
+
 let approveToken = approve_Token;
 const SwapButton = styled(Button)(() => ({
     width: "100%",
@@ -57,9 +58,11 @@ const SwapButton = styled(Button)(() => ({
     borderRadius: "12px",
     background: "linear-gradient(100.22deg, #34F14B 0%, #139F24 100%)"
 }));
+
 let SwapPaper = styled(Paper)(() => ({
     margin: "99px 0 0"
 }));
+
 let GridLeaderMin = styled(Grid)(() => ({
     alignItems:'center',
     textAlign:'center',
@@ -72,6 +75,7 @@ let GridLeaderMin = styled(Grid)(() => ({
     width: '100%',
     margin: 'auto'
 }));
+
 let GridLeader = styled(Grid)(() => ({
     alignItems:'center',
     textAlign:'center',
@@ -80,15 +84,18 @@ let GridLeader = styled(Grid)(() => ({
     maxWidth: '100%',
     marginTop:40
 }));
+
 let BasicStack = styled(Stack)(() => ({
     margin: 'auto'
 }));
+
 let FlexibleContainer = styled(Stack)(() => ({
     display: 'flex',
     flexDirection: 'row',
     padding: 1,
     margin: 'auto'
 }));
+
 export default function BridgeV2({ token1, token2, setToken1, setToken2, chainState, setChainState }) {
     const { active, account, connector, chainId } = useWeb3React();
     const [swapTabValue, setSwapTabValue] = useState(0);
@@ -128,16 +135,28 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
     const dashboardClasses = useStyles.dashboard();
     const triedEager = useEagerConnect();
 
-    baseFee = async function(rate) {
-      console.log("rate: ",rate);
-      await setProcessingHandling(rate);
+    const maxSteps = 3;
+    let networking = [];
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const mobileClasses = useStyles.mobile();
+    const test_data = useSelector(state => state);
+    const token = useSelector(state => state.tokenData);
+    const data = useSelector(state => state.tokenLists);
+    const userBalance = useSelector(state => state.userBalance);
+
+    console.log("test_data: ", test_data, test_data.tokenData);
+
+    baseFee = async function(amount) {
+      console.log("amount: ",amount);
       return processingHandling;
     };
 
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
-        }
+        };
     }, [activatingConnector, connector]);
    
     useInactiveListener(!triedEager);
@@ -147,15 +166,15 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setToken1(token2);
         setToken2(token_var);
         console.log("tokenChange: ",token1,token2);
-    }
+    };
 
     const selectToken = async (data) => {
-        if (tokenDialogState === 1) {
+        if (tokenDialogState <= 1) {
             if (data.address === token2.address) {
                 setToken2(token1);
             }
             setToken1(data);
-        } else if (tokenDialogState === 2) {
+        } else if (tokenDialogState >= 2) {
             if (data.address === token1.address) {
                 setToken1(token2);
             }
@@ -177,96 +196,101 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
 
     const checkEtherBalance = async (provider, account) => {
         getEtherBalance(provider, account, network).then(async (ebf) => {
-            console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
-            fetchEtherBalance(ebf[2]);
+            try {
+                console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
+                fetchEtherBalance(ebf[2]);
+            } catch(e) {
+                console.log("e: ",e);
+            };
         });
     };
 
-    const handleNext = async (activeStep, chain__A) => {
-        console.log("activeStep: ", activeStep, chain__A);
-        if (account&&chainId) {
+    const handleNext = async (activeStep,item) => {
+        console.log("activeStep: ", activeStep);
+        if (!account && !chainId) {
+            setIsOpenDialog(true);
+        }
+        try {
             const provider = window.ethereum;
-            checkEtherBalance(provider, account);
-            let NETWORK = chainId == chain__A ? true : false;
-            console.log("handleNext: ",chainId,chain__A,NETWORK,network_dec_to_hex[chainId]);
-            try {
+            const currentNetworkData = item;
+            console.log("network_hex_to_dec: ", currentNetworkData, network_hex_to_dec[currentNetworkData.chainData.chainId]);
+            let NETWORK = chainId == network_hex_to_dec[currentNetworkData.chainData.chainId] ? true : false;
+            console.log("Networking: ", network, NETWORK, network_dec_to_hex[chainId], chainId, network_[network_dec_to_hex[chainId]], currentNetworkData, currentNetworkData.chainData.chainId);
+            const params_network_add = {
+                    chainId: currentNetworkData.chainData.chainId,
+                    rpcUrls: [rpc_[currentNetworkData.chainData.chainId]],
+                    chainName: network_[currentNetworkData.chainData.chainId],
+                    nativeCurrency: { name: network_symbols[currentNetworkData.chainData.chainId],
+                    decimals: network_decimals[currentNetworkData.chainData.chainId],
+                    symbol: network_symbols[currentNetworkData.chainData.chainId] },
+                    blockExplorerUrls: [explorer_[currentNetworkData.chainData.chainId]],
+                    iconUrls: [icons_[currentNetworkData.chainData.chainId]]
+                };
+                console.log("params_network_add: ", params_network_add);
+            if (NETWORK) {
                 console.log("NETWORK: ", NETWORK, "\n existing: ", chainId);
-                if (NETWORK) {
-                    console.log("You are already on the proper network:  ", network);
-                } else {
-                    await provider.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: network_dec_to_hex[chainId] }],
+                console.log("You are already on the proper network:  ", network, network_dec_to_hex[chainId]);
+            } else {
+                await provider.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: currentNetworkData.chainData.chainId }]
+                });
+                console.log("You have successfully switched to ", network, network_dec_to_hex[chainId]);
+             }
+         } catch(switchError) {
+                console.log("switchError: ", switchError, switchError.code);
+             try {
+                const provider = window.ethereum;
+                const currentNetworkData = item;
+                console.log("network_hex_to_dec: ", network_hex_to_dec[currentNetworkData.chainData.chainId]);
+                let NETWORK = chainId == network_hex_to_dec[currentNetworkData.chainData.chainId] ? true : false;
+                console.log("Networking: ", network, NETWORK, network_dec_to_hex[chainId], chainId, network_[network_dec_to_hex[chainId]], currentNetworkData, currentNetworkData.chainData.chainId);
+                console.log("NETWORK: ", NETWORK, "\n existing: ", chainId);
+                const params_network_add = {
+                    chainId: currentNetworkData.chainData.chainId,
+                    rpcUrls: [rpc_[currentNetworkData.chainData.chainId]],
+                    chainName: network_[currentNetworkData.chainData.chainId],
+                    nativeCurrency: { name: network_symbols[currentNetworkData.chainData.chainId], 
+                    decimals: network_decimals[currentNetworkData.chainData.chainId], 
+                    symbol: network_symbols[currentNetworkData.chainData.chainId] },
+                    blockExplorerUrls: [explorer_[currentNetworkData.chainData.chainId]],
+                    iconUrls: [icons_[currentNetworkData.chainData.chainId]]
+                };
+                console.log("params_network_add: ", params_network_add);
+                if (switchError.code === 4902) {
+                    console.log("This network is not available in your metamask, please add it");
+                    let provider = await connector.getProvider();
+                    console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId, network_dec_to_hex[chainId]);
+                    provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{ ...params_network_add }]
+                    }).catch((error) => {
+                        console.log("provider_err: ", error);
                     });
-                    console.log("You have successfully switched to ", network);
-                }
-                if (activeStep == 0) {
-                    if (account === undefined) {
-                        setModalTitle("Please connect Wallet");
-                        setModalDes(`Before you can create a lock on ${network}, you must connect your wallet to ${network} network on your wallet. Use testnet for test transactions, and mainnet for real token locks.`);
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                } else if (activeStep >= 2) {
-                    return;
-                } else {
-                    console.log("activeStep: ", activeStep);
-                    if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    } else {
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    }
-                }
-            } catch (switchError) {
-                try {
-                    const params_network_add = {
-                        chainId: network_dec_to_hex[chainId],
-                        rpcUrls: [rpc_[network_dec_to_hex[chainId]]],
-                        chainName: network_[network_dec_to_hex[chainId]],
-                        nativeCurrency: { name: network_symbols[network_dec_to_hex[chainId]], decimals: network_decimals[network_dec_to_hex[chainId]], symbol: network_symbols[network_dec_to_hex[chainId]] },
-                        blockExplorerUrls: [explorer_[network_dec_to_hex[chainId]]],
-                        iconUrls: [icons_[network_dec_to_hex[chainId]]]
-                    };
-                    console.log("params_network_add: ", switchError.code, params_network_add);
-                    if (switchError.code === 4902) {
-                        console.log("This network is not available in your metamask, please add it");
-                        try {
-                            let provider = await connector.getProvider();
-                            console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId, network_dec_to_hex[chainId]);
-                            provider.request({
-                                method: 'wallet_addEthereumChain',
-                                params: [{ ...params_network_add }]
-                            }).catch((error) => {
-                                console.log("provider_err: ", error);
-                            });
-                        } catch(e) {
-                            //
-                        }
-                    } else if (switchError.code === 4001) {
-                        console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId, network_dec_to_hex[chainId]);
-                        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                    } else if (switchError.code === 4200) {
-                        console.log("You have succefully switched to ", network);
-                        if (activeStep == 0) {
-                            if (account === undefined) {
-                                setModalTitle("Please connect Wallet");
-                                setModalDes(`Before you can bridge digital assets from ${network}, you must connect your wallet to ${network} network.`);
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
-                        } else if (activeStep >= 1) {
-                            return;
+                } else if (switchError.code === 4001) {
+                    console.log("Switch Request has rejected:", "\n network: ", network, "\n chainId:", chainId, network_dec_to_hex[chainId]);
+                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                } else if (switchError.code === 4200) {
+                    console.log("You have succefully switched to ", network);
+                    if (activeStep == 0) {
+                        if (account === undefined) {
+                            setModalTitle("Please connect Wallet");
+                            setModalDes(`Before you can bridge digital assets from ${network}, you must connect your wallet to ${network} network.`);
                         } else {
-                            if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            } else {
-                                setActiveStep((prevActiveStep) => prevActiveStep + 1);
-                            }
+                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                        }
+                    } else if (activeStep >= 1) {
+                        return;
+                    } else {
+                        if (addressDemand && tokenContract == undefined || addressDemand && tokenContract == "") {
+                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                        } else {
+                            setActiveStep((prevActiveStep) => prevActiveStep + 1);
                         }
                     }
-                } catch (e) {
-                    console.log("err: ", e);
                 }
+            } catch (e) {
+                console.log("err: ", e);
             }
         }
     }
@@ -275,15 +299,8 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleStepChange = (step) => {
-        if(!account || !chainId) {
-            event.preventDefault();
-            return true;
-        } else {
-            if (addressDemand&&activeStep < 4 || !addressDemand&&activeStep < 3) {
-                handleNext(step);
-            };
-        };
+    const pressNext = (activeStep) => {
+        setActiveStep(activeStep + 1);
     };
 
     const fetchEtherBalance = (eb) => {
@@ -294,7 +311,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setNetwork(item.name);
         setChainA(network_hex_to_dec[item.chainData.chainId]);
         console.log("changeNetwork: ", chainA, network, item, network_hex_to_dec[item.chainData.chainId]);
-        return handleNext(activeStep,network_hex_to_dec[item.chainData.chainId]);
+        return handleNext(activeStep,item);
     };
 
     async function set_Chain(chain__,chain__id) {
@@ -311,21 +328,21 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                 break;
         }
         return chain_state;
-    }
+    };
 
     async function chainA_Network(i_D) {
         return await set_Chain("A",network_hex_to_dec[i_D]);
-    }
+    };
 
     async function chainB_Network(name, i_D) {
         console.log("chainB_Network: ", chainB);
         return await set_Chain("B",network_hex_to_dec[i_D]);
-    }
+    };
 
     async function setSwapping(newValue) {
         let swapAmount = await setSwappingAmount(newValue);
         return swapAmount;
-    }
+    };
 
     const tokenApprove = async () => {
         if(token1 && network) {
@@ -340,7 +357,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                 setSwapBtnState(6);
             }
         }
-    }
+    };
 
     const tokenSwap = async () => {
         let bridgeAmount = (new BN(maxAmount).mul(new BN(10).pow(new BN(token2.decimals)))).toString();
@@ -367,18 +384,6 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
         setSwapBtnState(6);
         setSwapBtnState(4);
     };
-    const maxSteps = 3;
-    let networking = [];
-    const theme = useTheme();
-    const mobileClasses = useStyles.mobile();
-    const test_data = useSelector(state => state);
-    const token = useSelector(state => state.tokenData);
-    const data = useSelector(state => state.tokenLists);
-    const userBalance = useSelector(state => state.userBalance);
-    console.log("test_data: ", test_data, test_data.tokenData);
-    
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const style = {
         position: 'absolute',
@@ -399,10 +404,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
 
     return (<>
         <ThemeProvider theme={theme}>
-                <Stack direction="column" sx={{ p: "0 5.2%" }} style={{maxHeight:"100%", height:'100%'}}>
+                <Stack direction="column" sx={{ p: "0 5.2%" }} style={{maxHeight: '100%', paddingBottom: 10, minHeight: '444px'}}>
                     <Grid container justifyContent="space-between">
-                    {isTiny ? <GridLeaderMin item xs={12} sm={12} md={12} lg={12} xl={12} >
-                        <Card className="card" style={{width: '100%', height:'100%'}}>
+                    {isTiny ? <GridLeaderMin item xs={12} sm={12} md={12} lg={12} xl={12}>
+                        <Card className="card" style={{width: '100%', height:'88%', maxHeight: '666px'}}>
                             <CardHeader
                                 className={dashboardClasses.cardHeader}
                                 title="Cross-Chain"
@@ -416,10 +421,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        onChangeIndex={()=>handleStepChange(activeStep)}
+                                        onChangeIndex={()=>pressNext(activeStep)}
                                     >
                                         <div key={1} style={{margin: 'auto'}}>
-                                            <Typography color="textSecondary" sx={{ height: '100%', maxHeight: 50, minHeight: '100%', fontSize: '0.9rem', margin: 'auto', marginBottom: -3, textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}}>
+                                            <Typography color="textSecondary" sx={{ height: '100%', minHeight: '88%', maxHeight: 250, fontSize: '0.9rem', margin: 'auto', marginBottom: -3, textAlign:'center', wordWrap: 'break-word', maxWidth: '88%'}}>
                                                 Select Chain A blockchain network.
                                             </Typography>
                                             {
@@ -427,15 +432,14 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 <Grid
                                                     className={classes.networkSelector}
                                                     container
-                                                    direction="row"
-                                                    justifyContent="space-evenly"
-                                                    alignItems="center"
                                                     spacing={5}
-                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
-                                                    value={item.chainData.chainId}
                                                     key={item.name}
-                                                    onClick={()=>changeNetwork(item)} 
-                                                >
+                                                    direction="row"
+                                                    alignItems="center"
+                                                    justifyContent="space-evenly"
+                                                    value={item.chainData.chainId}
+                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
+                                                    onClick={()=>changeNetwork(item)} >
                                                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12} style={{margin: 'auto', paddingLeft:1, paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}>
                                                         <Grid 
                                                             container
@@ -654,23 +658,23 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                 nextButton={
                                 <Button
                                     size="small"
-                                    onClick={()=>handleStepChange(activeStep)}
+                                    onClick={()=>pressNext(activeStep)}
                                     disabled={activeStep === maxSteps - 1}
                                 >
                                     Next
                                     {theme.direction === 'rtl' ? (
-                                    <KeyboardArrowLeft />
+                                        <KeyboardArrowLeft />
                                     ) : (
-                                    <KeyboardArrowRight />
+                                        <KeyboardArrowRight />
                                     )}
                                 </Button>
                                 }
                                 backButton={
                                 <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
                                     {theme.direction === 'rtl' ? (
-                                    <KeyboardArrowRight />
+                                        <KeyboardArrowRight />
                                     ) : (
-                                    <KeyboardArrowLeft />
+                                        <KeyboardArrowLeft />
                                     )}
                                     Back
                                 </Button>
@@ -697,7 +701,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                     <SwipeableViews
                                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                         index={activeStep}
-                                        onChangeIndex={()=>handleStepChange(activeStep)}
+                                        onChangeIndex={()=>pressNext(activeStep)}
                                     >
                                         <div key={1} style={{margin: 'auto'}}>
                                                 <Grid 
@@ -707,12 +711,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                     className={classes.networkSelector}
                                                     justifyContent="space-evenly"
                                                     direction="row"
-                                                    style={{margin: 'auto', paddingLeft:1, height: '100%', maxHeight: '100%', paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}
+                                                    style={{margin: 'auto', paddingLeft:1, height: '100%', maxHeight: 250, paddingRight:1, textAlign:'center', wordWrap: 'break-word', alignItems: 'center', maxWidth: '88%'}}
                                                 >  
                                                     <Paper className={classes.paper}>
                                                         <Grid item xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
                                                           <Paper className={classes.paper}>
-                                                                <Typography color="textSecondary" sx={{ fontSize: '0.9rem', height: '80%', minHeight: 50, paddingTop: 2, margin: 'auto', textAlign:'center', wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}>
+                                                                <Typography color="textSecondary" sx={{ fontSize: '0.9rem', height: '80%', maxHeight: 250, minHeight: 50, paddingTop: 2, margin: 'auto', textAlign:'center', wordWrap: 'break-word', width: '100%', maxWidth: '100%'}}>
                                                                     Select Chain A blockchain network.
                                                                 </Typography>
                                                           </Paper>
@@ -733,14 +737,12 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                                 style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
                                                                 value={item.chainData.chainId}
                                                                 key={item.name}
-                                                                onClick={()=>changeNetwork(item)}
-                                                            >
+                                                                onClick={()=>changeNetwork(item)} >
                                                                 <Grid 
                                                                     item
                                                                     className={classes.networkSelector}
                                                                     xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}
-                                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
-                                                                >
+                                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}>
                                                                     <div style={{padding:6}}>
                                                                         <img className={dashboardClasses.networkImage} src={item.url} alt="network" />
                                                                     </div>
@@ -761,7 +763,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                   </Paper>
                                                 </Grid>
                                         </div>   
-                    <div key={2} style={{paddingLeft:1, paddingRight:1,maxHeight:"1200px",height:"55%"}}>
+                    <div key={2} style={{paddingLeft:1, paddingRight:1, maxHeight:"1200px", height:"55%"}}>
                         <Grid xs={12} lg={12} md={12} item={true} container direction="column" alignItems="center" style={{textAlign:'center', alignItems:'center', borderColor: "white"}} >
                             <Collapse in={importAlert.state1} sx={{ mb: "-50px", mt: "50px" }}>
                                 <Alert variant="filled" severity={importAlert.state2} sx={{ mb: 2 }}>{importAlert.data}</Alert>
@@ -804,9 +806,10 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                                 : <></> }
                                             </List>
                                         </Box>
-                                    {!isMobile&&swapTabValue === 0 &&  <FlexibleContainer xs={12} sm={12} md={12} lg={12} xl={12} xxl={12} direction="column" alignItems="center" style={{maxHeight:"1200px",height:"44%"}}>
+                                    {!isMobile&&swapTabValue === 0 &&  <FlexibleContainer container="true" xs={12} sm={12} md={12} lg={12} xl={12} xxl={12} direction="column" alignItems="center" style={{maxHeight:"1200px",height:"44%"}}>
                                             <Grid 
                                                 item
+                                                container
                                                 direction="row"
                                                 className={classes.networkSelector}
                                                 xs={6} sm={6} md={6} lg={6} xl={6} xxl={6}
@@ -821,11 +824,11 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                             </Stack>
                                                 <Grid 
                                                     item
+                                                    container
                                                     direction="row"
                                                     className={classes.networkSelector}
                                                     xs={6} sm={6} md={6} lg={6} xl={6} xxl={6}
-                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}
-                                                >
+                                                    style={{margin: 'auto', textAlign:'center', wordWrap: 'break-word', maxWidth:'100%'}}>
                                                     <Stack alignItems="center" direction="column" sx={{ marginTop: "-12px", zIndex: "5", width: "100%" }}>
                                                         <Stack direction="column" alignItems="center" sx={{ p: "14px 8px", width: "100%", color: `${swapSelectData !== 0 && "#7E8B74"}` }}>
                                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -1027,23 +1030,23 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                                         nextButton={
                                         <Button
                                             size="small"
-                                            onClick={()=>handleStepChange(activeStep)}
+                                            onClick={()=>pressNext(activeStep)}
                                             disabled={activeStep === maxSteps - 1}
                                         >
                                             Next
                                             {theme.direction === 'rtl' ? (
-                                            <KeyboardArrowLeft />
+                                                <KeyboardArrowLeft />
                                             ) : (
-                                            <KeyboardArrowRight />
+                                                <KeyboardArrowRight />
                                             )}
                                         </Button>
                                         }
                                         backButton={
                                         <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
                                             {theme.direction === 'rtl' ? (
-                                            <KeyboardArrowRight />
+                                                <KeyboardArrowRight />
                                             ) : (
-                                            <KeyboardArrowLeft />
+                                                <KeyboardArrowLeft />
                                             )}
                                             Back
                                         </Button>
@@ -1055,7 +1058,7 @@ export default function BridgeV2({ token1, token2, setToken1, setToken2, chainSt
                       </GridLeader>}
                     </Grid>
                 </Stack>
-            </ThemeProvider>  
+            </ThemeProvider>
             <Cwallet isOpenDialog = { isOpenDialog } setIsOpenDialog = { setIsOpenDialog } chain = { chainState } setChain = { setChainState } tokenDialogState = { tokenDialogState } setTokenDialogState = { setTokenDialogState } selectToken = { selectToken } swapSettingDialogState = { swapSettingDialogState } setSwapSettingDialogState = { setSwapSettingDialogState } poolCreateDialogState = { poolCreateDialogState } setPoolCreateDialogState = { setPoolCreateDialogState } setPools = { setPools } setImportAlert = { setImportAlert }/> 
         </>
     );

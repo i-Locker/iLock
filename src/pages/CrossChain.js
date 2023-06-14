@@ -19,32 +19,33 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { styled, createTheme } from '@mui/material/styles';
 import SwipeableViews from 'react-swipeable-views';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
-import Search from '@mui/icons-material/Search';
-import { Snackbar } from "@mui/material";
-import CheckIcon from '@mui/icons-material/Check';
-import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Box, IconButton } from "@mui/material";
 import Link from "@mui/material/Link";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
+import { Snackbar } from "@mui/material";
 import useStyles from "../assets/styles";
-import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
-import { getTokenMetadata, getERC20Metadata } from "../api";
-import { toggleDrawer } from '../components/Header';
 import Loader from '../components/Loader';
-import DateTime from '../components/DateTime';
-import { alterLoaderText } from '../components/Loader';
 import iBridge from '../components/Bridge';
+import DateTime from '../components/DateTime';
+import Search from '@mui/icons-material/Search';
+import InputLabel from '@mui/material/InputLabel';
+import CheckIcon from '@mui/icons-material/Check';
+import FormControl from '@mui/material/FormControl';
+import { toggleDrawer } from '../components/Header';
+import { alterLoaderText } from '../components/Loader';
+import InputAdornment from '@mui/material/InputAdornment';
+import { getTokenMetadata, getERC20Metadata } from "../api";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
+import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Box, IconButton } from "@mui/material";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, network_dec_to_hex, tokens_data, iBridgeAddress } from "../constants";
 import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
+
 export let handle_Date;
 export let chainHook;
 let Bridge = iBridge;   
 export let handle_dispatch;
-const CrossChain = (props) => {
 
+const CrossChain = (props) => {
     const { account, connector, chainId, active } = useWeb3React();
     const [activeStep, setActiveStep] = React.useState(0);
     const [open, setOpen] = React.useState(false);
@@ -72,19 +73,19 @@ const CrossChain = (props) => {
     const [addressDemand, setAddressDemand] = useState(false);
     const [isAllowed, setIsAllowed] = useState(0);
     const [lockAmountMax, setLockAmountMax] = useState(false);
+
     const maxSteps = 4;
     const theme = useTheme();
-    const classes = useStyles.pools();
-    const mobileClasses = useStyles.mobile();
-    const dashboardClasses = useStyles.dashboard();
-    const isMobile = useMediaQuery("(max-width:600px)");
-    const userBalance = useSelector(state => state.userBalance);
-    const token = useSelector(state => state.tokenData);
-    const data = useSelector(state => state.tokenLists);
-    const test_data = useSelector(state => state);
-    console.log("test_data: ", test_data, test_data.tokenData);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const classes = useStyles.pools();
+    const mobileClasses = useStyles.mobile();
+    const test_data = useSelector(state => state);
+    const dashboardClasses = useStyles.dashboard();
+    const isMobile = useMediaQuery("(max-width:600px)");
+    const token = useSelector(state => state.tokenData);
+    const data = useSelector(state => state.tokenLists);
+    const userBalance = useSelector(state => state.userBalance);
 
     const style = {
         position: 'absolute',
@@ -99,14 +100,14 @@ const CrossChain = (props) => {
         p: 4,
     };
 
-
     const [values, setValues] = React.useState({
-        tokenAddress: "",
+        tokenAddress: ""
     });
 
     const selectToken = async () => {
         console.log("activeStep: ", activeStep);
     };
+
     const checkAllowance = async (token, account, network) => {
         allowance(token, account, network).then(results => {
             setTokenAllowance(results);
@@ -114,12 +115,14 @@ const CrossChain = (props) => {
             return results;
         });
     };
+
     const checkEtherBalance = async (provider, account) => {
         getEtherBalance(provider, account, network).then(async (ebf) => {
             console.log("ethereumBalance: ", ebf[0], ebf[1], ebf[2]);
             fetchEtherBalance(ebf[2]);
         });
     };
+
     const handleNext = async () => {
         if (account) {
             const provider = window.ethereum;
@@ -614,6 +617,7 @@ const CrossChain = (props) => {
     const changeNetwork = (name) => {
         setNetwork(name);
     };
+
     const Row = (props) => {
         const { index, row } = props;
         let nextUnlock, lockedTokenAmount = 0,
@@ -621,18 +625,22 @@ const CrossChain = (props) => {
         const currentTime = Date.now();
         row.data.map(each => {
             if (each.timestamp > currentTime / 1000) {
-                if (!nextUnlock) nextUnlock = each.timestamp;
-                else if (nextUnlock > each.timestamp) nextUnlock = each.timestamp;
+                if (!nextUnlock) {
+                    nextUnlock = each.timestamp;
+                } else if (nextUnlock > each.timestamp) {
+                    nextUnlock = each.timestamp;
+                }
             }
-            if (!each.isWithdrawn && !each.isLiquidity) lockedTokenAmount += each.amount / Math.pow(10, each.decimals);
-            if (!each.isWithdrawn && each.isLiquidity) lockedLiquidity = true;
+            if (!each.isWithdrawn && !each.isLiquidity) { 
+                lockedTokenAmount += each.amount / Math.pow(10, each.decimals);
+            }
+            if (!each.isWithdrawn && each.isLiquidity) { 
+                lockedLiquidity = true;
+            }
         })
-
-        return ( <
-            >
+        return (<>
             <TableRow
-                sx={{ '& > *': { borderBottom: 'unset' } }}
-                > 
+                sx={{ '& > *': { borderBottom: 'unset' } }}> 
                     <TableCell>
                         {index + 1}
                     </TableCell>
@@ -646,16 +654,22 @@ const CrossChain = (props) => {
                             </Tooltip>
                         </CopyToClipboard>
                     </TableCell>
-                    <TableCell align="right">{lockedTokenAmount.toFixed(2)}</TableCell>
-                    <TableCell align="right">{lockedLiquidity && <CheckIcon />}</TableCell>
+                    <TableCell align="right">
+                        {lockedTokenAmount.toFixed(2)}
+                    </TableCell>
+                    <TableCell align="right">
+                        {lockedLiquidity && <CheckIcon/>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
+                    </TableCell>
                     <TableCell align="right">
                         {nextUnlock ? new Date(nextUnlock).toDateString() : ''}
                     </TableCell>
                     <TableCell align="right">
-                        <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>View</Button>
+                        <Button variant="contained" color="secondary" style={{width: '100%'}}  onClick={() => showLockup(row.token.address,index + 1)}>
+                            View
+                        </Button>
                     </TableCell>
-                </TableRow> <
-            />
+            </TableRow> 
+                </>
         )
     }
     return (

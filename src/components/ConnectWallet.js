@@ -107,23 +107,28 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                 };
             };
         } catch(e) {
+            console.log("error: ",e);
             window.alert("Web3 not detected. Are you connected?");
             return;
         };
-    }, [account, network, networkData, networks, chainId])
+    }, [account, network, networkData, networks, chainId]);
+
     const copyAddress = () => {
         alert(`Copied to clipboard.`, "info");
     };
+
     const viewBlockUrl = (account) => {
         const { ethereum } = window;
         console.log("chainId: ", chainId, ethereum.chainId, chainId == ethereum.chainId)
         window.open(`${explorer_[ethereum.chainId.toString()]}/address/${account}`);
     };
+
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
         }
     }, [activatingConnector, connector]);
+
     useEffect(() => {
         const logURI = (uri) => {
             console.log("WalletConnect URI", uri);
@@ -139,19 +144,24 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const retryConnect = () => {
         setError(false);
     };
+
     const onConnectWallet = async (item) => {
         setActivatingConnector(item.connector);
         await activate(item.connector);
     };
+
     const onDeactiveWallet = () => {
         deactivate();
     };
+
     const handleOpenWalletList = () => {
         setIsOpen(true);
     };
+
     const handleCloseWalletList = () => {
         setIsOpen(false);
     };
+
     const getErrorMessage = (error) => {
         if (error instanceof NoEthereumProviderError) {
             return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";

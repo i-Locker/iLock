@@ -1,50 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { useTheme } from '@mui/material/styles';
-import { connect, useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-// ** Import Material UI Components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Container from "@mui/material/Container";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { RadioGroup } from "@mui/material";
-import MobileStepper from '@mui/material/MobileStepper';
-import Button from '@mui/material/Button';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import { styled, createTheme } from '@mui/material/styles';
-import SwipeableViews from 'react-swipeable-views';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
-import { Router_address } from "../config/abi/router/dexRouter";
-import { Factory_address } from "../config/abi/router/dexFactory";
-import Search from '@mui/icons-material/Search';
-import CheckIcon from '@mui/icons-material/Check';
-import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Box, IconButton } from "@mui/material";
 import Link from "@mui/material/Link";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Tooltip } from "@mui/material";
 import useStyles from "../assets/styles";
+import Button from '@mui/material/Button';
+import { RadioGroup } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from '@mui/material/styles';
+import { useWeb3React } from "@web3-react/core";
+import Container from "@mui/material/Container";
+import Search from '@mui/icons-material/Search';
+import InputLabel from '@mui/material/InputLabel';
+import CardHeader from "@mui/material/CardHeader";
+import CheckIcon from '@mui/icons-material/Check';
+import SwipeableViews from 'react-swipeable-views';
+import CardContent from "@mui/material/CardContent";
+import FormControl from '@mui/material/FormControl';
+import useMediaQuery from "@mui/material/useMediaQuery";
+import MobileStepper from '@mui/material/MobileStepper';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { styled, createTheme } from '@mui/material/styles';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { connect, useSelector, useDispatch } from 'react-redux';
+import { Router_address } from "../config/abi/router/dexRouter";
+import { Factory_address } from "../config/abi/router/dexFactory";
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { TOKENDATA, USERBALANCE, TOKENLISTS } from "../redux/constants";
-import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, iBridgeAddress, network_dec_to_hex, tokens_data } from "../constants";
-import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
 import { getTokenMetadata, getERC20Metadata } from "../api";
 import MenuListSpecial from '../components/MenuListSpecial';
-import { toggleDrawer } from '../components/Header';
 import { alterLoaderText } from '../components/Loader';
-import Loader from '../components/Loader';
+import { toggleDrawer } from '../components/Header';
 import DateTime from '../components/DateTime';
 import BridgeV2 from '../components/BridgeV2';
+import Loader from '../components/Loader';
+import { TextField, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Box, IconButton } from "@mui/material";
+import { CHAINDATA, networks_data, explorer_, rpc_, icons_, network_, lockerAddress, network_symbols, network_decimals, network_hex_to_dec, PROJECTNAME, websiteURI, ui_friendly_networks, iBridgeAddress, network_dec_to_hex, tokens_data } from "../constants";
+import { deposit, approve, allowance, getTokenBalance, getERC20balance, getERC20allowance, getData, explorer, updateProfile, getEtherBalance, w3, getETHtoChecksum, _toBN, _getBN, _getUIfmt } from "../web3"
+
 export let handle_dispatch;
 export let handle_Date;
 let Bridge = BridgeV2;   
 export let chainHook;
+
 const CrossChainV2 = (props) => {
 
     const { account, connector, chainId, active } = useWeb3React();

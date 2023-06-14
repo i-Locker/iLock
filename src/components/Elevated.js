@@ -8,7 +8,9 @@ import SpinnerLogoWhite from "../assets/img/spinner-logo-white.png";
 import LoopIcon from '@mui/icons-material/Loop';
 import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
-import { ui_friendly_networks, network_, network_dec_to_hex } from '../constants';
+import { useWeb3React } from "@web3-react/core";
+import { ui_friendly_networks, network_, network_dec_to_hex, iBridgeBaseFee } from '../constants';
+
 const label = { inputProps: { 'aria-label': 'Checkbox' } };
 
 let id = 0;
@@ -17,27 +19,29 @@ function createData(name, fat, price) {
   return { id, name, fat, price };
 }
 const rows = [
-  createData('Frozen yoghurt', 159, 4.0),
-  createData('Ice cream sandwich', 237, 4.3),
-  createData('Eclair', 16.0, 6.0),
-  createData('Cupcake', 3.7, 4.3),
-  createData('Gingerbread', 16.0, 3.9),
+  createData('0x', 16.0, 3.9)
 ]
 
-export let coreAdjust = async function() {
+export let coreAdjuster = function() {
   //
 }
 export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }) {
   console.log("Elevate: ",token1, token2, chainA, chainB, bridgeAmount);
+    const { active, account, connector, chainId } = useWeb3React();
   const classes = useStyles.bridge();
   const [processing,setProcessing] = React.useState(false);
-  const [processingHandling,setProcessingHandling] = React.useState(0);
+  const [processingHandling,setProcessingHandling] = React.useState("0");
   const [checkboxState,setCheckboxState] = React.useState("success");
-  coreAdjust = async function(rate) {
+   let coreAdjust = function(rate) {
     console.log("rate: ",rate);
-    await setProcessingHandling(rate);
+    setProcessingHandling(rate);
     return processingHandling;
-  };
+  }; coreAdjuster=coreAdjust;
+    if(iBridgeBaseFee[network_[network_dec_to_hex[chainId.toString()]]]>0) {
+      console.log("iBridgeBaseFee: ",iBridgeBaseFee[network_[network_dec_to_hex[chainId.toString()]]]);
+      setProcessingHandling(iBridgeBaseFee[network_[network_dec_to_hex[chainId.toString()]]]);
+      console.log("iBridgeBaseFee: ",iBridgeBaseFee[network_[network_dec_to_hex[chainId.toString()]]]);
+    }
   return (<React.Fragment>
     <Card sx={{width: '88.8%', minWidth: '300px'}}>
       <CardHeader
@@ -75,7 +79,7 @@ export default function Elevate({ token1, token2, chainA, chainB, bridgeAmount }
                 Processing & Handling
               </TableCell>
               <TableCell align="left">
-                  {processing ? processingHandling !==0 ? processingHandling : "5 USDT" : !processing ? <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} /> : <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />  }
+                  {processing && processingHandling !==0 ? processingHandling : <Avatar src={SpinnerLogoWhite} sx={{ width: "30px", height: "30px" }} />}
               </TableCell>
             </TableRow>
             <TableRow>
