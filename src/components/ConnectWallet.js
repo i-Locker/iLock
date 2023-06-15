@@ -52,9 +52,11 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
     const [networkData, setNetworkData] = React.useState("");
     const cWallet = ConnectedWallet();
     const dispatch = useDispatch();
+    
     let networks;
     let networks___ = [];
     let subMethod = false;
+    
     useEffect(() => {
         if (account) {
             dispatch({
@@ -87,22 +89,34 @@ const ConnectWallet = ({ isOpen, setIsOpen }) => {
                     if (network) {
                         let ran = false;
                         let WROTE = false;
-                        __NETWORKS.find((item) => item.name == network).chainData.map((each) => {
-                            if (each["rpcUrls"].length > 0 && !WROTE) {
-                                WROTE = true;
-                                console.log("chainData: ", each, each["rpcUrls"]);
-                                ran = each;
-                                setNetworkData(ran);
-                                if (networkData) {
-                                    console.log("networkData: ", networkData);
-                                };
-                            };
-                        });
-                        __NETWORKS.forEach((_network_) => {
-                            let _chainData_ = `${_network_.name}`;
-                            networks___.push(_network_);
-                            console.log("chainData (b): ", _chainData_, _network_);
-                        });
+                        try {
+                            __NETWORKS.forEach((_network_) => {
+                                let _chainData_ = `${_network_.name}`;
+                                networks___.push(_network_);
+                                if(_network_["name"].toString() == network.toString() || _network_["name"] == network) {
+                                    if (_network_["rpcUrls"]) {
+                                        console.log("rpcUrls: ", _network_["rpcUrls"]);
+                                        if (_network_["rpcUrls"].length > 0) {
+                                            if(!WROTE) {
+                                                console.log("chainData: ", _chainData_, _network_, _network_["rpcUrls"]);
+                                                ran = _network_;
+                                                setNetworkData(ran);
+                                                if (networkData) {
+                                                    console.log("networkData: ", networkData);
+                                                };
+                                                WROTE = true;
+                                            } else {
+                                                WROTE = false;
+                                            };
+                                        };
+                                    };
+                                };                       
+                            });
+                        } catch(e) {
+                            console.log("error: ",e);
+                            window.alert("Web3 not detected. Are you connected?");
+                            return;
+                        };
                     };
                 };
             };

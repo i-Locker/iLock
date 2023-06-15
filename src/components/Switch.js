@@ -3,7 +3,7 @@ import Switch from '@mui/material/Switch';
 
 const label = { inputProps: { 'aria-label': 'Switch' } };
 
-export default function BasicSwitch({onOff}) {
+export default function BasicSwitch({onOff,_label}) {
   return (<>
     <div>
 	    {
@@ -11,4 +11,4 @@ export default function BasicSwitch({onOff}) {
 	    }
     </div>
   </>);
-}
+};

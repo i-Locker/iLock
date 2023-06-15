@@ -639,11 +639,11 @@ const Cwallet = ({ isOpenDialog, setIsOpenDialog, chain, setChain, tokenDialogSt
                         <List>
                             <ListItem className="item">
                                 <ListItemIcon className="symbol">
-                                    <img src={connected.activating.logo2} alt={connected.activating.name} />
+                                    <img src={connected.activating.logo2&&connected.activating.logo2} alt={connected.activating.name&&connected.activating.name} />
                                 </ListItemIcon>
                                 <ListItemText
                                     className="description"
-                                    primary={`Connected to ${connected.activating.name}`}
+                                    primary={`Connected to ${connected.activating.name&&connected.activating.name}`}
                                 />
                                 <ListItemSecondaryAction className="action">
                                     <Tooltip arrow title="Change wallet">

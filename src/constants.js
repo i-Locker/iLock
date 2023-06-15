@@ -1,4 +1,6 @@
 const { ethereum } = window;
+import CRFI_TOKENLIST from './assets/tokens/ETH.json';
+import ETNX_TOKENLIST from './assets/tokens/ETH.json';
 import ETH_TOKENLIST from './assets/tokens/ETH.json';
 import BSC_TOKENLIST from './assets/tokens/BSC.json';
 import AVAX_TOKENLIST from './assets/tokens/AVAX.json';
@@ -20,21 +22,24 @@ export const iBridgeBaseFee = {
     "Binance_testnet": 0.005,
     "Avalanche": 0.005,
     "Avalanche_testnet": 0.005,	
-    "Frenchain_testnet": 0.005,
-    "Frenchain": 0.005,
+    "Electronero_testnet": 0.005,
+    "Electronero": 0.005,
     "Polygon_testnet": 0.005,
     "Polygon": 0.005,
+    "Crystaleum": 0.0005,
+    "Crystaleum_testnet": 0.0005,
     "Kekchain": 0.005,
     "Kekchain_testnet": 0.005 
 };
 export const iMigrator_status = {
     "Avalanche_testnet": false,	
-    "Frenchain_testnet": false,
+    "Electronero_testnet": false,
     "Kekchain_testnet": false,
     "Polygon_testnet": false,
+    "Crystaleum_testnet": false,
     "Binance_testnet": false,
     "Cronos_testnet": true,
-    "Frenchain": false,
+    "Electronero": false,
     "Avalanche":false,
     "Ethereum": false,
     "Kekchain": false,
@@ -46,6 +51,7 @@ export const iMigrator_status = {
 export const network_ = {
     "0x1": "Ethereum",
     "0x5": "Goerli",
+    "0x192b2": "Crystaleum_testnet",
     "0x19": "Cronos",
     "0x152": "Cronos_testnet",
     "0x38": "Binance",
@@ -54,8 +60,8 @@ export const network_ = {
     "0xa869": "Avalanche_testnet",
     "0X89": "Polygon",
     "0x13881": "Polygon_testnet",
-    "0X1BC": "Frenchain_testnet",
-    "0xAD9C": "Frenchain",
+    "0X1BC": "Electronero_testnet",
+    "0xAD9C": "Electronero",
     "0x66A44": "Kekchain",
     "0x66B3A": "Kekchain_testnet"
 };
@@ -70,8 +76,10 @@ export const network_lower_to_proper = {
     "avalanche_testnet": "Avalanche_testnet",
     "polygon_testnet": 'Polygon_testnet',
     "polygon": 'Polygon',
-    "frenchain_testnet": "Frenchain_testnet",
-    "frenchain": "Frenchain",
+    "crystaleum": "Crystaleum",
+    "crystaleum_testnet": "Crystaleum_testnet",
+    "electronero": "Electronero",
+    "electronero_testnet": "Electronero_testnet",
     "kekchain": "Kekchain",
     "kekchain_testnet": "Kekchain_testnet"
 };
@@ -84,8 +92,10 @@ export const ui_friendly_networks = {
     "Binance_testnet": 'Binance Smart Chain (testnet)',
     "Avalanche": 'Avalanche',
     "Avalanche_testnet": 'Avalanche (testnet)',
-    "Frenchain_testnet": 'FrenChain (testnet)',
-    "Frenchain": 'FrenChain',
+    "Electronero_testnet": 'Electronero (testnet)',
+    "Electronero": 'Electronero',
+    "Crystaleum_testnet": 'Crystaleum (testnet)',
+    "Crystaleum": 'Crystaleum',
     "Polygon_testnet": 'Polygon (testnet)',
     "Polygon": 'Polygon',
     "Kekchain": 'Kekchain',
@@ -99,6 +109,7 @@ export const network_decimals = {
     "0x38": 18,
     "0x61": 18,
     "0xa86a": 9,
+    "0x192b2": 18,
     "0xa869": 9,
     "0x13881": 18,
     "0X89": 18,
@@ -118,8 +129,9 @@ export const network_symbols = {
     "0xa869": "tAVAX",
     "0X89": "MATIC",
     "0x13881": "tMATIC",
-    "0X1BC": "tFREN",
-    "0xAD9C": "FREN",
+    "0x192b2": "CRFI",
+    "0X1BC": "gETNX",
+    "0xAD9C": "ETNX",
     "0x66A44": "KEK",
     "0x66B3A": "tKEK"
 };
@@ -135,8 +147,9 @@ export const network_to_chain = {
     "Avalanche_testnet": '0xa869',
     "Polygon_testnet": '0x13881',
     "Polygon": '0X89',
-    "Frenchain_testnet": '0X1BC',
-    "Frenchain": '0xAD9C',
+    "Electronero_testnet": '0X1BC',
+    "Electronero": '0xAD9C',
+    "Crystaleum_testnet": '0x192b2',
     "Kekchain": '0x66A44',
     "Kekchain_testnet": '0x66B3A'
 };
@@ -154,23 +167,30 @@ export const REACT_APP_NETWORK_URL = {
     "Avalanche_testnet": "https://api.avax-test.network/ext/bc/C/rpc",
     "Kekchain_testnet": "https://testnet.kekchain.com",
     "Kekchain": "https://mainnet.kekchain.com",
-    "Frenchain_testnet": "https://rpc-01tn.frenchain.app",
-    "Frenchain": "https://rpc-02.frenscan.io"
+    "Crystaleum": "https://rpc.crystaleum.org",	
+    "Crystaleum_testnet": "https://rpc.crystaleum.org",
+    "Electronero_testnet": "https://rpc.electronero.org",
+    "Electronero": "https://rpc-02.etnxscan.io"
 };
-
 console.log("test: ",ETH_TOKENLIST,BSC_TOKENLIST,AVAX_TOKENLIST,POLYGON_TOKENLIST);
 export let __TOKENLIST = [
     { name: "Interchained", symbol: "INT", decimals: 18, contract: "0x" },
-    { name: "FrenChain", symbol: "FREN", decimals: 18, contract: "0x" }
+    { name: "Electronero", symbol: "ETNX", decimals: 18, contract: "0x" },
+    { name: "Electronero_testnet", symbol: "gETNX", decimals: 18, contract: "0x" },
+    { name: "Crystaleum", symbol: "CRFI", decimals: 18, contract: "0x" },
+    { name: "Crystaleum_testnet", symbol: "CRFI", decimals: 18, contract: "0x" }
 ];
 export const networking = [
-    { name: "Goerli", currency: "gETH", subtitle: `Choose if the project is deployed on ${name}`, url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" }], chainData: [{ chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } }] },
-    { name: "Cronos_testnet", currency: "tCRO", subtitle: `Choose if the project is deployed on ${name}`, url: "/networks/cronos.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "CRO", url: "/networks/cronos.svg" }], chainData: [{ chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { symbol: 'tCRO', decimals: 18 } }] },
-    { name: "Binance_testnet", currency: "tBNB", subtitle: `Choose if your coin is built on ${name}`, url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: [{ chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } }] },
-    { name: "Polygon_testnet", currency: "tMATIC", subtitle: `Choose if the project is deployed `, url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" }], chainData: [{ chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } }] },
-    { name: "Avalanche_testnet", currency: "tAVAX", subtitle: `Choose if the project is deployed `, url: "/networks/avax.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tAXAX", url: "/networks/avax.svg" }], chainData: [{ chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { symbol: 'AVAX', decimals: 9 } }] },
-    { name: "Frenchain_testnet", currency: "tFREN", subtitle: `Choose if the project is deployed `, url: "/networks/fren.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tFREN", url: "/networks/fren.svg" }], chainData: [{ chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { symbol: 'tFREN', decimals: 18 } }] },
-    { name: "Kekchain_testnet", currency: "tKEK", subtitle: `Choose if the project is deployed `, url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: [{ chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } }] }
+    { name: "Goerli", currency: "gETH", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/eth.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" }], chainData: [{ chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } }] },
+    { name: "Cronos_testnet", currency: "tCRO", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/cronos.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "CRO", url: "/networks/cronos.svg" }], chainData: [{ chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { symbol: 'tCRO', decimals: 18 } }] },
+    { name: "Binance_testnet", currency: "tBNB", subtitle: `Choose if the project is deployed on ${name}`, url: "/networks/bsc.png", subData: [{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }, { name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" }], chainData: [{ chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } }] },
+    { name: "Polygon_testnet", currency: "tMATIC", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/matic.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" }], chainData: [{ chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } }] },
+    { name: "Avalanche_testnet", currency: "tAVAX", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/avax.svg", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tAXAX", url: "/networks/avax.svg" }], chainData: [{ chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { symbol: 'AVAX', decimals: 9 } }] },
+    { name: "Electronero", currency: "ETNX", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/ETNX.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETNX", url: "/networks/ETNX.png" }], chainData: [{ chainId: '0X1BC', chainName: "Electronero Testnet", rpcUrls: ["https://rpc-01tn.electronero.app"], blockExplorerUrls: ['https://testnet.etnxscan.io'], nativeCurrency: { symbol: 'gETNX', decimals: 18 } }] },
+    { name: "Electronero_testnet", currency: "gETNX", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/ETNX.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETNX", url: "/networks/ETNX.png" }], chainData: [{ chainId: '0X1BC', chainName: "Electronero Testnet", rpcUrls: ["https://rpc-01tn.electronero.app"], blockExplorerUrls: ['https://testnet.etnxscan.io'], nativeCurrency: { symbol: 'gETNX', decimals: 18 } }] },
+    { name: "Crystaleum", currency: "CRFI", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/CRFI.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETNX", url: "/networks/CRFI.png" }], chainData: [{ chainId: '0X1BC', chainName: "Crystaleum", rpcUrls: ["https://rpc.crystaleum.org"], blockExplorerUrls: ['https://testnet-scan.crystaleum.org'], nativeCurrency: { symbol: 'CRFI', decimals: 18 } }] },
+    { name: "Crystaleum_testnet", currency: "tCRFI", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/CRFI.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "gETNX", url: "/networks/CRFI.png" }], chainData: [{ chainId: '0X1BC', chainName: "Crystaleum", rpcUrls: ["https://rpc.crystaleum.org"], blockExplorerUrls: ['https://testnet-scan.crystaleum.org'], nativeCurrency: { symbol: 'CRFI', decimals: 18 } }] },
+    { name: "Kekchain_testnet", currency: "tKEK", subtitle: `Choose if the project is deployed on ${name} `, url: "/networks/kek.png", subData: [{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }, { name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" }], chainData: [{ chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } }] }
 ];
 export const __NETWORKS = networking;
 export const DEFAULT_CHAIN_ID = 338;
@@ -178,13 +198,13 @@ export const DEVNAME = 'interchained';
 export const DEVNAMEMED = DEVNAME;
 export const DEVNAMELG = 'Interchained';
 export const PROJECTNAME = 'FrenChain';
-export const PROJECTNAMEMED = 'frenchain';
-export const PROJECTGIT = 'fren-chain';
-export const PROJECTTWIT = 'fren_chain';
+export const PROJECTNAMEMED = 'electronero';
+export const PROJECTGIT = 'etnx-chain';
+export const PROJECTTWIT = 'etnx_chain';
 export const PROJECTLG = 'Ethereum';
 export const PROJECTMED = 'ethereum';
 export const githubSourceURI = "https://github.com/i-Locker/iLock";
-export const websiteURI = "https://frenchain.app";
+export const websiteURI = "https://dapp.electronero.org";
 export const V1_DIGITAL_ASSET = "0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2"
 export const V2_DIGITAL_ASSET = "0x8A6523daaCb083329cF7b6B90A3439D198Acc6E2"
 export const TOKENADDRESS = '0x8e14c88aB0644eF41bd7138ab91C0160D8c1583A';
@@ -198,9 +218,12 @@ export const coinMarketCapUrl = `https://coinmarketcap.com/currencies/${PROJECTN
 export const traderJoeUrl = `https://app.uniswap.org/#/swap?outputCurrency=${TOKENADDRESS}`;
 export let __MIGRATELIST = {
     "Ethereum": { name: "Ethereum", symbol: "ETH", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Cronos": { name: "Cronos (mainnet)", symbol: "CRO", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
     "Cronos_testnet": { name: "Cronos (testnet)", symbol: "tCRO", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
-    "Frenchain_testnet": { name: "FrenChain (testnet)", symbol: "tFREN", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
-    "Frenchain": { name: "FrenChain", symbol: "FREN", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] }
+    "Electronero": { name: "Electronero (mainnet)", symbol: "ETNX", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Electronero_testnet": { name: "Electronero (testnet)", symbol: "gETNX", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Crystaleum": { name: "Crystaleum (mainnet)", symbol: "CRFI", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
+    "Crystaleum_testnet": { name: "Crystaleum (testnet)", symbol: "tCRFI", decimals: 18, contract: V2_DIGITAL_ASSET, tokens: [V1_DIGITAL_ASSET,V2_DIGITAL_ASSET] },
 };
 export const network_hex_to_dec = {
     "0x1": 1,
@@ -209,6 +232,8 @@ export const network_hex_to_dec = {
     "0x152": 338,
     "0x38": 56,
     "0x61": 97,
+    "0x192b2": 103090,
+    "0xFBAF5": 1030901,
     "0X89": 137,
     "0X1BC": 444,
     "0xa86a": 43114,
@@ -222,6 +247,8 @@ export const _token_map = {
     1: ETH_TOKENLIST,
     5: [],
     25: [],
+    103090: CRFI_TOKENLIST,
+    1090301: ETNX_TOKENLIST,
     56: BSC_TOKENLIST,
     97: [],
     137: POLYGON_TOKENLIST,
@@ -242,6 +269,8 @@ export const network_dec_to_hex = {
     56: "0x38",
     97: "0x61",
     137: "0X89",
+    103090: "0x192b2",
+    1030901: "0xFBAF5",
     444: "0X1BC",
     43114: "0xa86a",
     43113: "0xa869",
@@ -253,7 +282,7 @@ export const network_dec_to_hex = {
 export const explorer_ = {
     "0x1": explorer["Ethereum"],
     "0x5": explorer["Goerli"],
-    "0x38": explorer["Binance_testnetnance"],
+    "0x38": explorer["Binance_testnet"],
     "0x19": explorer["Cronos"],
     "0x152": explorer["Cronos_testnet"],
     "0x61": explorer["Binance_testnet"],
@@ -261,8 +290,9 @@ export const explorer_ = {
     "0xa869": explorer["Avalanche_testnet"],
     "0x13881": explorer["Polygon_testnet"],
     "0x89": explorer["Polygon"],
-    "0X1BC": explorer["Frenchain_testnet"],
-    "0xAD9C": explorer["Frenchain"],
+    "0x192b2": explorer["Crystaleum_testnet"],
+    "0X1BC": explorer["Electronero_testnet"],
+    "0xAD9C": explorer["Electronero"],
     "0x66A44": explorer["Kekchain"],
     "0x66B3A": explorer["Kekchain_testnet"]
 };
@@ -277,8 +307,9 @@ export const rpc_ = {
     "0xa869": provider["Avalanche_testnet"],
     "0x13881": provider["Polygon_testnet"],
     "0x89": provider["Polygon"],
-    "0X1BC": provider["Frenchain_testnet"],
-    "0xAD9C": provider["Frenchain"],
+    "0x192b2": provider["Crystaleum_testnet"],
+    "0X1BC": provider["Electronero_testnet"],
+    "0xAD9C": provider["Electronero"],
     "0x66A44": provider["Kekchain"],
     "0x66B3A": provider["Kekchain_testnet"]
 };
@@ -303,8 +334,9 @@ export const icons_ = {
     "0x61": "/networks/bsc.png",
     "0x89": "/networks/matic.svg",
     "0x13881": "/networks/matic.svg",
-    "0xAD9C": "/networks/fren.svg",
-    "0X1BC": "/networks/fren.svg",
+    "0x192b2": "/networks/CRFI.png",
+    "0xAD9C": "/networks/ETNX.png",
+    "0X1BC": "/networks/ETNX.png",
     "0xa86a": "/networks/avax.png",
     "0xa869": "/networks/avax.png",
     "0x66A44": "/networks/kek.png",
@@ -312,25 +344,31 @@ export const icons_ = {
 };
 export const networks_data = [
     { name: "Goerli", currency: "gETH", subtitle: `Choose if the project is deployed to Goerli`, url: "/networks/eth.svg", subData: [{ name: "Fungible Coin", subTitle: "gETH", url: "/networks/eth.svg" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { symbol: 'gETH', decimals: 18 } } },
+    { name: "Crystaleum_testnet", currency: "CRFI", subtitle: `Choose if the project is deployed to Crystaleum (testnet)`, url: "/networks/CRFI.png", subData: [{ name: "Fungible Coin", subTitle: "CRFI", url: "/networks/CRFI.png" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0x192b2', chainName: "Ethereum Crystaleum", rpcUrls: ["https://rpc.crystaleum.org"], blockExplorerUrls: ['https://scan.crystaleum.org'], nativeCurrency: { symbol: 'CRFI', decimals: 18 } } },
+    { name: "Electronero_testnet", currency: "gETNX", subtitle: `Choose if the project is deployed to Go Electronero Network (testnet)`, url: "/networks/ETNX.png", subData: [{ name: "Fungible Coin", subTitle: "gETNX", url: "/networks/ETNX.png" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: 'FBAF5', chainName: "Ethereum Electronero", rpcUrls: ["https://rpc-evm01.electronero.org"], blockExplorerUrls: ['https://scan.electronero.org'], nativeCurrency: { symbol: 'gETNX', decimals: 18 } } },
     { name: "Cronos_testnet", currency: "tCRO", subtitle: `Choose if the project is deployed to Cronos (testnet)`, url: "/networks/cronos.svg", subData: [{ name: "Fungible Coin", subTitle: "CRO", url: "/networks/cronos.svg" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { symbol: 'tCRO', decimals: 18 } } },
     { name: "Binance_testnet", currency: "tBNB", subtitle: `Choose if your coin is built on to Binance (testnet)`, url: "/networks/bsc.png", subData: [{ name: "Fungible Coin", subTitle: "BNB", url: "/networks/bsc.png" },{ name: "Project Tokens", subTitle: "BEP-20", url: "/project.png" }], chainData: { chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { symbol: 'BNB', decimals: 18 } } },
     { name: "Polygon_testnet", currency: "tMATIC", subtitle: `Choose if the project is deployed to Polygon (testnet)`, url: "/networks/matic.svg", subData: [{ name: "Fungible Coin", subTitle: "tMATIC", url: "/networks/matic.svg" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { symbol: 'MATIC', decimals: 18 } } },
     { name: "Avalanche_testnet", currency: "tAVAX", subtitle: `Choose if the project is deployed to Avalanche (testnet)`, url: "/networks/avax.svg", subData: [{ name: "Fungible Coin", subTitle: "tAXAX", url: "/networks/avax.svg" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { symbol: 'AVAX', decimals: 9 } } },
-    { name: "Frenchain_testnet", currency: "tFREN", subtitle: `Choose if the project is deployed to FrenChain (testnet)`, url: "/networks/fren.svg", subData: [{ name: "Fungible Coin", subTitle: "tFREN", url: "/networks/fren.svg" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { symbol: 'tFREN', decimals: 18 } } },
     { name: "Kekchain_testnet", currency: "tKEK", subtitle: `Choose if the project is deployed to KekChain (testnet)`, url: "/networks/kek.png", subData: [{ name: "Fungible Coin", subTitle: "tKEK", url: "/networks/kek.png" },{ name: "Project Tokens", subTitle: "ERC-20 compliant", url: "/project.png" }], chainData: { chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { symbol: 'tKEK', decimals: 18 } } }
 ];
 export const tokens_data = {
    "Goerli" : { name: "Goerli", currency: "gETH", subtitle: `Choose if the project is deployed to Goerli`, logo: "/networks/eth.svg", chainData: { chainId: '0x5', chainName: "Ethereum Goerli", rpcUrls: ["https://rpc.ankr.com/eth_goerli"], blockExplorerUrls: ['https://goerli.etherscan.io'], nativeCurrency: { name: "Ethereum", symbol: 'gETH', decimals: 18 }, tokens: [{ name: "Ethereum", symbol: "gETH", decimals: 18 , contract: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6" }] } },
+   "Electronero_testnet" : { name: "Electronero_testnet", currency: "gETNX", subtitle: `Choose if the project is deployed to Go Electronero Network (testnet)`, url: "/networks/ETNX.png", chainData: { chainId: 'FBAF5', chainName: "Electronero Testnet", rpcUrls: ["https://testnet.electronero.org"], blockExplorerUrls: ['https://testnet-scan.electronero.com/'], nativeCurrency: { name: "Cronos", symbol: 'tCRO', decimals: 18 }, tokens: [{ name: "Cronos", symbol: "wCRO", decimals: 18 , contract: "0x2A0Ff2dB23a65bb9E9313f8670b9C2bB5Ed13771" }] } },
+   "Crystaleum_testnet" : { name: "Crystaleum_testnet", currency: "CRFI", subtitle: `Choose if the project is deployed to Crystaleum (testnet)`, url: "/networks/CRFI.png", chainData: { chainId: '0x192b2', chainName: "Crystaleum Testnet", rpcUrls: ["https://rpc.crystaleum.org","https://rpc-tn.crystaleum.org"], blockExplorerUrls: ['https://testnet-scan.crystaleum.com/'], nativeCurrency: { name: "Crystaleum", symbol: 'CRFI', decimals: 18 }, tokens: [{ name: "Wrapped Crystaleum", symbol: "wCRFI", decimals: 18 , contract: "0x" }] } },
    "Cronos_testnet" : { name: "Cronos_testnet", currency: "tCRO", subtitle: `Choose if the project is deployed to Cronos (testnet)`, url: "/networks/cronos.svg", chainData: { chainId: '0x152', chainName: "Cronos Testnet", rpcUrls: ["https://evm-t3.cronos.org"], blockExplorerUrls: ['https://testnet.cronoscan.com/'], nativeCurrency: { name: "Cronos", symbol: 'tCRO', decimals: 18 }, tokens: [{ name: "Cronos", symbol: "wCRO", decimals: 18 , contract: "0x2A0Ff2dB23a65bb9E9313f8670b9C2bB5Ed13771" }] } },
    "Binance_testnet" : { name: "Binance_testnet", currency: "tBNB", subtitle: `Choose if your coin is built on Binance`, url: "/networks/bsc.png", chainData: { chainId: '0x38', chainName: "Binance Smart Chain Testnet", rpcUrls: ["https://data-seed-prebsc-2-s3.binance.org:8545"], blockExplorerUrls: ['https://testnet.bscscan.com/'], nativeCurrency: { name: "Binance Smart Chain", symbol: 'tBNB', decimals: 18 }, tokens: [{ name: "Binance Smart Chain", symbol: "tBNB", decimals: 18 , contract: "0xae13d989dac2f0debff460ac112a837c89baa7cd" }] }},
    "Polygon_testnet" : { name: "Polygon_testnet", currency: "tMATIC", subtitle: `Choose if the project is deployed to Polygon (testnet)`, url: "/networks/matic.svg", chainData: { chainId: '0x13881', chainName: "Polygon Testnet", rpcUrls: ["https://rpc-mumbai.maticvigil.com"], blockExplorerUrls: ['https://mumbai.polygonscan.com/'], nativeCurrency: { name: "Polygon", symbol: 'tMATIC', decimals: 18 }, tokens: [{ name: "Polygon", symbol: "tMATIC", decimals: 18 , contract: "0x9c3c9283d3e44854697cd22d3faa240cfb032889" }] }  },
    "Avalanche_testnet" : { name: "Avalanche_testnet", currency: "tAVAX", subtitle: `Choose if the project is deployed Avalanche (testnet)`, url: "/networks/avax.svg", chainData: { chainId: '0xa869', chainName: "Avalanche Testnet", rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"], blockExplorerUrls: ['https://testnet.snowtrace.io'], nativeCurrency: { name: "Avalanche", symbol: 'tAVAX', decimals: 18 }, tokens: [{ name: "Avalanche", symbol: "tAVAX", decimals: 18 , contract: "0x1d308089a2d1ced3f1ce36b1fcaf815b07217be3" }] }  },
-   "Frenchain_testnet" : { name: "Frenchain_testnet", currency: "tFREN", subtitle: `Choose if the project is deployed FrenChain (testnet)`, url: "/networks/fren.svg", chainData: { chainId: '0X1BC', chainName: "Frenchain Testnet", rpcUrls: ["https://rpc-01tn.frenchain.app"], blockExplorerUrls: ['https://testnet.frenscan.io'], nativeCurrency: { name: "FrenChain", symbol: 'tFREN', decimals: 18 }, tokens: [{ name: "FrenChain", symbol: "tFREN", decimals: 18 , contract: "0xd0d049E19D35c7c32Dc37933950D6615AE43Fb61" }] }  },
    "Kekchain_testnet" : { name: "Kekchain_testnet", currency: "tKEK", subtitle: `Choose if the project is deployed to KekChain (testnet)`, url: "/networks/kek.png", chainData: { chainId: '0x66B3A', chainName: "Kekchain Testnet", rpcUrls: ["https://testnet.kekchain.com"], blockExplorerUrls: ['https://testnet-explorer.kekchain.com'], nativeCurrency: { name: "KekChain", symbol: 'tKEK', decimals: 18 }, tokens: [{ name: "KekChain", symbol: "tKEK", decimals: 18 , contract: "0x7806c2744c08deea4e048d825f1962f1159e7f8c" }] } }
 };
 export const wrappedAddress = {
     "Ethereum": "",
     "Goerli": "",
+    "Electronero": '',
+    "Electronero_testnet": '',
+    "Crystaleum": '',
+    "Crystaleum_testnet": '',
     "Binance": "",
     "Binance Smart Chain": "",
     "Binance_testnet": "",
@@ -340,8 +378,6 @@ export const wrappedAddress = {
     "Avalanche_testnet": "",
     "Polygon": "",
     "Polygon_testnet": "",
-    "Frenchain": "",
-    "Frenchain_testnet": "",
     "Kekchain": "",
     "Kekchain_testnet": ""
 };
@@ -349,6 +385,10 @@ export const lockerAddress = {
     "Ethereum": "",
     "Goerli": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Binance": "",
+    "Electronero": '',
+    "Electronero_testnet": '0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c',
+    "Crystaleum": '',
+    "Crystaleum_testnet": '',
     "Binance Smart Chain": "",
     "Binance_testnet": "0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c",
     "Cronos": "",
@@ -357,8 +397,6 @@ export const lockerAddress = {
     "Avalanche_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Polygon": "",
     "Polygon_testnet": "0x7d2A16Eb08361cDA68C183a6e92f08e618B73c7F",
-    "Frenchain": "",
-    "Frenchain_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
@@ -367,6 +405,10 @@ export const swapTokenLockerFactory = {
     "Ethereum": '',
     "Goerli": '0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c',
     "Binance": "",
+    "Electronero": '',
+    "Electronero_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
+    "Crystaleum": '',
+    "Crystaleum_testnet": '',
     "Binance Smart Chain": "",
     "Binance_testnet": "0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c",
     "Cronos": "",
@@ -375,14 +417,16 @@ export const swapTokenLockerFactory = {
     "Avalanche_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Polygon": "",
     "Polygon_testnet": "0x7d2A16Eb08361cDA68C183a6e92f08e618B73c7F",
-    "Frenchain": "",
-    "Frenchain_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
 export const iBridgeAddress = {
     "Ethereum": '',
     "Goerli": '',
+    "Electronero": '',
+    "Electronero_testnet": '',
+    "Crystaleum": '',
+    "Crystaleum_testnet": '',
     "Binance": "",
     "Binance Smart Chain": "",
     "Binance_testnet": "0xBCae51873a3FC8B782DC2981Ddb98a5be8c9ADe3", // 0x4ADddcEB000A23F613F8E1300938b703226f4064
@@ -392,13 +436,15 @@ export const iBridgeAddress = {
     "Avalanche_testnet": '',
     "Polygon": "",
     "Polygon_testnet": "0xdDbE999514cE1F8afb868f087bd8d3274c94a77C",
-    "Frenchain": "",
-    "Frenchain_testnet": "",
     "Kekchain": "",
     "Kekchain_testnet": ""
 };
 export const airdropAddress = {
     "Ethereum": '',
+    "Electronero": '',
+    "Electronero_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
+    "Crystaleum": '',
+    "Crystaleum_testnet": '',
     "Goerli": '0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c',
     "Binance": "",
     "Binance Smart Chain": "",
@@ -409,14 +455,16 @@ export const airdropAddress = {
     "Avalanche_testnet": '0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c',
     "Polygon": "",
     "Polygon_testnet": "0x7d2A16Eb08361cDA68C183a6e92f08e618B73c7F",
-    "Frenchain": "",
-    "Frenchain_testnet": "0x2e0bc1b028c1f3cf3Ce40B204E98fF0743DA8d4c",
     "Kekchain": "",
     "Kekchain_testnet": "0xCC8748Cb40575e42649d9652573eb8233CC30dEC"
 };
 export const iMigratorAddress = {
     "Ethereum": '',
     "Goerli": '',
+    "Electronero": '',
+    "Electronero_testnet": '',
+    "Crystaleum": '',
+    "Crystaleum_testnet": '',
     "Binance": "",
     "Binance Smart Chain": "",
     "Binance_testnet": "0xE5F70DaeB8d836b1C6a91FA4d04Eca58d392597c", // 0x25D77332E0570375Ef73Ed073f8E9a56fFD9ce5F
@@ -426,8 +474,6 @@ export const iMigratorAddress = {
     "Avalanche_testnet": '',
     "Polygon": "",
     "Polygon_testnet": "",
-    "Frenchain": "",
-    "Frenchain_testnet": "",
     "Kekchain": "",
     "Kekchain_testnet": ""
 };
@@ -435,6 +481,8 @@ export const maxTxLimit = 1000000000000000000000000000000;
 export const CHAINDATA = [
     { name: "Ethereum", chain: '0x1' },
     { name: "Goerli", chain: '0x5' },
+    { name: "Crystaleum", chain: '0x192b2' },
+    { name: "Crystaleum_testnet", chain: '0x192b2' },
     { name: "Cronos", chain: '0x19' },
     { name: "Cronos_testnet", chain: '0x152' },
     { name: "Binance Smart Chain", chain: '0x38' },
@@ -443,8 +491,8 @@ export const CHAINDATA = [
     { name: "Avalanche_testnet", chain: '0xa869' },
     { name: "Polygon", chain: '0x89' },
     { name: "Polygon_testnet", chain: '0x13881' },
-    { name: "Frenchain_testnet", chain: '0X1BC' },
-    { name: "Frenchain", chain: '0xAD9C' },
+    { name: "Electronero_testnet", chain: 'FBAF5' },
+    { name: "Electronero", chain: '0xAD9C' },
     { name: "Kekchain", chain: '0x66A44' },
     { name: "Kekchain_testnet", chain: '0x66B3A' }
 ];
@@ -453,6 +501,8 @@ export const token_lists = {
     5: [],
     25: [],
     56: BSC_TOKENLIST,
+    103090: CRFI_TOKENLIST,
+    1030901: ETNX_TOKENLIST,
     97: [],
     137: POLYGON_TOKENLIST,
     338: CRONOS_TOKENLIST,
